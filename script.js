@@ -39,310 +39,372 @@ const projects = {
       "Offline AI",
       "Security Knowledge Base"
     ]
+  },
+
+  jarvisDesktop: {
+    k: "04 / AI / PYTHON",
+    t: "JARVIS AI DESKTOP",
+    d: "AI-powered Windows desktop assistant with voice interaction, memory, system monitoring and automation.",
+    s: [
+      "Python",
+      "Windows",
+      "Voice AI",
+      "Automation"
+    ],
+    repo: "https://github.com/jalex00565-rgb/JARVIS-AI-Desktop"
   }
 };
 
 
 /* =========================================
-   MODAL ELEMENTS
+   INITIALIZE AFTER DOM LOAD
 ========================================= */
 
-const modal = document.querySelector("#modal");
-const modalKicker = document.querySelector("#modalKicker");
-const modalTitle = document.querySelector("#modalTitle");
-const modalText = document.querySelector("#modalText");
-const modalStack = document.querySelector("#modalStack");
-const closeButton = document.querySelector("#close");
+document.addEventListener("DOMContentLoaded", () => {
 
+  /* =========================================
+     MODAL ELEMENTS
+  ========================================= */
 
-/* =========================================
-   OPEN PROJECT MODAL
-========================================= */
+  const modal = document.querySelector("#modal");
+  const modalKicker = document.querySelector("#modalKicker");
+  const modalTitle = document.querySelector("#modalTitle");
+  const modalText = document.querySelector("#modalText");
+  const modalStack = document.querySelector("#modalStack");
+  const closeButton = document.querySelector("#close");
 
-document.querySelectorAll(".details").forEach(button => {
 
-  button.addEventListener("click", () => {
+  /* =========================================
+     OPEN PROJECT MODAL
+  ========================================= */
 
-    const projectId = button.dataset.project;
-    const project = projects[projectId];
+  document.querySelectorAll(".details").forEach(button => {
 
-    if (!project) {
-      console.error("Project not found:", projectId);
-      return;
-    }
+    button.addEventListener("click", () => {
 
-    modalKicker.textContent = project.k;
-    modalTitle.textContent = project.t;
-    modalText.textContent = project.d;
+      const projectId = button.dataset.project;
+      const project = projects[projectId];
 
-    modalStack.innerHTML = "";
+      if (!project) {
+        console.error("Project not found:", projectId);
+        return;
+      }
 
-    /* Project technology tags */
+      if (modalKicker) {
+        modalKicker.textContent = project.k;
+      }
 
-    project.s.forEach(tag => {
+      if (modalTitle) {
+        modalTitle.textContent = project.t;
+      }
 
-      const span = document.createElement("span");
-      span.textContent = tag;
+      if (modalText) {
+        modalText.textContent = project.d;
+      }
 
-      modalStack.appendChild(span);
+      if (modalStack) {
 
-    });
+        modalStack.innerHTML = "";
 
+        /* Project technology tags */
 
-    /* GitHub repository */
+        project.s.forEach(tag => {
 
-    if (project.repo) {
+          const span = document.createElement("span");
 
-      const repoLink = document.createElement("a");
+          span.textContent = tag;
 
-      repoLink.className = "repo-link";
-      repoLink.href = project.repo;
-      repoLink.target = "_blank";
-      repoLink.rel = "noopener noreferrer";
-      repoLink.textContent = "VIEW GITHUB REPOSITORY ↗";
+          modalStack.appendChild(span);
 
-      modalStack.appendChild(repoLink);
+        });
 
-    }
 
+        /* GitHub repository */
 
-    /* Open modal */
+        if (project.repo) {
 
-    modal.classList.add("open");
+          const repoLink = document.createElement("a");
 
-    document.body.classList.add("modal-open");
+          repoLink.className = "repo-link";
+          repoLink.href = project.repo;
+          repoLink.target = "_blank";
+          repoLink.rel = "noopener noreferrer";
+          repoLink.textContent = "VIEW GITHUB REPOSITORY ↗";
 
-  });
+          modalStack.appendChild(repoLink);
 
-});
+        }
 
+      }
 
-/* =========================================
-   CLOSE MODAL
-========================================= */
 
-function closeModal() {
+      /* Open modal */
 
-  modal.classList.remove("open");
+      if (modal) {
 
-  document.body.classList.remove("modal-open");
+        modal.classList.add("open");
 
-}
+        document.body.classList.add("modal-open");
 
+      }
 
-/* Close button */
-
-if (closeButton) {
-
-  closeButton.addEventListener("click", closeModal);
-
-}
-
-
-/* Click outside modal */
-
-modal.addEventListener("click", event => {
-
-  if (event.target === modal) {
-
-    closeModal();
-
-  }
-
-});
-
-
-/* ESC key */
-
-document.addEventListener("keydown", event => {
-
-  if (event.key === "Escape") {
-
-    closeModal();
-
-  }
-
-});
-
-
-/* =========================================
-   LOADER
-========================================= */
-
-window.addEventListener("load", () => {
-
-  const loader = document.querySelector("#loader");
-
-  if (!loader) return;
-
-  setTimeout(() => {
-
-    loader.style.opacity = "0";
-
-    setTimeout(() => {
-
-      loader.remove();
-
-    }, 650);
-
-  }, 900);
-
-});
-
-
-/* =========================================
-   ACTIVE NAVIGATION
-========================================= */
-
-const navLinks = document.querySelectorAll("header nav a");
-
-
-function updateActiveNavigation() {
-
-  const currentPosition = window.scrollY + 150;
-
-  navLinks.forEach(link => {
-
-    const target = document.querySelector(
-      link.getAttribute("href")
-    );
-
-    if (!target) return;
-
-    const top = target.offsetTop;
-    const bottom = top + target.offsetHeight;
-
-    if (
-      currentPosition >= top &&
-      currentPosition < bottom
-    ) {
-
-      link.classList.add("active");
-
-      link.style.color = "#75f5b4";
-
-    } else {
-
-      link.classList.remove("active");
-
-      link.style.color = "";
-
-    }
-
-  });
-
-}
-
-
-window.addEventListener(
-  "scroll",
-  updateActiveNavigation,
-  { passive: true }
-);
-
-window.addEventListener(
-  "load",
-  updateActiveNavigation
-);
-
-
-/* =========================================
-   SMOOTH NAVIGATION
-========================================= */
-
-navLinks.forEach(link => {
-
-  link.addEventListener("click", event => {
-
-    const targetId = link.getAttribute("href");
-
-    if (!targetId || !targetId.startsWith("#")) {
-      return;
-    }
-
-    const target = document.querySelector(targetId);
-
-    if (!target) return;
-
-    event.preventDefault();
-
-    target.scrollIntoView({
-      behavior: "smooth",
-      block: "start"
     });
 
   });
 
-});
 
+  /* =========================================
+     CLOSE MODAL
+  ========================================= */
 
-/* =========================================
-   PROJECT BUTTON SMOOTH SCROLL
-========================================= */
+  function closeModal() {
 
-document.querySelectorAll('a[href="#projects"]').forEach(link => {
+    if (!modal) return;
 
-  link.addEventListener("click", event => {
+    modal.classList.remove("open");
 
-    const target = document.querySelector("#projects");
-
-    if (!target) return;
-
-    event.preventDefault();
-
-    target.scrollIntoView({
-      behavior: "smooth",
-      block: "start"
-    });
-
-  });
-
-});
-
-
-/* =========================================
-   CONTACT BUTTON
-========================================= */
-
-document.querySelectorAll('a[href="#contact"]').forEach(link => {
-
-  link.addEventListener("click", event => {
-
-    const target = document.querySelector("#contact");
-
-    if (!target) return;
-
-    event.preventDefault();
-
-    target.scrollIntoView({
-      behavior: "smooth",
-      block: "start"
-    });
-
-  });
-
-});
-
-
-/* =========================================
-   PREVENT MODAL SCROLL
-========================================= */
-
-const observer = new MutationObserver(() => {
-
-  if (modal.classList.contains("open")) {
-
-    document.body.style.overflow = "hidden";
-
-  } else {
+    document.body.classList.remove("modal-open");
 
     document.body.style.overflow = "";
 
   }
 
-});
 
-observer.observe(modal, {
-  attributes: true,
-  attributeFilter: ["class"]
+  /* Close button */
+
+  if (closeButton) {
+
+    closeButton.addEventListener("click", closeModal);
+
+  }
+
+
+  /* Click outside modal */
+
+  if (modal) {
+
+    modal.addEventListener("click", event => {
+
+      if (event.target === modal) {
+
+        closeModal();
+
+      }
+
+    });
+
+  }
+
+
+  /* ESC key */
+
+  document.addEventListener("keydown", event => {
+
+    if (event.key === "Escape") {
+
+      closeModal();
+
+    }
+
+  });
+
+
+  /* =========================================
+     LOADER
+  ========================================= */
+
+  const loader = document.querySelector("#loader");
+
+  if (loader) {
+
+    setTimeout(() => {
+
+      loader.style.opacity = "0";
+
+      setTimeout(() => {
+
+        loader.remove();
+
+      }, 650);
+
+    }, 900);
+
+  }
+
+
+  /* =========================================
+     ACTIVE NAVIGATION
+  ========================================= */
+
+  const navLinks = document.querySelectorAll("header nav a");
+
+
+  function updateActiveNavigation() {
+
+    const currentPosition = window.scrollY + 150;
+
+    navLinks.forEach(link => {
+
+      const href = link.getAttribute("href");
+
+      if (!href || !href.startsWith("#")) {
+        return;
+      }
+
+      const target = document.querySelector(href);
+
+      if (!target) {
+        return;
+      }
+
+      const top = target.offsetTop;
+      const bottom = top + target.offsetHeight;
+
+      if (
+        currentPosition >= top &&
+        currentPosition < bottom
+      ) {
+
+        link.classList.add("active");
+
+        link.style.color = "#75f5b4";
+
+      } else {
+
+        link.classList.remove("active");
+
+        link.style.color = "";
+
+      }
+
+    });
+
+  }
+
+
+  window.addEventListener(
+    "scroll",
+    updateActiveNavigation,
+    { passive: true }
+  );
+
+  updateActiveNavigation();
+
+
+  /* =========================================
+     SMOOTH NAVIGATION
+  ========================================= */
+
+  navLinks.forEach(link => {
+
+    link.addEventListener("click", event => {
+
+      const targetId = link.getAttribute("href");
+
+      if (!targetId || !targetId.startsWith("#")) {
+        return;
+      }
+
+      const target = document.querySelector(targetId);
+
+      if (!target) {
+        return;
+      }
+
+      event.preventDefault();
+
+      target.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+
+    });
+
+  });
+
+
+  /* =========================================
+     PROJECT BUTTON SMOOTH SCROLL
+  ========================================= */
+
+  document
+    .querySelectorAll('a[href="#projects"]')
+    .forEach(link => {
+
+      link.addEventListener("click", event => {
+
+        const target = document.querySelector("#projects");
+
+        if (!target) {
+          return;
+        }
+
+        event.preventDefault();
+
+        target.scrollIntoView({
+          behavior: "smooth",
+          block: "start"
+        });
+
+      });
+
+    });
+
+
+  /* =========================================
+     CONTACT BUTTON
+  ========================================= */
+
+  document
+    .querySelectorAll('a[href="#contact"]')
+    .forEach(link => {
+
+      link.addEventListener("click", event => {
+
+        const target = document.querySelector("#contact");
+
+        if (!target) {
+          return;
+        }
+
+        event.preventDefault();
+
+        target.scrollIntoView({
+          behavior: "smooth",
+          block: "start"
+        });
+
+      });
+
+    });
+
+
+  /* =========================================
+     PREVENT MODAL SCROLL
+  ========================================= */
+
+  if (modal) {
+
+    const observer = new MutationObserver(() => {
+
+      if (modal.classList.contains("open")) {
+
+        document.body.style.overflow = "hidden";
+
+      } else {
+
+        document.body.style.overflow = "";
+
+      }
+
+    });
+
+
+    observer.observe(modal, {
+      attributes: true,
+      attributeFilter: ["class"]
+    });
+
+  }
+
 });
