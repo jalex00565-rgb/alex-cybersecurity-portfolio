@@ -1,1306 +1,716 @@
-/* =========================================
-   ALEX JACOB — CYBERSECURITY × AI PORTFOLIO
-   DYNAMIC GITHUB PROJECT SYSTEM
-========================================= */
-
-
-/* =========================================
-   GITHUB CONFIGURATION
-========================================= */
-
-const GITHUB_USERNAME = "jalex00565-rgb";
-
-const PORTFOLIO_REPOSITORY = "alex-cybersecurity-portfolio";
-
-const GITHUB_API =
-  `https://api.github.com/users/${GITHUB_USERNAME}/repos?per_page=100&sort=updated`;
-
-
-/* =========================================
-   PROJECT OVERRIDES
-   These give important projects better
-   titles, descriptions and technology tags.
-========================================= */
+<!DOCTYPE html>
+<html lang="en">
 
-const projectOverrides = {
-
-  "JarvisAI": {
-    k: "AI / PYTHON",
-    t: "JARVIS AI",
-    d: "Personal AI assistant built with Python, Streamlit and Gemini. Foundation for voice interaction, file analysis, memory and SOC assistance.",
-    s: [
-      "Python",
-      "Streamlit",
-      "Gemini AI",
-      "AI Assistant"
-    ],
-    icon: "◈"
-  },
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  "SOC-Incident-Analyzer": {
-    k: "CYBERSECURITY",
-    t: "MINI SOC INCIDENT ANALYZER",
-    d: "Security workflow for converting raw logs into detections, risk assessment, investigation context and incident reporting.",
-    s: [
-      "Logs",
-      "Detection",
-      "Risk Analysis",
-      "Incident Reporting"
-    ],
-    icon: "⌁"
-  },
+    <meta name="description"
+        content="Alex Jacob — Cybersecurity, SOC and AI Portfolio">
 
-  "JARVIS-AI-Desktop": {
-    k: "AI / PYTHON",
-    t: "JARVIS AI DESKTOP",
-    d: "AI-powered Windows desktop assistant with voice interaction, memory, system monitoring and automation.",
-    s: [
-      "Python",
-      "Windows",
-      "Voice AI",
-      "Automation"
-    ],
-    icon: "◉"
-  }
+    <meta name="google-site-verification"
+        content="nY5uFZCzUEtDmaDXPu7-_-PIgedPr-BSKfU720kxheo">
 
-};
+    <title>Alex Jacob | Cybersecurity × AI</title>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-/* =========================================
-   PROJECT DATA
-========================================= */
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
 
-const projects = {};
+    <link rel="stylesheet" href="style.css">
+</head>
 
+<body>
 
-/* =========================================
-   GENERATE PROJECT ID
-========================================= */
+    <!-- LOADER -->
+    <div id="loader">
 
-function createProjectId(name) {
+        <div class="loader-mark">
+            AJ<span>.</span>
+        </div>
 
-  return "github_" +
-    name
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, "_");
+        <div class="loader-line">
+            <i></i>
+        </div>
 
-}
+        <small>
+            INITIALIZING SECURITY PORTFOLIO
+        </small>
 
+    </div>
 
-/* =========================================
-   FORMAT REPOSITORY NAME
-========================================= */
 
-function formatProjectTitle(name) {
+    <div class="noise"></div>
+    <div class="grid-bg"></div>
 
-  return name
-    .replace(/[-_]+/g, " ")
-    .replace(/\bai\b/gi, "AI")
-    .replace(/\bsoc\b/gi, "SOC")
-    .replace(/\bapi\b/gi, "API")
-    .replace(/\bui\b/gi, "UI")
-    .replace(/\bllm\b/gi, "LLM")
-    .replace(/\bpython\b/gi, "Python")
-    .replace(/\bwindows\b/gi, "Windows")
-    .replace(/\bdesktop\b/gi, "Desktop")
-    .replace(/\bsecurity\b/gi, "Security")
-    .replace(/\bcybersecurity\b/gi, "Cybersecurity")
-    .replace(/\b\w/g, char => char.toUpperCase());
 
-}
+    <!-- NAVIGATION -->
+    <header class="nav">
 
+        <a class="logo" href="#home">
+            AJ<span>.</span>
+        </a>
 
-/* =========================================
-   DETERMINE PROJECT CATEGORY
-========================================= */
+        <nav>
+            <a href="#home">HOME</a>
+            <a href="#about">ABOUT</a>
+            <a href="#projects">PROJECTS</a>
+            <a href="#skills">SKILLS</a>
+            <a href="#journey">JOURNEY</a>
+            <a href="#contact">CONTACT</a>
+        </nav>
 
-function determineCategory(repo) {
+        <a class="nav-cta" href="#contact">
+            LET'S TALK ↗
+        </a>
 
-  const text = (
-    `${repo.name} ${repo.description || ""} ${repo.language || ""}`
-  ).toLowerCase();
+    </header>
 
 
-  if (
-    text.includes("security") ||
-    text.includes("cyber") ||
-    text.includes("soc") ||
-    text.includes("threat") ||
-    text.includes("malware") ||
-    text.includes("incident")
-  ) {
+    <main>
 
-    return "CYBERSECURITY";
+        <!-- =========================
+             HOME
+        ========================== -->
 
-  }
+        <section id="home" class="hero">
 
+            <div class="hero-copy">
 
-  if (
-    text.includes("ai") ||
-    text.includes("llm") ||
-    text.includes("assistant") ||
-    text.includes("machine learning") ||
-    text.includes("gemini") ||
-    text.includes("openai")
-  ) {
+                <div class="status">
+                    <span></span>
+                    AVAILABLE FOR OPPORTUNITIES
+                </div>
 
-    return "AI / PYTHON";
+                <p class="eyebrow">
+                    CYBERSECURITY × ARTIFICIAL INTELLIGENCE
+                </p>
 
-  }
+                <h1>
+                    Building systems<br>
+                    that <em>defend.</em>
+                </h1>
 
+                <p class="lead">
+                    I'm <strong>Alex Jacob</strong> — a cybersecurity-focused
+                    developer building practical security tools, AI assistants
+                    and SOC-oriented systems.
+                </p>
 
-  if (
-    repo.language &&
-    repo.language.toLowerCase() === "python"
-  ) {
+                <div class="actions">
 
-    return "PYTHON / DEVELOPMENT";
+                    <a class="btn primary" href="#projects">
+                        Explore Projects ↗
+                    </a>
 
-  }
+                    <a class="btn ghost" href="#contact">
+                        Contact Me
+                    </a>
 
+                </div>
 
-  return "PROJECT";
+            </div>
 
 
-}
+            <div class="hero-visual">
 
+                <div class="orb">
 
-/* =========================================
-   DETERMINE PROJECT ICON
-========================================= */
+                    <div class="orb-core">
+                        AJ
+                    </div>
 
-function determineIcon(repo) {
+                    <span class="ring r1"></span>
+                    <span class="ring r2"></span>
+                    <span class="ring r3"></span>
 
-  const text = (
-    `${repo.name} ${repo.description || ""}`
-  ).toLowerCase();
+                </div>
 
 
-  if (
-    text.includes("security") ||
-    text.includes("soc") ||
-    text.includes("cyber")
-  ) {
+                <div class="terminal">
 
-    return "⌁";
+                    <div class="terminal-head">
 
-  }
+                        <span>
+                            SECURITY_WORKSPACE
+                        </span>
 
+                        <span>
+                            ● ● ●
+                        </span>
 
-  if (
-    text.includes("ai") ||
-    text.includes("assistant") ||
-    text.includes("llm")
-  ) {
+                    </div>
 
-    return "◈";
 
-  }
+                    <div class="terminal-body">
 
+                        <p>
+                            <i>01</i>
+                            <b>system</b>
+                            <span>→</span>
+                            online
+                        </p>
 
-  if (
-    repo.language &&
-    repo.language.toLowerCase() === "python"
-  ) {
+                        <p>
+                            <i>02</i>
+                            <b>focus</b>
+                            <span>→</span>
+                            SOC / AI Security
+                        </p>
 
-    return "◇";
+                        <p>
+                            <i>03</i>
+                            <b>projects</b>
+                            <span>→</span>
+                            03 active
+                        </p>
 
-  }
+                        <p>
+                            <i>04</i>
+                            <b>threat_mode</b>
+                            <span>→</span>
+                            <strong>READY</strong>
+                        </p>
 
+                        <div class="cursor"></div>
 
-  return "○";
+                    </div>
 
-}
+                </div>
 
+            </div>
 
-/* =========================================
-   GENERATE TECHNOLOGY TAGS
-========================================= */
 
-function generateTechnologyTags(repo) {
+            <div class="hero-stats">
 
-  const tags = [];
+                <div>
+                    <strong>01</strong>
+                    <span>
+                        Cybersecurity<br>
+                        Focus
+                    </span>
+                </div>
 
+                <div>
+                    <strong>AI</strong>
+                    <span>
+                        Automation &<br>
+                        Intelligent Tools
+                    </span>
+                </div>
 
-  if (repo.language) {
+                <div>
+                    <strong>SOC</strong>
+                    <span>
+                        Detection &<br>
+                        Incident Analysis
+                    </span>
+                </div>
 
-    tags.push(repo.language);
+                <div>
+                    <strong>BUILD</strong>
+                    <span>
+                        Learn through<br>
+                        real projects
+                    </span>
+                </div>
 
-  }
+            </div>
 
+        </section>
 
-  const text = (
-    `${repo.name} ${repo.description || ""}`
-  ).toLowerCase();
 
+        <!-- =========================
+             ABOUT
+        ========================== -->
 
-  const possibleTechnologies = [
+        <section id="about" class="section">
 
-    {
-      keyword: "streamlit",
-      label: "Streamlit"
-    },
+            <div class="section-label">
+                01 / ABOUT
+            </div>
 
-    {
-      keyword: "gemini",
-      label: "Gemini AI"
-    },
+            <div class="about-grid">
 
-    {
-      keyword: "openai",
-      label: "OpenAI"
-    },
+                <div>
 
-    {
-      keyword: "ollama",
-      label: "Ollama"
-    },
+                    <h2>
+                        Cybersecurity<br>
+                        meets <span>AI.</span>
+                    </h2>
 
-    {
-      keyword: "llm",
-      label: "LLM"
-    },
+                </div>
 
-    {
-      keyword: "nmap",
-      label: "Nmap"
-    },
 
-    {
-      keyword: "burp",
-      label: "Burp Suite"
-    },
+                <div class="about-copy">
 
-    {
-      keyword: "nuclei",
-      label: "Nuclei"
-    },
+                    <p>
+                        I'm <strong>Alex Jacob</strong>, a cybersecurity-focused
+                        developer building practical security tools, AI assistants
+                        and SOC-oriented systems.
+                    </p>
 
-    {
-      keyword: "gobuster",
-      label: "Gobuster"
-    },
+                    <p>
+                        My approach is project-driven: I turn cybersecurity
+                        concepts into working systems for log analysis,
+                        threat detection, risk assessment, automation and
+                        AI-assisted security workflows.
+                    </p>
 
-    {
-      keyword: "wireshark",
-      label: "Wireshark"
-    },
+                    <p>
+                        My current focus is SOC operations and cybersecurity,
+                        while exploring the intersection of artificial
+                        intelligence, automation and defensive security.
+                    </p>
 
-    {
-      keyword: "windows",
-      label: "Windows"
-    },
+                    <div class="quote">
+                        “Understand the threat. Build the system. Improve the defense.”
+                    </div>
 
-    {
-      keyword: "linux",
-      label: "Linux"
-    },
+                </div>
 
-    {
-      keyword: "docker",
-      label: "Docker"
-    },
+            </div>
 
-    {
-      keyword: "flask",
-      label: "Flask"
-    },
+        </section>
 
-    {
-      keyword: "django",
-      label: "Django"
-    }
 
-  ];
+        <!-- =========================
+             PROJECTS
+        ========================== -->
 
+        <section id="projects" class="section">
 
-  possibleTechnologies.forEach(item => {
+            <div class="section-label">
+                02 / SELECTED PROJECTS
+            </div>
 
-    if (
-      text.includes(item.keyword) &&
-      !tags.includes(item.label)
-    ) {
 
-      tags.push(item.label);
+            <div class="projects">
 
-    }
+                <!--
+                    IMPORTANT:
+                    script.js dynamically creates GitHub project cards.
+                    This container must remain empty.
+                -->
 
-  });
+            </div>
 
+        </section>
 
-  if (tags.length === 0) {
 
-    tags.push("GitHub Project");
+        <!-- =========================
+             SKILLS
+        ========================== -->
 
-  }
+        <section id="skills" class="section">
 
+            <div class="section-label">
+                03 / CAPABILITIES
+            </div>
 
-  return tags.slice(0, 5);
 
-}
+            <div class="skills-grid">
 
 
-/* =========================================
-   ADD GITHUB REPOSITORY TO PROJECT DATA
-========================================= */
+                <div class="skill">
 
-function registerGitHubRepository(repo) {
+                    <span>01</span>
 
-  const projectId = createProjectId(repo.name);
+                    <h3>
+                        SOC Operations
+                    </h3>
 
-  const override = projectOverrides[repo.name];
+                    <p>
+                        Monitoring, log analysis, detection,
+                        alert triage and incident workflows.
+                    </p>
 
+                </div>
 
-  projects[projectId] = {
 
-    k: override
-      ? override.k
-      : determineCategory(repo),
+                <div class="skill">
 
-    t: override
-      ? override.t
-      : formatProjectTitle(repo.name),
+                    <span>02</span>
 
-    d: override
-      ? override.d
-      : (
-        repo.description ||
-        "A practical project developed as part of my cybersecurity, AI and software development work."
-      ),
+                    <h3>
+                        Security Tools
+                    </h3>
 
-    s: override
-      ? override.s
-      : generateTechnologyTags(repo),
+                    <p>
+                        Nmap, Burp Suite, Nuclei, Gobuster,
+                        Wireshark and Linux tooling.
+                    </p>
 
-    repo: repo.html_url,
+                </div>
 
-    icon: override
-      ? override.icon
-      : determineIcon(repo),
 
-    githubData: repo
+                <div class="skill">
 
-  };
+                    <span>03</span>
 
+                    <h3>
+                        Python & AI
+                    </h3>
 
-  return projectId;
+                    <p>
+                        Automation, Streamlit applications,
+                        AI assistants and security-focused tooling.
+                    </p>
 
-}
+                </div>
 
 
-/* =========================================
-   PROJECT CARD CREATION
-========================================= */
+                <div class="skill">
 
-function createProjectCard(project, index) {
+                    <span>04</span>
 
-  const card = document.createElement("article");
+                    <h3>
+                        Threat Analysis
+                    </h3>
 
-  card.className = "card";
+                    <p>
+                        Brute force, suspicious activity, malware
+                        concepts and incident investigation.
+                    </p>
 
-  if (index === 0) {
+                </div>
 
-    card.classList.add("featured");
+            </div>
 
-  }
 
+            <div class="tool-cloud">
 
-  const top = document.createElement("div");
+                <span>Python</span>
+                <span>Linux</span>
+                <span>Nmap</span>
+                <span>Burp Suite</span>
+                <span>Nuclei</span>
+                <span>Gobuster</span>
+                <span>Wireshark</span>
+                <span>Streamlit</span>
+                <span>Gemini</span>
+                <span>Git</span>
 
-  top.className = "card-top";
+            </div>
 
+        </section>
 
-  const number = document.createElement("span");
 
-  number.textContent =
-    String(index + 1).padStart(2, "0");
+        <!-- =========================
+             JOURNEY
+        ========================== -->
 
+        <section id="journey" class="section">
 
-  const status = document.createElement("span");
+            <div class="section-label">
+                04 / JOURNEY
+            </div>
 
-  status.textContent =
-    project.githubData
-      ? "GITHUB"
-      : "PROJECT";
 
+            <div class="timeline">
 
-  top.appendChild(number);
 
-  top.appendChild(status);
+                <div class="time-item">
 
+                    <span>01</span>
 
-  const icon = document.createElement("div");
+                    <div>
 
-  icon.className = "icon";
+                        <small>
+                            CURRENT FOCUS
+                        </small>
 
-  icon.textContent = project.icon || "○";
+                        <h3>
+                            SOC & Cybersecurity
+                        </h3>
 
+                        <p>
+                            Building fundamentals around security
+                            operations, monitoring, detection and
+                            incident analysis.
+                        </p>
 
-  const title = document.createElement("h3");
+                    </div>
 
-  title.textContent = project.t;
+                </div>
 
 
-  const description = document.createElement("p");
+                <div class="time-item">
 
-  description.textContent = project.d;
+                    <span>02</span>
 
+                    <div>
 
-  const tags = document.createElement("div");
+                        <small>
+                            PROJECT PHASE
+                        </small>
 
-  tags.className = "tags";
+                        <h3>
+                            AI + Security Tools
+                        </h3>
 
+                        <p>
+                            Turning cybersecurity learning into practical
+                            Python and AI-powered projects.
+                        </p>
 
-  project.s.forEach(tag => {
+                    </div>
 
-    const tagElement = document.createElement("b");
+                </div>
 
-    tagElement.textContent = tag;
 
-    tags.appendChild(tagElement);
+                <div class="time-item">
 
-  });
+                    <span>03</span>
 
+                    <div>
 
-  const details = document.createElement("button");
+                        <small>
+                            NEXT DIRECTION
+                        </small>
 
-  details.className = "details";
+                        <h3>
+                            AI for Cybersecurity
+                        </h3>
 
-  details.type = "button";
+                        <p>
+                            Exploring LLM security, automation and
+                            intelligent security workflows.
+                        </p>
 
-  details.dataset.project =
-    Object.keys(projects).find(
-      key => projects[key] === project
-    );
+                    </div>
 
-  details.textContent = "VIEW PROJECT ↗";
+                </div>
 
 
-  card.appendChild(top);
+                <div class="time-item">
 
-  card.appendChild(icon);
+                    <span>04</span>
 
-  card.appendChild(title);
+                    <div>
 
-  card.appendChild(description);
+                        <small>
+                            LONG-TERM
+                        </small>
 
-  card.appendChild(tags);
+                        <h3>
+                            Security Specialization
+                        </h3>
 
-  card.appendChild(details);
+                        <p>
+                            Deepening expertise in ransomware detection,
+                            investigation, containment and recovery.
+                        </p>
 
+                    </div>
 
-  return card;
+                </div>
 
-}
+            </div>
 
+        </section>
 
-/* =========================================
-   LOCAL PLANNED PROJECT
-========================================= */
 
-function registerPlannedProject() {
+        <!-- =========================
+             SYSTEM PROFILE
+        ========================== -->
 
-  projects.localai = {
+        <section class="section terminal-section">
 
-    k: "PLANNED",
+            <div class="section-label">
+                05 / SYSTEM PROFILE
+            </div>
 
-    t: "LOCAL AI SECURITY ASSISTANT",
 
-    d: "Offline AI layer planned for document analysis and a cybersecurity knowledge base, with future integration into the Jarvis ecosystem.",
+            <div class="profile-terminal">
 
-    s: [
-      "Ollama",
-      "LLM",
-      "Offline AI",
-      "Security Knowledge Base"
-    ],
+                <div class="terminal-head">
 
-    icon: "◎",
+                    <span>
+                        alex@security-lab:~
+                    </span>
 
-    planned: true
+                    <span>
+                        STATUS: ONLINE
+                    </span>
 
-  };
+                </div>
 
-}
 
+                <div class="profile-code">
 
-/* =========================================
-   RENDER PROJECTS
-========================================= */
+                    <p>
+                        <span class="green">
+                            alex@security-lab
+                        </span>:~$ whoami
+                    </p>
 
-function renderProjects() {
+                    <p>
+                        Cybersecurity-focused developer
+                    </p>
 
-  const projectsContainer =
-    document.querySelector(".projects");
+                    <p>
+                        <span class="green">
+                            alex@security-lab
+                        </span>:~$ cat focus.txt
+                    </p>
 
+                    <p>
+                        Security Operations • AI • Automation • Threat Analysis
+                    </p>
 
-  if (!projectsContainer) {
+                    <p>
+                        <span class="green">
+                            alex@security-lab
+                        </span>:~$ ./mission
+                    </p>
 
-    console.error(
-      "Projects container (.projects) not found."
-    );
+                    <p class="accent">
+                        Build practical systems. Understand the threat.
+                        Improve the defense.
+                    </p>
 
-    return;
+                    <span class="cursor"></span>
 
-  }
+                </div>
 
+            </div>
 
-  projectsContainer.innerHTML = "";
+        </section>
 
 
-  const projectEntries =
-    Object.entries(projects);
+        <!-- =========================
+             CONTACT
+        ========================== -->
 
+        <section id="contact" class="section contact">
 
-  projectEntries.forEach(
-    ([projectId, project], index) => {
+            <div class="section-label">
+                06 / CONTACT
+            </div>
 
-      const card =
-        createProjectCard(project, index);
 
+            <h2>
+                Let's build something<br>
+                <span>useful.</span>
+            </h2>
 
-      const button =
-        card.querySelector(".details");
 
+            <p>
+                Open to cybersecurity, SOC and security-focused
+                development opportunities.
+            </p>
 
-      if (button) {
 
-        button.dataset.project = projectId;
+            <div class="contact-actions">
 
-      }
+                <a
+                    class="email"
+                    href="mailto:jalex00565@gmail.com">
+                    jalex00565@gmail.com ↗
+                </a>
 
 
-      projectsContainer.appendChild(card);
+                <a
+                    class="social"
+                    href="https://github.com/jalex00565-rgb/"
+                    target="_blank"
+                    rel="noopener noreferrer">
+                    GitHub ↗
+                </a>
 
-    }
-  );
 
+                <a
+                    class="social"
+                    href="https://www.linkedin.com/in/alex-jacob-942a83312/"
+                    target="_blank"
+                    rel="noopener noreferrer">
+                    LinkedIn ↗
+                </a>
 
-  updateProjectCount(projectEntries.length);
+            </div>
 
-}
 
+            <p class="replace-note">
+                For professional enquiries, use the contact links above.
+            </p>
 
-/* =========================================
-   UPDATE HERO PROJECT COUNT
-========================================= */
+        </section>
 
-function updateProjectCount(count) {
+    </main>
 
-  const textNodes =
-    document.querySelectorAll(
-      ".hero-stats span"
-    );
 
+    <!-- =========================
+         PROJECT MODAL
+    ========================== -->
 
-  textNodes.forEach(node => {
+    <div id="modal" class="modal">
 
-    const text =
-      node.textContent.toLowerCase();
+        <div class="modal-box">
 
+            <button
+                id="close"
+                class="close"
+                type="button"
+                aria-label="Close project details">
+                ×
+            </button>
 
-    if (
-      text.includes("project") ||
-      text.includes("active")
-    ) {
 
-      node.textContent =
-        `${String(count).padStart(2, "0")} PROJECTS`;
+            <div
+                id="modalKicker"
+                class="modal-kicker">
+                PROJECT
+            </div>
 
-    }
 
-  });
+            <h2 id="modalTitle">
+                Project Title
+            </h2>
 
-}
 
+            <p id="modalText">
+                Project description
+            </p>
 
-/* =========================================
-   LOAD GITHUB REPOSITORIES
-========================================= */
 
-async function loadGitHubProjects() {
+            <div
+                id="modalStack"
+                class="modal-stack">
+            </div>
 
-  try {
+        </div>
 
-    const response =
-      await fetch(GITHUB_API, {
-        headers: {
-          "Accept":
-            "application/vnd.github+json"
-        }
-      });
+    </div>
 
 
-    if (!response.ok) {
+    <!-- =========================
+         FOOTER
+    ========================== -->
 
-      throw new Error(
-        `GitHub API error: ${response.status}`
-      );
+    <footer>
 
-    }
+        <span>
+            © 2026 ALEX JACOB
+        </span>
 
+        <span>
+            CYBERSECURITY × AI
+        </span>
 
-    const repositories =
-      await response.json();
+        <span>
+            BUILT WITH HTML / CSS / JS
+        </span>
 
+    </footer>
 
-    if (!Array.isArray(repositories)) {
 
-      throw new Error(
-        "Invalid GitHub API response."
-      );
+    <!-- JAVASCRIPT -->
+    <script src="script.js"></script>
 
-    }
+</body>
 
-
-    repositories
-      .filter(repo => {
-
-        return (
-          !repo.fork &&
-          repo.name !== PORTFOLIO_REPOSITORY &&
-          !repo.archived
-        );
-
-      })
-      .reverse()
-      .forEach(repo => {
-
-        registerGitHubRepository(repo);
-
-      });
-
-
-    renderProjects();
-
-
-    console.log(
-      `GitHub Projects Loaded: ${repositories.length}`
-    );
-
-
-  } catch (error) {
-
-    console.error(
-      "Unable to load GitHub projects:",
-      error
-    );
-
-
-    /* If GitHub API fails, still show
-       the important existing projects. */
-
-    renderProjects();
-
-  }
-
-}
-
-
-/* =========================================
-   MODAL ELEMENTS
-========================================= */
-
-let modal;
-
-let modalKicker;
-
-let modalTitle;
-
-let modalText;
-
-let modalStack;
-
-let closeButton;
-
-
-/* =========================================
-   INITIALIZE MODAL ELEMENTS
-========================================= */
-
-function initializeModalElements() {
-
-  modal =
-    document.querySelector("#modal");
-
-  modalKicker =
-    document.querySelector("#modalKicker");
-
-  modalTitle =
-    document.querySelector("#modalTitle");
-
-  modalText =
-    document.querySelector("#modalText");
-
-  modalStack =
-    document.querySelector("#modalStack");
-
-  closeButton =
-    document.querySelector("#close");
-
-}
-
-
-/* =========================================
-   OPEN PROJECT MODAL
-========================================= */
-
-function openProjectModal(projectId) {
-
-  const project =
-    projects[projectId];
-
-
-  if (!project) {
-
-    console.error(
-      "Project not found:",
-      projectId
-    );
-
-    return;
-
-  }
-
-
-  if (modalKicker) {
-
-    modalKicker.textContent =
-      project.k;
-
-  }
-
-
-  if (modalTitle) {
-
-    modalTitle.textContent =
-      project.t;
-
-  }
-
-
-  if (modalText) {
-
-    modalText.textContent =
-      project.d;
-
-  }
-
-
-  if (modalStack) {
-
-    modalStack.innerHTML = "";
-
-
-    project.s.forEach(tag => {
-
-      const span =
-        document.createElement("span");
-
-      span.textContent = tag;
-
-      modalStack.appendChild(span);
-
-    });
-
-
-    if (project.repo) {
-
-      const repoLink =
-        document.createElement("a");
-
-
-      repoLink.className =
-        "repo-link";
-
-
-      repoLink.href =
-        project.repo;
-
-
-      repoLink.target =
-        "_blank";
-
-
-      repoLink.rel =
-        "noopener noreferrer";
-
-
-      repoLink.textContent =
-        "VIEW GITHUB REPOSITORY ↗";
-
-
-      modalStack.appendChild(
-        repoLink
-      );
-
-    }
-
-  }
-
-
-  if (modal) {
-
-    modal.classList.add("open");
-
-    document.body.classList.add(
-      "modal-open"
-    );
-
-    document.body.style.overflow =
-      "hidden";
-
-  }
-
-}
-
-
-/* =========================================
-   CLOSE MODAL
-========================================= */
-
-function closeModal() {
-
-  if (!modal) return;
-
-
-  modal.classList.remove("open");
-
-  document.body.classList.remove(
-    "modal-open"
-  );
-
-  document.body.style.overflow = "";
-
-}
-
-
-/* =========================================
-   PROJECT MODAL CLICK HANDLER
-   Event delegation is used because
-   project cards are dynamically created.
-========================================= */
-
-function initializeProjectButtons() {
-
-  const projectsContainer =
-    document.querySelector(".projects");
-
-
-  if (!projectsContainer) return;
-
-
-  projectsContainer.addEventListener(
-    "click",
-    event => {
-
-      const button =
-        event.target.closest(".details");
-
-
-      if (!button) return;
-
-
-      const projectId =
-        button.dataset.project;
-
-
-      openProjectModal(projectId);
-
-    }
-  );
-
-}
-
-
-/* =========================================
-   MODAL EVENTS
-========================================= */
-
-function initializeModalEvents() {
-
-  if (closeButton) {
-
-    closeButton.addEventListener(
-      "click",
-      closeModal
-    );
-
-  }
-
-
-  if (modal) {
-
-    modal.addEventListener(
-      "click",
-      event => {
-
-        if (
-          event.target === modal
-        ) {
-
-          closeModal();
-
-        }
-
-      }
-    );
-
-  }
-
-
-  document.addEventListener(
-    "keydown",
-    event => {
-
-      if (
-        event.key === "Escape"
-      ) {
-
-        closeModal();
-
-      }
-
-    }
-  );
-
-}
-
-
-/* =========================================
-   LOADER
-========================================= */
-
-function initializeLoader() {
-
-  const loader =
-    document.querySelector("#loader");
-
-
-  if (!loader) return;
-
-
-  setTimeout(() => {
-
-    loader.style.opacity = "0";
-
-
-    setTimeout(() => {
-
-      loader.remove();
-
-    }, 650);
-
-  }, 900);
-
-}
-
-
-/* =========================================
-   ACTIVE NAVIGATION
-========================================= */
-
-function initializeNavigation() {
-
-  const navLinks =
-    document.querySelectorAll(
-      "header nav a"
-    );
-
-
-  function updateActiveNavigation() {
-
-    const currentPosition =
-      window.scrollY + 150;
-
-
-    navLinks.forEach(link => {
-
-      const href =
-        link.getAttribute("href");
-
-
-      if (
-        !href ||
-        !href.startsWith("#")
-      ) {
-
-        return;
-
-      }
-
-
-      const target =
-        document.querySelector(href);
-
-
-      if (!target) return;
-
-
-      const top =
-        target.offsetTop;
-
-
-      const bottom =
-        top + target.offsetHeight;
-
-
-      if (
-        currentPosition >= top &&
-        currentPosition < bottom
-      ) {
-
-        link.classList.add(
-          "active"
-        );
-
-        link.style.color =
-          "#75f5b4";
-
-      } else {
-
-        link.classList.remove(
-          "active"
-        );
-
-        link.style.color = "";
-
-      }
-
-    });
-
-  }
-
-
-  window.addEventListener(
-    "scroll",
-    updateActiveNavigation,
-    {
-      passive: true
-    }
-  );
-
-
-  updateActiveNavigation();
-
-
-  navLinks.forEach(link => {
-
-    link.addEventListener(
-      "click",
-      event => {
-
-        const targetId =
-          link.getAttribute("href");
-
-
-        if (
-          !targetId ||
-          !targetId.startsWith("#")
-        ) {
-
-          return;
-
-        }
-
-
-        const target =
-          document.querySelector(
-            targetId
-          );
-
-
-        if (!target) return;
-
-
-        event.preventDefault();
-
-
-        target.scrollIntoView({
-          behavior: "smooth",
-          block: "start"
-        });
-
-      }
-    );
-
-  });
-
-}
-
-
-/* =========================================
-   PROJECT LINK SMOOTH SCROLL
-========================================= */
-
-function initializeProjectNavigation() {
-
-  document
-    .querySelectorAll(
-      'a[href="#projects"]'
-    )
-    .forEach(link => {
-
-      link.addEventListener(
-        "click",
-        event => {
-
-          const target =
-            document.querySelector(
-              "#projects"
-            );
-
-
-          if (!target) return;
-
-
-          event.preventDefault();
-
-
-          target.scrollIntoView({
-            behavior: "smooth",
-            block: "start"
-          });
-
-        }
-      );
-
-    });
-
-}
-
-
-/* =========================================
-   CONTACT BUTTON
-========================================= */
-
-function initializeContactNavigation() {
-
-  document
-    .querySelectorAll(
-      'a[href="#contact"]'
-    )
-    .forEach(link => {
-
-      link.addEventListener(
-        "click",
-        event => {
-
-          const target =
-            document.querySelector(
-              "#contact"
-            );
-
-
-          if (!target) return;
-
-
-          event.preventDefault();
-
-
-          target.scrollIntoView({
-            behavior: "smooth",
-            block: "start"
-          });
-
-        }
-      );
-
-    });
-
-}
-
-
-/* =========================================
-   PREVENT MODAL SCROLL
-========================================= */
-
-function initializeModalScrollObserver() {
-
-  if (!modal) return;
-
-
-  const observer =
-    new MutationObserver(() => {
-
-      if (
-        modal.classList.contains(
-          "open"
-        )
-      ) {
-
-        document.body.style.overflow =
-          "hidden";
-
-      } else {
-
-        document.body.style.overflow =
-          "";
-
-      }
-
-    });
-
-
-  observer.observe(modal, {
-
-    attributes: true,
-
-    attributeFilter: [
-      "class"
-    ]
-
-  });
-
-}
-
-
-/* =========================================
-   INITIALIZE APPLICATION
-========================================= */
-
-document.addEventListener(
-  "DOMContentLoaded",
-  async () => {
-
-    /* Modal */
-
-    initializeModalElements();
-
-    initializeModalEvents();
-
-    initializeProjectButtons();
-
-    initializeModalScrollObserver();
-
-
-    /* Navigation */
-
-    initializeNavigation();
-
-    initializeProjectNavigation();
-
-    initializeContactNavigation();
-
-
-    /* Loader */
-
-    initializeLoader();
-
-
-    /* Planned project */
-
-    registerPlannedProject();
-
-
-    /*
-       Load all public GitHub projects.
-       New repositories will appear here
-       automatically after the website
-       is refreshed.
-    */
-
-    await loadGitHubProjects();
-
-  }
-);
+</html>
