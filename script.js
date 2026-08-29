@@ -1,6 +1,5 @@
 /* =========================================================
    ALEX JACOB — CYBERSECURITY × AI PORTFOLIO
-   GitHub Connected Project System
 ========================================================= */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -9,6 +8,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const GITHUB_API =
         `https://api.github.com/users/${GITHUB_USERNAME}/repos?per_page=100&sort=updated`;
+
+    const OLLAMA_API =
+        "https://api.github.com/repos/ollama/ollama/releases/latest";
 
     const projectsContainer =
         document.querySelector(".projects");
@@ -36,7 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =========================================================
-       PROJECT CONFIG
+       PROJECT CONFIGURATION
     ========================================================= */
 
     const PROJECT_CONFIG = {
@@ -97,8 +99,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =========================================================
-       LOCAL OLLAMA PROJECT
-       Shown even before separate GitHub repo exists.
+       LOCAL AI / OLLAMA PROJECT
     ========================================================= */
 
     const LOCAL_AI_PROJECT = {
@@ -118,9 +119,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
         icon: "◎",
 
-        planned: true,
+        repo: null,
 
-        repo: null
+        ollamaVersion: "Checking latest version..."
 
     };
 
@@ -154,7 +155,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =========================================================
-       FIND CONFIG
+       FIND PROJECT CONFIG
     ========================================================= */
 
     function getProjectConfig(repo) {
@@ -163,14 +164,12 @@ document.addEventListener("DOMContentLoaded", () => {
             return null;
         }
 
-
         const exact =
             PROJECT_CONFIG[repo.name];
 
         if (exact) {
             return exact;
         }
-
 
         const name =
             normalize(repo.name);
@@ -189,7 +188,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         }
 
-
         return null;
 
     }
@@ -204,15 +202,11 @@ document.addEventListener("DOMContentLoaded", () => {
         const name =
             normalize(repo.name);
 
-
         if (
             name === "alex-cybersecurity-portfolio"
         ) {
-
             return true;
-
         }
-
 
         if (
             name.includes("music-app-backend") ||
@@ -222,21 +216,16 @@ document.addEventListener("DOMContentLoaded", () => {
                 name.includes("backend")
             )
         ) {
-
             return true;
-
         }
-
 
         if (repo.fork) {
             return true;
         }
 
-
         if (repo.archived) {
             return true;
         }
-
 
         return false;
 
@@ -244,7 +233,87 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =========================================================
-       CREATE PROJECT OBJECT
+       LOAD LATEST OLLAMA VERSION
+    ========================================================= */
+
+    async function loadOllamaVersion() {
+
+        try {
+
+            const response =
+                await fetch(
+                    OLLAMA_API,
+                    {
+                        cache: "no-store",
+                        headers: {
+                            "Accept":
+                                "application/vnd.github+json"
+                        }
+                    }
+                );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    `Ollama API Error: ${response.status}`
+                );
+
+            }
+
+
+            const release =
+                await response.json();
+
+
+            let version =
+                release.tag_name ||
+                release.name ||
+                "Unknown";
+
+
+            /*
+             * Make sure it displays as vX.X.X
+             */
+
+            if (
+                !version.startsWith("v")
+            ) {
+
+                version =
+                    "v" + version;
+
+            }
+
+
+            LOCAL_AI_PROJECT.ollamaVersion =
+                version;
+
+
+            console.log(
+                "Latest Ollama version:",
+                version
+            );
+
+        }
+        catch (error) {
+
+            console.error(
+                "Ollama version loading failed:",
+                error
+            );
+
+
+            LOCAL_AI_PROJECT.ollamaVersion =
+                "Latest version unavailable";
+
+        }
+
+    }
+
+
+    /* =========================================================
+       REGISTER GITHUB PROJECT
     ========================================================= */
 
     function registerGitHubProject(repo) {
@@ -252,11 +321,9 @@ document.addEventListener("DOMContentLoaded", () => {
         const config =
             getProjectConfig(repo);
 
-
         if (!config) {
             return;
         }
-
 
         projects[repo.name] = {
 
@@ -280,9 +347,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =========================================================
-       CARD CREATION
-       IMPORTANT:
-       Uses your ORIGINAL CSS classes.
+       CREATE PROJECT CARD
+       Uses original CSS classes.
     ========================================================= */
 
     function createProjectCard(
@@ -293,7 +359,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const card =
             document.createElement("article");
-
 
         card.className =
             "card";
@@ -389,6 +454,57 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
 
+        /* OLLAMA VERSION */
+
+        if (
+            projectId === "localai"
+        ) {
+
+            const version =
+                document.createElement("p");
+
+            version.className =
+                "ollama-version";
+
+            version.textContent =
+                `OLLAMA LATEST: ${project.ollamaVersion}`;
+
+            card.appendChild(
+                top
+            );
+
+            card.appendChild(
+                icon
+            );
+
+            card.appendChild(
+                title
+            );
+
+            card.appendChild(
+                description
+            );
+
+            card.appendChild(
+                tags
+            );
+
+            card.appendChild(
+                version
+            );
+
+        }
+        else {
+
+            card.appendChild(top);
+            card.appendChild(icon);
+            card.appendChild(title);
+            card.appendChild(description);
+            card.appendChild(tags);
+
+        }
+
+
         /* VIEW PROJECT */
 
         const viewButton =
@@ -407,48 +523,32 @@ document.addEventListener("DOMContentLoaded", () => {
             "VIEW PROJECT ↗";
 
 
-        /* APPEND */
-
-        card.appendChild(top);
-
-        card.appendChild(icon);
-
-        card.appendChild(title);
-
-        card.appendChild(description);
-
-        card.appendChild(tags);
-
-        card.appendChild(viewButton);
+        card.appendChild(
+            viewButton
+        );
 
 
-        /* GITHUB LINK */
+        /* GITHUB */
 
         if (project.repo) {
 
             const githubLink =
                 document.createElement("a");
 
-
             githubLink.className =
                 "details";
-
 
             githubLink.href =
                 project.repo;
 
-
             githubLink.target =
                 "_blank";
-
 
             githubLink.rel =
                 "noopener noreferrer";
 
-
             githubLink.textContent =
                 "GITHUB REPOSITORY ↗";
-
 
             card.appendChild(
                 githubLink
@@ -463,7 +563,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =========================================================
-       RENDER
+       RENDER PROJECTS
     ========================================================= */
 
     function renderProjects() {
@@ -513,9 +613,9 @@ document.addEventListener("DOMContentLoaded", () => {
         );
 
 
-        /* LOCAL OLLAMA PROJECT */
+        /* Ollama project */
 
-        const localCard =
+        const ollamaCard =
             createProjectCard(
                 LOCAL_AI_PROJECT,
                 "localai",
@@ -524,34 +624,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
         projectsContainer.appendChild(
-            localCard
+            ollamaCard
         );
-
-
-        /* Update hero count */
-
-        document.querySelectorAll(
-            ".hero-stats span"
-        ).forEach(node => {
-
-            if (
-                node.textContent
-                    .toLowerCase()
-                    .includes("project")
-            ) {
-
-                node.textContent =
-                    `${index + 1} PROJECTS`;
-
-            }
-
-        });
 
     }
 
 
     /* =========================================================
-       LOAD GITHUB
+       LOAD GITHUB PROJECTS
     ========================================================= */
 
     async function loadGitHubProjects() {
@@ -584,17 +664,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 await response.json();
 
 
-            if (
-                !Array.isArray(repositories)
-            ) {
-
-                throw new Error(
-                    "Invalid GitHub response"
-                );
-
-            }
-
-
             githubRepositories =
                 repositories.filter(
                     repo =>
@@ -613,14 +682,6 @@ document.addEventListener("DOMContentLoaded", () => {
             );
 
 
-            renderProjects();
-
-
-            console.log(
-                "GitHub projects loaded:",
-                githubRepositories.length
-            );
-
         }
         catch (error) {
 
@@ -628,9 +689,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 "GitHub loading failed:",
                 error
             );
-
-
-            renderProjects();
 
         }
 
@@ -641,9 +699,7 @@ document.addEventListener("DOMContentLoaded", () => {
        MODAL
     ========================================================= */
 
-    function openModal(
-        projectId
-    ) {
+    function openModal(projectId) {
 
         let project;
 
@@ -669,86 +725,83 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
 
-        if (modalKicker) {
-
-            modalKicker.textContent =
-                project.k;
-
-        }
+        modalKicker.textContent =
+            project.k;
 
 
-        if (modalTitle) {
-
-            modalTitle.textContent =
-                project.t;
-
-        }
+        modalTitle.textContent =
+            project.t;
 
 
-        if (modalText) {
-
-            modalText.textContent =
-                project.d;
-
-        }
+        modalText.textContent =
+            project.d;
 
 
-        if (modalStack) {
-
-            modalStack.innerHTML =
-                "";
+        modalStack.innerHTML =
+            "";
 
 
-            project.s.forEach(tag => {
+        project.s.forEach(tag => {
 
-                const span =
-                    document.createElement(
-                        "span"
-                    );
-
-                span.textContent =
-                    tag;
-
-                modalStack.appendChild(
-                    span
+            const span =
+                document.createElement(
+                    "span"
                 );
 
-            });
+            span.textContent =
+                tag;
+
+            modalStack.appendChild(
+                span
+            );
+
+        });
 
 
-            if (project.repo) {
+        if (
+            projectId === "localai"
+        ) {
 
-                const link =
-                    document.createElement(
-                        "a"
-                    );
-
-
-                link.className =
-                    "repo-link";
-
-
-                link.href =
-                    project.repo;
-
-
-                link.target =
-                    "_blank";
-
-
-                link.rel =
-                    "noopener noreferrer";
-
-
-                link.textContent =
-                    "VIEW GITHUB REPOSITORY ↗";
-
-
-                modalStack.appendChild(
-                    link
+            const version =
+                document.createElement(
+                    "span"
                 );
 
-            }
+            version.textContent =
+                `Ollama ${project.ollamaVersion}`;
+
+            modalStack.appendChild(
+                version
+            );
+
+        }
+
+
+        if (project.repo) {
+
+            const link =
+                document.createElement(
+                    "a"
+                );
+
+            link.className =
+                "repo-link";
+
+            link.href =
+                project.repo;
+
+            link.target =
+                "_blank";
+
+            link.rel =
+                "noopener noreferrer";
+
+            link.textContent =
+                "VIEW GITHUB REPOSITORY ↗";
+
+            modalStack.appendChild(
+                link
+            );
 
         }
 
@@ -765,7 +818,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =========================================================
-       VIEW PROJECT BUTTON
+       VIEW PROJECT
     ========================================================= */
 
     document.addEventListener(
@@ -945,17 +998,29 @@ document.addEventListener("DOMContentLoaded", () => {
        START
     ========================================================= */
 
-    loadGitHubProjects()
-        .finally(() => {
+    async function start() {
 
-            hideLoader();
+        await Promise.all([
+            loadGitHubProjects(),
+            loadOllamaVersion()
+        ]);
 
-        });
 
+        renderProjects();
+
+        hideLoader();
+
+    }
+
+
+    start();
+
+
+    /* Safety fallback */
 
     setTimeout(
         hideLoader,
-        4000
+        5000
     );
 
 });
