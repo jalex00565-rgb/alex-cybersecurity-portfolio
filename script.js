@@ -1,3 +1,8 @@
+/* =========================================================
+   ALEX JACOB — CYBERSECURITY × AI PORTFOLIO
+   GitHub Connected Project System
+========================================================= */
+
 document.addEventListener("DOMContentLoaded", () => {
 
     const GITHUB_USERNAME = "jalex00565-rgb";
@@ -5,192 +10,182 @@ document.addEventListener("DOMContentLoaded", () => {
     const GITHUB_API =
         `https://api.github.com/users/${GITHUB_USERNAME}/repos?per_page=100&sort=updated`;
 
-    const projectsContainer = document.querySelector(".projects");
-    const loader = document.getElementById("loader");
+    const projectsContainer =
+        document.querySelector(".projects");
 
-    const modal = document.getElementById("modal");
-    const closeButton = document.getElementById("close");
-    const modalKicker = document.getElementById("modalKicker");
-    const modalTitle = document.getElementById("modalTitle");
-    const modalText = document.getElementById("modalText");
-    const modalStack = document.getElementById("modalStack");
+    const loader =
+        document.getElementById("loader");
+
+    const modal =
+        document.getElementById("modal");
+
+    const closeButton =
+        document.getElementById("close");
+
+    const modalKicker =
+        document.getElementById("modalKicker");
+
+    const modalTitle =
+        document.getElementById("modalTitle");
+
+    const modalText =
+        document.getElementById("modalText");
+
+    const modalStack =
+        document.getElementById("modalStack");
 
 
-    /* =====================================================
-       PROJECT CONFIGURATION
-    ===================================================== */
+    /* =========================================================
+       PROJECT CONFIG
+    ========================================================= */
 
     const PROJECT_CONFIG = {
 
-        "jarvisai": {
-            title: "JARVIS AI",
-            category: "AI / PYTHON",
-            description:
-                "A personal AI assistant built with Python, Streamlit and Gemini, with support for AI interaction, automation and future security-focused capabilities.",
-            technologies: [
+        "JarvisAI": {
+            k: "AI / PYTHON",
+            t: "JARVIS AI",
+            d: "Personal AI assistant built with Python, Streamlit and Gemini. Foundation for voice interaction, file analysis, memory and SOC assistance.",
+            s: [
                 "Python",
                 "Streamlit",
                 "Gemini AI",
                 "AI Assistant"
-            ]
+            ],
+            icon: "◈"
         },
 
-        "raven-soc": {
-            title: "RAVEN SOC",
-            category: "CYBERSECURITY",
-            description:
-                "A cybersecurity-focused SOC project for security monitoring, log analysis, detection and incident investigation.",
-            technologies: [
+        "RAVEN-SOC": {
+            k: "CYBERSECURITY",
+            t: "RAVEN SOC",
+            d: "A cybersecurity-focused SOC project for security monitoring, log analysis, detection and incident investigation.",
+            s: [
                 "Python",
                 "SOC",
                 "Log Analysis",
                 "Detection"
-            ]
+            ],
+            icon: "⌁"
         },
 
-        "jarvis-ai-desktop": {
-            title: "JARVIS AI DESKTOP",
-            category: "AI / PYTHON",
-            description:
-                "AI-powered Windows desktop assistant with voice interaction, memory, system monitoring and automation.",
-            technologies: [
+        "JARVIS-AI-Desktop": {
+            k: "AI / PYTHON",
+            t: "JARVIS AI DESKTOP",
+            d: "AI-powered Windows desktop assistant with voice interaction, memory, system monitoring and automation.",
+            s: [
                 "Python",
                 "Windows",
                 "Voice AI",
                 "Automation"
-            ]
+            ],
+            icon: "◉"
         },
 
-        "soc-incident-analyzer": {
-            title: "SOC INCIDENT ANALYZER",
-            category: "CYBERSECURITY",
-            description:
-                "SOC Incident Analyzer for log analysis, incident detection, risk scoring and AI-assisted security analysis.",
-            technologies: [
+        "SOC-Incident-Analyzer": {
+            k: "CYBERSECURITY",
+            t: "SOC INCIDENT ANALYZER",
+            d: "SOC Incident Analyzer for log analysis, incident detection, risk scoring and AI-assisted security analysis.",
+            s: [
                 "Python",
                 "AI",
                 "Cybersecurity",
                 "Log Analysis"
-            ]
-        },
-
-        "local-ai-security-assistant": {
-            title: "LOCAL AI SECURITY ASSISTANT",
-            category: "AI / SECURITY",
-            description:
-                "A local AI security assistant powered by Ollama for private document analysis, cybersecurity knowledge and AI-assisted security workflows.",
-            technologies: [
-                "Python",
-                "Ollama",
-                "Local AI",
-                "Cybersecurity"
-            ]
+            ],
+            icon: "⌁"
         }
 
     };
 
 
-    /* =====================================================
-       PROJECT ORDER
-    ===================================================== */
+    /* =========================================================
+       LOCAL OLLAMA PROJECT
+       Shown even before separate GitHub repo exists.
+    ========================================================= */
+
+    const LOCAL_AI_PROJECT = {
+
+        k: "AI / SECURITY",
+
+        t: "LOCAL AI SECURITY ASSISTANT",
+
+        d: "A local AI security assistant using Ollama for private document analysis, cybersecurity knowledge and AI-assisted security workflows.",
+
+        s: [
+            "Python",
+            "Ollama",
+            "Local AI",
+            "Cybersecurity"
+        ],
+
+        icon: "◎",
+
+        planned: true,
+
+        repo: null
+
+    };
+
 
     const PROJECT_ORDER = [
-        "jarvisai",
-        "raven-soc",
-        "jarvis-ai-desktop",
-        "soc-incident-analyzer",
-        "local-ai-security-assistant"
+        "JarvisAI",
+        "RAVEN-SOC",
+        "JARVIS-AI-Desktop",
+        "SOC-Incident-Analyzer"
     ];
 
 
     let githubRepositories = [];
 
+    const projects = {};
 
-    /* =====================================================
-       NORMALIZE NAME
-    ===================================================== */
+
+    /* =========================================================
+       NORMALIZE
+    ========================================================= */
 
     function normalize(value) {
 
         return String(value || "")
             .toLowerCase()
-            .trim()
-            .replace(/[_\s]+/g, "-")
+            .replace(/[\s_]+/g, "-")
             .replace(/[^a-z0-9-]/g, "")
-            .replace(/-+/g, "-");
+            .trim();
 
     }
 
 
-    /* =====================================================
-       GET PROJECT CONFIG
-    ===================================================== */
+    /* =========================================================
+       FIND CONFIG
+    ========================================================= */
 
-    function getConfig(repo) {
+    function getProjectConfig(repo) {
 
-        const repoName = normalize(repo.name);
-
-        /*
-         * Direct repository-name matching.
-         */
-
-        if (PROJECT_CONFIG[repoName]) {
-            return PROJECT_CONFIG[repoName];
+        if (!repo) {
+            return null;
         }
 
 
-        /*
-         * Additional aliases.
-         */
+        const exact =
+            PROJECT_CONFIG[repo.name];
 
-        const aliases = {
-
-            "jarvis-ai": "jarvisai",
-
-            "jarvis": "jarvisai",
-
-            "raven": "raven-soc",
-
-            "jarvisdesktop": "jarvis-ai-desktop",
-
-            "jarvis-ai-desktop": "jarvis-ai-desktop",
-
-            "socincidentanalyzer": "soc-incident-analyzer",
-
-            "local-ai": "local-ai-security-assistant",
-
-            "local-ai-security": "local-ai-security-assistant",
-
-            "ollama": "local-ai-security-assistant"
-
-        };
-
-
-        if (aliases[repoName]) {
-
-            return PROJECT_CONFIG[
-                aliases[repoName]
-            ];
-
+        if (exact) {
+            return exact;
         }
 
 
-        /*
-         * Check repository description for Ollama.
-         */
+        const name =
+            normalize(repo.name);
 
-        const description =
-            normalize(repo.description);
-
-
-        if (
-            description.includes("ollama") ||
-            description.includes("local-ai")
+        for (
+            const key of Object.keys(PROJECT_CONFIG)
         ) {
 
-            return PROJECT_CONFIG[
-                "local-ai-security-assistant"
-            ];
+            if (
+                normalize(key) === name
+            ) {
+
+                return PROJECT_CONFIG[key];
+
+            }
 
         }
 
@@ -200,18 +195,15 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    /* =====================================================
+    /* =========================================================
        HIDE UNWANTED REPOSITORIES
-    ===================================================== */
+    ========================================================= */
 
     function shouldHide(repo) {
 
-        const name = normalize(repo.name);
+        const name =
+            normalize(repo.name);
 
-
-        /*
-         * Hide portfolio repository.
-         */
 
         if (
             name === "alex-cybersecurity-portfolio"
@@ -221,10 +213,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         }
 
-
-        /*
-         * Hide music backend.
-         */
 
         if (
             name.includes("music-app-backend") ||
@@ -240,18 +228,10 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
 
-        /*
-         * Hide forks.
-         */
-
         if (repo.fork) {
             return true;
         }
 
-
-        /*
-         * Hide archived repositories.
-         */
 
         if (repo.archived) {
             return true;
@@ -263,139 +243,218 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    /* =====================================================
-       ESCAPE HTML
-    ===================================================== */
+    /* =========================================================
+       CREATE PROJECT OBJECT
+    ========================================================= */
 
-    function escapeHTML(value) {
+    function registerGitHubProject(repo) {
 
-        return String(value || "")
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&#039;");
+        const config =
+            getProjectConfig(repo);
+
+
+        if (!config) {
+            return;
+        }
+
+
+        projects[repo.name] = {
+
+            k: config.k,
+
+            t: config.t,
+
+            d: config.d,
+
+            s: config.s,
+
+            icon: config.icon,
+
+            repo: repo.html_url,
+
+            githubData: repo
+
+        };
 
     }
 
 
-    /* =====================================================
-       PROJECT ICON
-    ===================================================== */
+    /* =========================================================
+       CARD CREATION
+       IMPORTANT:
+       Uses your ORIGINAL CSS classes.
+    ========================================================= */
 
-    function getIcon(category) {
-
-        if (
-            category.includes("CYBER") ||
-            category.includes("SECURITY")
-        ) {
-
-            return "⌁";
-
-        }
-
-
-        if (
-            category.includes("AI")
-        ) {
-
-            return "◇";
-
-        }
-
-
-        return "◎";
-
-    }
-
-
-    /* =====================================================
-       CREATE PROJECT CARD
-    ===================================================== */
-
-    function createCard(repo, config, index) {
+    function createProjectCard(
+        project,
+        projectId,
+        index
+    ) {
 
         const card =
             document.createElement("article");
 
+
         card.className =
-            "project-card";
+            "card";
 
 
-        card.dataset.repo =
-            repo.name;
+        if (index === 0) {
 
+            card.classList.add(
+                "featured"
+            );
+
+        }
+
+
+        /* TOP */
+
+        const top =
+            document.createElement("div");
+
+        top.className =
+            "card-top";
+
+
+        const number =
+            document.createElement("span");
+
+        number.textContent =
+            String(index + 1).padStart(2, "0");
+
+
+        const category =
+            document.createElement("span");
+
+        category.textContent =
+            project.k;
+
+
+        top.appendChild(number);
+        top.appendChild(category);
+
+
+        /* ICON */
+
+        const icon =
+            document.createElement("div");
+
+        icon.className =
+            "icon";
+
+        icon.textContent =
+            project.icon || "◇";
+
+
+        /* TITLE */
+
+        const title =
+            document.createElement("h3");
+
+        title.textContent =
+            project.t;
+
+
+        /* DESCRIPTION */
+
+        const description =
+            document.createElement("p");
+
+        description.textContent =
+            project.d;
+
+
+        /* TAGS */
 
         const tags =
-            config.technologies
-                .map(technology => `
-                    <span class="project-tag">
-                        ${escapeHTML(technology)}
-                    </span>
-                `)
-                .join("");
+            document.createElement("div");
+
+        tags.className =
+            "tags";
 
 
-        card.innerHTML = `
+        project.s.forEach(tag => {
 
-            <div class="project-top">
+            const tagElement =
+                document.createElement("b");
 
-                <span class="project-number">
-                    ${String(index + 1).padStart(2, "0")}
-                </span>
+            tagElement.textContent =
+                tag;
 
-                <span class="project-category">
-                    ${escapeHTML(config.category)}
-                </span>
+            tags.appendChild(
+                tagElement
+            );
 
-            </div>
-
-
-            <div class="project-icon">
-                ${getIcon(config.category)}
-            </div>
+        });
 
 
-            <h3>
-                ${escapeHTML(config.title)}
-            </h3>
+        /* VIEW PROJECT */
+
+        const viewButton =
+            document.createElement("button");
+
+        viewButton.type =
+            "button";
+
+        viewButton.className =
+            "details";
+
+        viewButton.dataset.project =
+            projectId;
+
+        viewButton.textContent =
+            "VIEW PROJECT ↗";
 
 
-            <p>
-                ${escapeHTML(config.description)}
-            </p>
+        /* APPEND */
+
+        card.appendChild(top);
+
+        card.appendChild(icon);
+
+        card.appendChild(title);
+
+        card.appendChild(description);
+
+        card.appendChild(tags);
+
+        card.appendChild(viewButton);
 
 
-            <div class="project-tags">
-                ${tags}
-            </div>
+        /* GITHUB LINK */
+
+        if (project.repo) {
+
+            const githubLink =
+                document.createElement("a");
 
 
-            <div class="project-actions">
-
-                <button
-                    type="button"
-                    class="view-project"
-                    data-repo="${escapeHTML(repo.name)}">
-
-                    VIEW PROJECT ↗
-
-                </button>
+            githubLink.className =
+                "details";
 
 
-                <a
-                    class="github-project"
-                    href="${escapeHTML(repo.html_url)}"
-                    target="_blank"
-                    rel="noopener noreferrer">
+            githubLink.href =
+                project.repo;
 
-                    GITHUB ↗
 
-                </a>
+            githubLink.target =
+                "_blank";
 
-            </div>
 
-        `;
+            githubLink.rel =
+                "noopener noreferrer";
+
+
+            githubLink.textContent =
+                "GITHUB REPOSITORY ↗";
+
+
+            card.appendChild(
+                githubLink
+            );
+
+        }
 
 
         return card;
@@ -403,25 +462,99 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    /* =====================================================
-       LOAD GITHUB PROJECTS
-    ===================================================== */
+    /* =========================================================
+       RENDER
+    ========================================================= */
 
-    async function loadProjects() {
+    function renderProjects() {
 
         if (!projectsContainer) {
             return;
         }
 
 
-        projectsContainer.innerHTML = `
+        projectsContainer.innerHTML =
+            "";
 
-            <div class="github-loading">
-                CONNECTING TO GITHUB...
-            </div>
 
-        `;
+        let index = 0;
 
+
+        /* GitHub projects */
+
+        PROJECT_ORDER.forEach(
+            repoName => {
+
+                const project =
+                    projects[repoName];
+
+
+                if (!project) {
+                    return;
+                }
+
+
+                const card =
+                    createProjectCard(
+                        project,
+                        repoName,
+                        index
+                    );
+
+
+                projectsContainer.appendChild(
+                    card
+                );
+
+
+                index++;
+
+            }
+        );
+
+
+        /* LOCAL OLLAMA PROJECT */
+
+        const localCard =
+            createProjectCard(
+                LOCAL_AI_PROJECT,
+                "localai",
+                index
+            );
+
+
+        projectsContainer.appendChild(
+            localCard
+        );
+
+
+        /* Update hero count */
+
+        document.querySelectorAll(
+            ".hero-stats span"
+        ).forEach(node => {
+
+            if (
+                node.textContent
+                    .toLowerCase()
+                    .includes("project")
+            ) {
+
+                node.textContent =
+                    `${index + 1} PROJECTS`;
+
+            }
+
+        });
+
+    }
+
+
+    /* =========================================================
+       LOAD GITHUB
+    ========================================================= */
+
+    async function loadGitHubProjects() {
 
         try {
 
@@ -451,234 +584,87 @@ document.addEventListener("DOMContentLoaded", () => {
                 await response.json();
 
 
-            /*
-             * Remove unwanted repositories.
-             */
-
-            const filteredRepositories =
-                repositories.filter(
-                    repo => !shouldHide(repo)
-                );
-
-
-            /*
-             * Convert GitHub repositories
-             * into portfolio projects.
-             */
-
-            const projects = [];
-
-
-            filteredRepositories.forEach(repo => {
-
-                const config =
-                    getConfig(repo);
-
-
-                if (!config) {
-                    return;
-                }
-
-
-                projects.push({
-                    repo: repo,
-                    config: config,
-                    key: normalize(repo.name)
-                });
-
-            });
-
-
-            /*
-             * Remove duplicate projects.
-             */
-
-            const uniqueProjects = [];
-            const usedTitles = new Set();
-
-
-            projects.forEach(project => {
-
-                const title =
-                    project.config.title;
-
-
-                if (usedTitles.has(title)) {
-                    return;
-                }
-
-
-                usedTitles.add(title);
-
-                uniqueProjects.push(project);
-
-            });
-
-
-            /*
-             * Sort projects.
-             */
-
-            uniqueProjects.sort(
-                (a, b) => {
-
-                    const aName =
-                        normalize(a.repo.name);
-
-                    const bName =
-                        normalize(b.repo.name);
-
-
-                    const aIndex =
-                        PROJECT_ORDER.indexOf(aName);
-
-                    const bIndex =
-                        PROJECT_ORDER.indexOf(bName);
-
-
-                    return (
-                        (aIndex === -1 ? 999 : aIndex) -
-                        (bIndex === -1 ? 999 : bIndex)
-                    );
-
-                }
-            );
-
-
-            /*
-             * Save repositories globally.
-             */
-
-            githubRepositories =
-                uniqueProjects.map(
-                    project => project.repo
-                );
-
-
-            window.githubRepositories =
-                githubRepositories;
-
-
-            /*
-             * Clear container.
-             */
-
-            projectsContainer.innerHTML = "";
-
-
-            /*
-             * Create cards.
-             */
-
-            uniqueProjects.forEach(
-                (project, index) => {
-
-                    const card =
-                        createCard(
-                            project.repo,
-                            project.config,
-                            index
-                        );
-
-
-                    projectsContainer.appendChild(
-                        card
-                    );
-
-                }
-            );
-
-
-            /*
-             * No projects.
-             */
-
             if (
-                uniqueProjects.length === 0
+                !Array.isArray(repositories)
             ) {
 
-                projectsContainer.innerHTML = `
-
-                    <div class="github-error">
-
-                        <h3>
-                            No projects found
-                        </h3>
-
-                        <p>
-                            No configured GitHub projects were found.
-                        </p>
-
-                        <a
-                            href="https://github.com/jalex00565-rgb?tab=repositories"
-                            target="_blank"
-                            rel="noopener noreferrer">
-
-                            OPEN GITHUB ↗
-
-                        </a>
-
-                    </div>
-
-                `;
+                throw new Error(
+                    "Invalid GitHub response"
+                );
 
             }
+
+
+            githubRepositories =
+                repositories.filter(
+                    repo =>
+                        !shouldHide(repo)
+                );
+
+
+            githubRepositories.forEach(
+                repo => {
+
+                    registerGitHubProject(
+                        repo
+                    );
+
+                }
+            );
+
+
+            renderProjects();
+
+
+            console.log(
+                "GitHub projects loaded:",
+                githubRepositories.length
+            );
 
         }
         catch (error) {
 
             console.error(
-                "GitHub connection error:",
+                "GitHub loading failed:",
                 error
             );
 
 
-            projectsContainer.innerHTML = `
-
-                <div class="github-error">
-
-                    <h3>
-                        GitHub connection failed
-                    </h3>
-
-                    <p>
-                        Please refresh the page and try again.
-                    </p>
-
-                    <a
-                        href="https://github.com/jalex00565-rgb?tab=repositories"
-                        target="_blank"
-                        rel="noopener noreferrer">
-
-                        OPEN GITHUB ↗
-
-                    </a>
-
-                </div>
-
-            `;
+            renderProjects();
 
         }
 
     }
 
 
-    /* =====================================================
-       OPEN PROJECT MODAL
-    ===================================================== */
+    /* =========================================================
+       MODAL
+    ========================================================= */
 
-    function openModal(repo) {
+    function openModal(
+        projectId
+    ) {
 
-        if (!repo || !modal) {
-            return;
+        let project;
+
+
+        if (
+            projectId === "localai"
+        ) {
+
+            project =
+                LOCAL_AI_PROJECT;
+
+        }
+        else {
+
+            project =
+                projects[projectId];
+
         }
 
 
-        const config =
-            getConfig(repo);
-
-
-        if (!config) {
+        if (!project || !modal) {
             return;
         }
 
@@ -686,7 +672,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (modalKicker) {
 
             modalKicker.textContent =
-                config.category;
+                project.k;
 
         }
 
@@ -694,7 +680,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (modalTitle) {
 
             modalTitle.textContent =
-                config.title;
+                project.t;
 
         }
 
@@ -702,66 +688,75 @@ document.addEventListener("DOMContentLoaded", () => {
         if (modalText) {
 
             modalText.textContent =
-                config.description;
+                project.d;
 
         }
 
 
         if (modalStack) {
 
-            modalStack.innerHTML = "";
+            modalStack.innerHTML =
+                "";
 
 
-            config.technologies.forEach(
-                technology => {
+            project.s.forEach(tag => {
 
-                    const tag =
-                        document.createElement("span");
+                const span =
+                    document.createElement(
+                        "span"
+                    );
 
-                    tag.className =
-                        "modal-tag";
+                span.textContent =
+                    tag;
 
-                    tag.textContent =
-                        technology;
+                modalStack.appendChild(
+                    span
+                );
 
-                    modalStack.appendChild(tag);
-
-                }
-            );
-
-
-            const github =
-                document.createElement("a");
+            });
 
 
-            github.className =
-                "repo-link";
+            if (project.repo) {
+
+                const link =
+                    document.createElement(
+                        "a"
+                    );
 
 
-            github.href =
-                repo.html_url;
+                link.className =
+                    "repo-link";
 
 
-            github.target =
-                "_blank";
+                link.href =
+                    project.repo;
 
 
-            github.rel =
-                "noopener noreferrer";
+                link.target =
+                    "_blank";
 
 
-            github.textContent =
-                "OPEN GITHUB REPOSITORY ↗";
+                link.rel =
+                    "noopener noreferrer";
 
 
-            modalStack.appendChild(
-                github
-            );
+                link.textContent =
+                    "VIEW GITHUB REPOSITORY ↗";
+
+
+                modalStack.appendChild(
+                    link
+                );
+
+            }
 
         }
 
 
-        modal.classList.add("open");
+        modal.classList.add(
+            "open"
+        );
+
 
         document.body.style.overflow =
             "hidden";
@@ -769,9 +764,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    /* =====================================================
+    /* =========================================================
        VIEW PROJECT BUTTON
-    ===================================================== */
+    ========================================================= */
 
     document.addEventListener(
         "click",
@@ -779,7 +774,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const button =
                 event.target.closest(
-                    ".view-project"
+                    ".details[data-project]"
                 );
 
 
@@ -788,30 +783,17 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
 
-            const repoName =
-                button.dataset.repo;
-
-
-            const repo =
-                githubRepositories.find(
-                    item =>
-                        item.name === repoName
-                );
-
-
-            if (repo) {
-
-                openModal(repo);
-
-            }
+            openModal(
+                button.dataset.project
+            );
 
         }
     );
 
 
-    /* =====================================================
+    /* =========================================================
        CLOSE MODAL
-    ===================================================== */
+    ========================================================= */
 
     function closeModal() {
 
@@ -877,9 +859,9 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
 
-    /* =====================================================
-       SMOOTH SCROLL
-    ===================================================== */
+    /* =========================================================
+       SMOOTH NAVIGATION
+    ========================================================= */
 
     document.querySelectorAll(
         'a[href^="#"]'
@@ -890,7 +872,9 @@ document.addEventListener("DOMContentLoaded", () => {
             event => {
 
                 const targetId =
-                    link.getAttribute("href");
+                    link.getAttribute(
+                        "href"
+                    );
 
 
                 if (
@@ -926,9 +910,9 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
 
-    /* =====================================================
+    /* =========================================================
        LOADER
-    ===================================================== */
+    ========================================================= */
 
     function hideLoader() {
 
@@ -939,7 +923,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         loader.style.opacity =
             "0";
-
 
         loader.style.pointerEvents =
             "none";
@@ -952,27 +935,23 @@ document.addEventListener("DOMContentLoaded", () => {
                     "none";
 
             },
-            500
+            600
         );
 
     }
 
 
-    /* =====================================================
+    /* =========================================================
        START
-    ===================================================== */
+    ========================================================= */
 
-    loadProjects()
+    loadGitHubProjects()
         .finally(() => {
 
             hideLoader();
 
         });
 
-
-    /*
-     * Safety fallback.
-     */
 
     setTimeout(
         hideLoader,
