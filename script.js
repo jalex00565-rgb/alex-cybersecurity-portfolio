@@ -1,62 +1,60 @@
 /* =========================================
-   JARVIS / PORTFOLIO SCRIPT
+   ALEX JACOB — CYBERSECURITY × AI PORTFOLIO
+   GITHUB CONNECTED PROJECT SYSTEM
 ========================================= */
 
 document.addEventListener("DOMContentLoaded", () => {
 
     /* =========================================
-       PROJECT DATA
+       GITHUB CONFIGURATION
     ========================================= */
 
-    const projects = {
-        jarvis: {
-            k: "01 / AI / PYTHON",
-            t: "JARVIS AI",
-            d: "A working personal AI assistant built with Python, Streamlit and Gemini. The system is being extended toward voice interaction, file analysis, memory and SOC assistance.",
-            s: [
+    const GITHUB_USERNAME = "jalex00565-rgb";
+
+    const GITHUB_API =
+        `https://api.github.com/users/${GITHUB_USERNAME}/repos?per_page=100&sort=updated`;
+
+
+    /* =========================================
+       PROJECT OVERRIDES
+       Better titles/descriptions for important repos
+    ========================================= */
+
+    const PROJECT_OVERRIDES = {
+
+        "JarvisAI": {
+            title: "JARVIS AI",
+            description:
+                "A personal AI assistant built with Python, Streamlit and Gemini, with support for AI interaction, automation and future security-focused capabilities.",
+            technologies: [
                 "Python",
                 "Streamlit",
                 "Gemini AI",
                 "AI Assistant"
-            ],
-            repo: "https://github.com/jalex00565-rgb/JarvisAI"
+            ]
         },
 
-        soc: {
-            k: "02 / CYBERSECURITY",
-            t: "MINI SOC INCIDENT ANALYZER",
-            d: "A security-analysis workflow that converts raw logs into detections, risk assessment, investigation context and incident reporting — the core workflow of a practical SOC tool.",
-            s: [
+        "RAVEN-SOC": {
+            title: "RAVEN SOC",
+            description:
+                "A cybersecurity-focused SOC project for security monitoring, log analysis, detection and incident investigation.",
+            technologies: [
+                "Python",
+                "SOC",
                 "Log Analysis",
-                "Detection",
-                "Risk Scoring",
-                "Incident Reporting"
-            ],
-            repo: "https://github.com/jalex00565-rgb/SOC-Incident-Analyzer"
+                "Detection"
+            ]
         },
 
-        desktop: {
-            k: "03 / AI / PYTHON",
-            t: "JARVIS AI DESKTOP",
-            d: "AI-powered Windows desktop assistant with voice interaction, memory, system monitoring and automation.",
-            s: [
+        "JARVIS-AI-Desktop": {
+            title: "JARVIS AI DESKTOP",
+            description:
+                "AI-powered Windows desktop assistant with voice interaction, memory, system monitoring and automation.",
+            technologies: [
                 "Python",
                 "Windows",
                 "Voice AI",
                 "Automation"
-            ],
-            repo: "https://github.com/jalex00565-rgb/JARVIS-AI-Desktop"
-        },
-
-        localai: {
-            k: "04 / PLANNED",
-            t: "LOCAL AI SECURITY ASSISTANT",
-            d: "An offline AI layer planned for document analysis and a cybersecurity knowledge base, with the long-term goal of integrating it into the Jarvis ecosystem.",
-            s: [
-                "Ollama",
-                "LLM",
-                "Offline AI",
-                "Security Knowledge Base"
             ]
         }
     };
@@ -66,17 +64,24 @@ document.addEventListener("DOMContentLoaded", () => {
        ELEMENTS
     ========================================= */
 
-    const loader = document.querySelector("#loader");
-    const projectsContainer = document.querySelector(".projects");
+    const loader = document.getElementById("loader");
+    const projectsContainer =
+        document.querySelector(".projects");
 
-    const modal = document.querySelector("#modal");
-    const modalKicker = document.querySelector("#modalKicker");
-    const modalTitle = document.querySelector("#modalTitle");
-    const modalText = document.querySelector("#modalText");
-    const modalStack = document.querySelector("#modalStack");
-    const closeButton = document.querySelector("#close");
+    const modal = document.getElementById("modal");
+    const closeButton = document.getElementById("close");
 
-    const navLinks = document.querySelectorAll("header nav a");
+    const modalKicker =
+        document.getElementById("modalKicker");
+
+    const modalTitle =
+        document.getElementById("modalTitle");
+
+    const modalText =
+        document.getElementById("modalText");
+
+    const modalStack =
+        document.getElementById("modalStack");
 
 
     /* =========================================
@@ -91,166 +96,555 @@ document.addEventListener("DOMContentLoaded", () => {
         loader.style.pointerEvents = "none";
 
         setTimeout(() => {
-            if (loader && loader.parentNode) {
-                loader.remove();
+
+            if (loader) {
+                loader.style.display = "none";
             }
+
         }, 600);
     }
 
-    /* Never allow loader to remain stuck */
 
-    setTimeout(hideLoader, 1800);
+    /* =========================================
+       TECHNOLOGY DETECTION
+    ========================================= */
+
+    function detectTechnologies(repo) {
+
+        const text = (
+            `${repo.name} ${repo.description || ""}`
+        ).toLowerCase();
+
+        const technologies = [];
+
+        if (
+            text.includes("python") ||
+            repo.language === "Python"
+        ) {
+            technologies.push("Python");
+        }
+
+        if (
+            text.includes("javascript") ||
+            repo.language === "JavaScript"
+        ) {
+            technologies.push("JavaScript");
+        }
+
+        if (
+            text.includes("html") ||
+            repo.language === "HTML"
+        ) {
+            technologies.push("HTML");
+        }
+
+        if (
+            text.includes("css") ||
+            repo.language === "CSS"
+        ) {
+            technologies.push("CSS");
+        }
+
+        if (
+            text.includes("streamlit")
+        ) {
+            technologies.push("Streamlit");
+        }
+
+        if (
+            text.includes("ai") ||
+            text.includes("llm") ||
+            text.includes("gemini")
+        ) {
+            technologies.push("AI");
+        }
+
+        if (
+            text.includes("soc") ||
+            text.includes("security")
+        ) {
+            technologies.push("Cybersecurity");
+        }
+
+        if (
+            text.includes("log")
+        ) {
+            technologies.push("Log Analysis");
+        }
+
+        if (
+            text.includes("automation")
+        ) {
+            technologies.push("Automation");
+        }
+
+        if (technologies.length === 0 && repo.language) {
+            technologies.push(repo.language);
+        }
+
+        return technologies.slice(0, 4);
+    }
 
 
     /* =========================================
-       PROJECT CARDS
+       CATEGORY
     ========================================= */
 
-    function createProjectCard(id, project, featured = false) {
+    function determineCategory(repo) {
 
-        const article = document.createElement("article");
+        const text = (
+            `${repo.name} ${repo.description || ""}`
+        ).toLowerCase();
 
-        article.className = featured
-            ? "card featured"
-            : "card";
+        if (
+            text.includes("jarvis") ||
+            text.includes("ai") ||
+            text.includes("llm")
+        ) {
+            return "AI / PYTHON";
+        }
+
+        if (
+            text.includes("soc") ||
+            text.includes("security") ||
+            text.includes("cyber")
+        ) {
+            return "CYBERSECURITY";
+        }
+
+        if (
+            text.includes("web") ||
+            text.includes("portfolio")
+        ) {
+            return "WEB";
+        }
+
+        return repo.language
+            ? repo.language.toUpperCase()
+            : "PROJECT";
+    }
+
+
+    /* =========================================
+       PROJECT TITLE
+    ========================================= */
+
+    function getProjectTitle(repo) {
+
+        if (PROJECT_OVERRIDES[repo.name]) {
+            return PROJECT_OVERRIDES[repo.name].title;
+        }
+
+        return repo.name
+            .replace(/[-_]/g, " ")
+            .replace(/\b\w/g, char => char.toUpperCase());
+    }
+
+
+    /* =========================================
+       PROJECT DESCRIPTION
+    ========================================= */
+
+    function getProjectDescription(repo) {
+
+        if (PROJECT_OVERRIDES[repo.name]) {
+            return PROJECT_OVERRIDES[repo.name].description;
+        }
+
+        if (repo.description) {
+            return repo.description;
+        }
+
+        return "A practical project developed as part of my cybersecurity, AI and software development work.";
+    }
+
+
+    /* =========================================
+       PROJECT TECHNOLOGIES
+    ========================================= */
+
+    function getProjectTechnologies(repo) {
+
+        if (PROJECT_OVERRIDES[repo.name]) {
+            return PROJECT_OVERRIDES[repo.name].technologies;
+        }
+
+        return detectTechnologies(repo);
+    }
+
+
+    /* =========================================
+       CREATE PROJECT CARD
+    ========================================= */
+
+    function createProjectCard(repo, index) {
+
+        const article =
+            document.createElement("article");
+
+        article.className = "project-card";
+
+        article.dataset.project =
+            repo.name;
+
+        const technologies =
+            getProjectTechnologies(repo);
+
+        const title =
+            getProjectTitle(repo);
+
+        const description =
+            getProjectDescription(repo);
+
+        const category =
+            determineCategory(repo);
+
 
         article.innerHTML = `
-            <div class="card-top">
-                <span>${project.k.split(" / ")[0]}</span>
-                <span>${project.k.substring(project.k.indexOf("/") + 2)}</span>
+
+            <div class="project-top">
+
+                <span class="project-number">
+                    ${String(index + 1).padStart(2, "0")}
+                </span>
+
+                <span class="project-category">
+                    ${category}
+                </span>
+
             </div>
 
-            <div class="icon">
-                ${id === "jarvis" ? "◈" :
-                  id === "soc" ? "⌁" :
-                  id === "desktop" ? "◉" : "◎"}
+
+            <div class="project-icon">
+
+                ${
+                    category.includes("AI")
+                        ? "◇"
+                        : category.includes("CYBER")
+                            ? "⌁"
+                            : "◎"
+                }
+
             </div>
 
-            <h3>${project.t}</h3>
 
-            <p>${project.d}</p>
+            <h3>
+                ${escapeHTML(title)}
+            </h3>
 
-            <div class="tags">
-                ${project.s.map(tag => `<b>${tag}</b>`).join("")}
+
+            <p>
+                ${escapeHTML(description)}
+            </p>
+
+
+            <div class="project-tags">
+
+                ${
+                    technologies.map(
+                        tech =>
+                            `<span>${escapeHTML(tech)}</span>`
+                    ).join("")
+                }
+
             </div>
 
-            <button
-                class="details"
-                type="button"
-                data-project="${id}">
-                VIEW PROJECT ↗
-            </button>
 
-            ${
-                project.repo
-                ? `
+            <div class="project-actions">
+
+                <button
+                    class="view-project"
+                    type="button"
+                    data-repo="${escapeHTML(repo.name)}">
+
+                    VIEW PROJECT ↗
+
+                </button>
+
+
                 <a
-                    class="details"
-                    href="${project.repo}"
+                    class="github-project"
+                    href="${repo.html_url}"
                     target="_blank"
                     rel="noopener noreferrer">
-                    GITHUB REPOSITORY ↗
+
+                    GITHUB ↗
+
                 </a>
-                `
-                : ""
-            }
+
+            </div>
+
         `;
 
         return article;
     }
 
 
-    function renderProjects() {
+    /* =========================================
+       HTML ESCAPE
+    ========================================= */
 
-        if (!projectsContainer) return;
+    function escapeHTML(value) {
 
-        projectsContainer.innerHTML = "";
-
-        projectsContainer.appendChild(
-            createProjectCard("jarvis", projects.jarvis, true)
-        );
-
-        projectsContainer.appendChild(
-            createProjectCard("soc", projects.soc)
-        );
-
-        projectsContainer.appendChild(
-            createProjectCard("desktop", projects.desktop)
-        );
-
-        projectsContainer.appendChild(
-            createProjectCard("localai", projects.localai)
-        );
+        return String(value || "")
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
     }
 
 
-    renderProjects();
+    /* =========================================
+       LOAD GITHUB PROJECTS
+    ========================================= */
+
+    async function loadGitHubProjects() {
+
+        if (!projectsContainer) return;
+
+        projectsContainer.innerHTML = `
+
+            <div class="github-loading">
+
+                <span></span>
+
+                CONNECTING TO GITHUB...
+
+            </div>
+
+        `;
+
+
+        try {
+
+            const response =
+                await fetch(GITHUB_API, {
+                    headers: {
+                        "Accept":
+                            "application/vnd.github+json"
+                    }
+                });
+
+
+            if (!response.ok) {
+                throw new Error(
+                    `GitHub API error: ${response.status}`
+                );
+            }
+
+
+            const repos =
+                await response.json();
+
+
+            /* Only public non-fork repositories */
+
+            const publicRepos =
+                repos.filter(repo =>
+                    !repo.fork &&
+                    !repo.archived
+                );
+
+
+            if (publicRepos.length === 0) {
+
+                projectsContainer.innerHTML = `
+                    <p class="github-error">
+                        No public GitHub projects found.
+                    </p>
+                `;
+
+                return;
+            }
+
+
+            /* GitHub already returns updated repos,
+               but sort again for safety */
+
+            publicRepos.sort(
+                (a, b) =>
+                    new Date(b.updated_at) -
+                    new Date(a.updated_at)
+            );
+
+
+            projectsContainer.innerHTML = "";
+
+
+            publicRepos.forEach(
+                (repo, index) => {
+
+                    projectsContainer.appendChild(
+                        createProjectCard(
+                            repo,
+                            index
+                        )
+                    );
+
+                }
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                "GitHub connection failed:",
+                error
+            );
+
+
+            projectsContainer.innerHTML = `
+
+                <div class="github-error">
+
+                    <strong>
+                        GitHub projects could not be loaded.
+                    </strong>
+
+                    <p>
+                        Please refresh the page and try again.
+                    </p>
+
+                    <a
+                        href="https://github.com/jalex00565-rgb?tab=repositories"
+                        target="_blank"
+                        rel="noopener noreferrer">
+
+                        OPEN GITHUB ↗
+
+                    </a>
+
+                </div>
+
+            `;
+        }
+    }
 
 
     /* =========================================
        MODAL
     ========================================= */
 
-    function openModal(projectId) {
+    function openProjectModal(repo) {
 
-        const project = projects[projectId];
+        if (!modal) return;
 
-        if (!project || !modal) return;
+        const title =
+            getProjectTitle(repo);
+
+        const description =
+            getProjectDescription(repo);
+
+        const technologies =
+            getProjectTechnologies(repo);
+
 
         if (modalKicker) {
-            modalKicker.textContent = project.k;
+            modalKicker.textContent =
+                determineCategory(repo);
         }
+
 
         if (modalTitle) {
-            modalTitle.textContent = project.t;
+            modalTitle.textContent =
+                title;
         }
 
+
         if (modalText) {
-            modalText.textContent = project.d;
+            modalText.textContent =
+                description;
         }
+
 
         if (modalStack) {
 
             modalStack.innerHTML = "";
 
-            project.s.forEach(tag => {
 
-                const span = document.createElement("span");
+            technologies.forEach(
+                technology => {
 
-                span.textContent = tag;
+                    const tag =
+                        document.createElement("span");
 
-                modalStack.appendChild(span);
+                    tag.textContent =
+                        technology;
 
-            });
+                    modalStack.appendChild(tag);
+
+                }
+            );
 
 
-            if (project.repo) {
+            const githubLink =
+                document.createElement("a");
 
-                const repoLink = document.createElement("a");
+            githubLink.href =
+                repo.html_url;
 
-                repoLink.className = "repo-link";
+            githubLink.target =
+                "_blank";
 
-                repoLink.href = project.repo;
+            githubLink.rel =
+                "noopener noreferrer";
 
-                repoLink.target = "_blank";
+            githubLink.className =
+                "repo-link";
 
-                repoLink.rel = "noopener noreferrer";
+            githubLink.textContent =
+                "OPEN GITHUB REPOSITORY ↗";
 
-                repoLink.textContent =
-                    "VIEW GITHUB REPOSITORY ↗";
-
-                modalStack.appendChild(repoLink);
-            }
+            modalStack.appendChild(
+                githubLink
+            );
         }
 
 
         modal.classList.add("open");
 
-        document.body.classList.add("modal-open");
-
-        document.body.style.overflow = "hidden";
+        document.body.style.overflow =
+            "hidden";
     }
 
+
+    /* =========================================
+       VIEW PROJECT
+    ========================================= */
+
+    document.addEventListener(
+        "click",
+        event => {
+
+            const button =
+                event.target.closest(
+                    ".view-project"
+                );
+
+            if (!button) return;
+
+            const repoName =
+                button.dataset.repo;
+
+            const repo =
+                window.githubRepositories
+                    ?.find(
+                        item =>
+                            item.name === repoName
+                    );
+
+            if (repo) {
+                openProjectModal(repo);
+            }
+
+        }
+    );
+
+
+    /* =========================================
+       CLOSE MODAL
+    ========================================= */
 
     function closeModal() {
 
@@ -258,35 +652,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
         modal.classList.remove("open");
 
-        document.body.classList.remove("modal-open");
-
-        document.body.style.overflow = "";
+        document.body.style.overflow =
+            "";
     }
 
-
-    /* =========================================
-       PROJECT BUTTON EVENTS
-    ========================================= */
-
-    document.addEventListener("click", event => {
-
-        const button = event.target.closest(".details");
-
-        if (!button) return;
-
-        const projectId = button.dataset.project;
-
-        if (!projectId) return;
-
-        event.preventDefault();
-
-        openModal(projectId);
-    });
-
-
-    /* =========================================
-       CLOSE BUTTON
-    ========================================= */
 
     if (closeButton) {
 
@@ -297,188 +666,101 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    /* =========================================
-       CLICK OUTSIDE MODAL
-    ========================================= */
-
     if (modal) {
 
-        modal.addEventListener("click", event => {
+        modal.addEventListener(
+            "click",
+            event => {
 
-            if (event.target === modal) {
+                if (
+                    event.target === modal
+                ) {
+                    closeModal();
+                }
+
+            }
+        );
+    }
+
+
+    document.addEventListener(
+        "keydown",
+        event => {
+
+            if (
+                event.key === "Escape"
+            ) {
                 closeModal();
             }
 
-        });
-    }
-
-
-    /* =========================================
-       ESCAPE KEY
-    ========================================= */
-
-    document.addEventListener("keydown", event => {
-
-        if (event.key === "Escape") {
-            closeModal();
         }
-
-    });
-
-
-    /* =========================================
-       ACTIVE NAVIGATION
-    ========================================= */
-
-    function updateActiveNavigation() {
-
-        const currentPosition =
-            window.scrollY + 150;
-
-        navLinks.forEach(link => {
-
-            const href =
-                link.getAttribute("href");
-
-            if (!href || !href.startsWith("#")) {
-                return;
-            }
-
-            const target =
-                document.querySelector(href);
-
-            if (!target) return;
-
-            const top = target.offsetTop;
-
-            const bottom =
-                top + target.offsetHeight;
-
-            if (
-                currentPosition >= top &&
-                currentPosition < bottom
-            ) {
-
-                link.classList.add("active");
-
-            } else {
-
-                link.classList.remove("active");
-
-            }
-
-        });
-    }
-
-
-    window.addEventListener(
-        "scroll",
-        updateActiveNavigation,
-        { passive: true }
     );
 
-    updateActiveNavigation();
-
 
     /* =========================================
-       SMOOTH NAVIGATION
+       NAVIGATION
     ========================================= */
 
-    navLinks.forEach(link => {
+    document.querySelectorAll(
+        'a[href^="#"]'
+    ).forEach(link => {
 
-        link.addEventListener("click", event => {
+        link.addEventListener(
+            "click",
+            event => {
 
-            const targetId =
-                link.getAttribute("href");
+                const targetId =
+                    link.getAttribute("href");
 
-            if (
-                !targetId ||
-                !targetId.startsWith("#")
-            ) {
-                return;
+                if (
+                    !targetId ||
+                    targetId === "#"
+                ) {
+                    return;
+                }
+
+                const target =
+                    document.querySelector(
+                        targetId
+                    );
+
+                if (!target) return;
+
+                event.preventDefault();
+
+                target.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start"
+                });
+
             }
-
-            const target =
-                document.querySelector(targetId);
-
-            if (!target) return;
-
-            event.preventDefault();
-
-            target.scrollIntoView({
-                behavior: "smooth",
-                block: "start"
-            });
-
-        });
+        );
 
     });
 
 
     /* =========================================
-       HERO PROJECT BUTTON
+       START
     ========================================= */
 
-    document.querySelectorAll(
-        'a[href="#projects"]'
-    ).forEach(link => {
+    loadGitHubProjects()
+        .then(() => {
 
-        link.addEventListener("click", event => {
+            hideLoader();
 
-            const target =
-                document.querySelector("#projects");
+        })
+        .catch(() => {
 
-            if (!target) return;
-
-            event.preventDefault();
-
-            target.scrollIntoView({
-                behavior: "smooth",
-                block: "start"
-            });
+            hideLoader();
 
         });
 
-    });
 
+    /* Safety fallback */
 
-    /* =========================================
-       CONTACT BUTTON
-    ========================================= */
-
-    document.querySelectorAll(
-        'a[href="#contact"]'
-    ).forEach(link => {
-
-        link.addEventListener("click", event => {
-
-            const target =
-                document.querySelector("#contact");
-
-            if (!target) return;
-
-            event.preventDefault();
-
-            target.scrollIntoView({
-                behavior: "smooth",
-                block: "start"
-            });
-
-        });
-
-    });
-
-
-    /* =========================================
-       PAGE READY
-    ========================================= */
-
-    window.addEventListener("load", () => {
-
-        hideLoader();
-
-        updateActiveNavigation();
-
-    });
+    setTimeout(
+        hideLoader,
+        3000
+    );
 
 });
