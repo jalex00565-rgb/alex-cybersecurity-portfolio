@@ -1,716 +1,484 @@
-<!DOCTYPE html>
-<html lang="en">
+/* =========================================
+   JARVIS / PORTFOLIO SCRIPT
+========================================= */
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+document.addEventListener("DOMContentLoaded", () => {
 
-    <meta name="description"
-        content="Alex Jacob — Cybersecurity, SOC and AI Portfolio">
+    /* =========================================
+       PROJECT DATA
+    ========================================= */
 
-    <meta name="google-site-verification"
-        content="nY5uFZCzUEtDmaDXPu7-_-PIgedPr-BSKfU720kxheo">
+    const projects = {
+        jarvis: {
+            k: "01 / AI / PYTHON",
+            t: "JARVIS AI",
+            d: "A working personal AI assistant built with Python, Streamlit and Gemini. The system is being extended toward voice interaction, file analysis, memory and SOC assistance.",
+            s: [
+                "Python",
+                "Streamlit",
+                "Gemini AI",
+                "AI Assistant"
+            ],
+            repo: "https://github.com/jalex00565-rgb/JarvisAI"
+        },
 
-    <title>Alex Jacob | Cybersecurity × AI</title>
+        soc: {
+            k: "02 / CYBERSECURITY",
+            t: "MINI SOC INCIDENT ANALYZER",
+            d: "A security-analysis workflow that converts raw logs into detections, risk assessment, investigation context and incident reporting — the core workflow of a practical SOC tool.",
+            s: [
+                "Log Analysis",
+                "Detection",
+                "Risk Scoring",
+                "Incident Reporting"
+            ],
+            repo: "https://github.com/jalex00565-rgb/SOC-Incident-Analyzer"
+        },
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        desktop: {
+            k: "03 / AI / PYTHON",
+            t: "JARVIS AI DESKTOP",
+            d: "AI-powered Windows desktop assistant with voice interaction, memory, system monitoring and automation.",
+            s: [
+                "Python",
+                "Windows",
+                "Voice AI",
+                "Automation"
+            ],
+            repo: "https://github.com/jalex00565-rgb/JARVIS-AI-Desktop"
+        },
 
-    <link
-        href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap"
-        rel="stylesheet">
-
-    <link rel="stylesheet" href="style.css">
-</head>
-
-<body>
-
-    <!-- LOADER -->
-    <div id="loader">
-
-        <div class="loader-mark">
-            AJ<span>.</span>
-        </div>
-
-        <div class="loader-line">
-            <i></i>
-        </div>
-
-        <small>
-            INITIALIZING SECURITY PORTFOLIO
-        </small>
-
-    </div>
-
-
-    <div class="noise"></div>
-    <div class="grid-bg"></div>
-
-
-    <!-- NAVIGATION -->
-    <header class="nav">
-
-        <a class="logo" href="#home">
-            AJ<span>.</span>
-        </a>
-
-        <nav>
-            <a href="#home">HOME</a>
-            <a href="#about">ABOUT</a>
-            <a href="#projects">PROJECTS</a>
-            <a href="#skills">SKILLS</a>
-            <a href="#journey">JOURNEY</a>
-            <a href="#contact">CONTACT</a>
-        </nav>
-
-        <a class="nav-cta" href="#contact">
-            LET'S TALK ↗
-        </a>
-
-    </header>
+        localai: {
+            k: "04 / PLANNED",
+            t: "LOCAL AI SECURITY ASSISTANT",
+            d: "An offline AI layer planned for document analysis and a cybersecurity knowledge base, with the long-term goal of integrating it into the Jarvis ecosystem.",
+            s: [
+                "Ollama",
+                "LLM",
+                "Offline AI",
+                "Security Knowledge Base"
+            ]
+        }
+    };
 
 
-    <main>
+    /* =========================================
+       ELEMENTS
+    ========================================= */
 
-        <!-- =========================
-             HOME
-        ========================== -->
+    const loader = document.querySelector("#loader");
+    const projectsContainer = document.querySelector(".projects");
 
-        <section id="home" class="hero">
+    const modal = document.querySelector("#modal");
+    const modalKicker = document.querySelector("#modalKicker");
+    const modalTitle = document.querySelector("#modalTitle");
+    const modalText = document.querySelector("#modalText");
+    const modalStack = document.querySelector("#modalStack");
+    const closeButton = document.querySelector("#close");
 
-            <div class="hero-copy">
+    const navLinks = document.querySelectorAll("header nav a");
 
-                <div class="status">
-                    <span></span>
-                    AVAILABLE FOR OPPORTUNITIES
-                </div>
 
-                <p class="eyebrow">
-                    CYBERSECURITY × ARTIFICIAL INTELLIGENCE
-                </p>
+    /* =========================================
+       LOADER
+    ========================================= */
 
-                <h1>
-                    Building systems<br>
-                    that <em>defend.</em>
-                </h1>
+    function hideLoader() {
 
-                <p class="lead">
-                    I'm <strong>Alex Jacob</strong> — a cybersecurity-focused
-                    developer building practical security tools, AI assistants
-                    and SOC-oriented systems.
-                </p>
+        if (!loader) return;
 
-                <div class="actions">
+        loader.style.opacity = "0";
+        loader.style.pointerEvents = "none";
 
-                    <a class="btn primary" href="#projects">
-                        Explore Projects ↗
-                    </a>
+        setTimeout(() => {
+            if (loader && loader.parentNode) {
+                loader.remove();
+            }
+        }, 600);
+    }
 
-                    <a class="btn ghost" href="#contact">
-                        Contact Me
-                    </a>
+    /* Never allow loader to remain stuck */
 
-                </div>
+    setTimeout(hideLoader, 1800);
 
+
+    /* =========================================
+       PROJECT CARDS
+    ========================================= */
+
+    function createProjectCard(id, project, featured = false) {
+
+        const article = document.createElement("article");
+
+        article.className = featured
+            ? "card featured"
+            : "card";
+
+        article.innerHTML = `
+            <div class="card-top">
+                <span>${project.k.split(" / ")[0]}</span>
+                <span>${project.k.substring(project.k.indexOf("/") + 2)}</span>
             </div>
 
-
-            <div class="hero-visual">
-
-                <div class="orb">
-
-                    <div class="orb-core">
-                        AJ
-                    </div>
-
-                    <span class="ring r1"></span>
-                    <span class="ring r2"></span>
-                    <span class="ring r3"></span>
-
-                </div>
-
-
-                <div class="terminal">
-
-                    <div class="terminal-head">
-
-                        <span>
-                            SECURITY_WORKSPACE
-                        </span>
-
-                        <span>
-                            ● ● ●
-                        </span>
-
-                    </div>
-
-
-                    <div class="terminal-body">
-
-                        <p>
-                            <i>01</i>
-                            <b>system</b>
-                            <span>→</span>
-                            online
-                        </p>
-
-                        <p>
-                            <i>02</i>
-                            <b>focus</b>
-                            <span>→</span>
-                            SOC / AI Security
-                        </p>
-
-                        <p>
-                            <i>03</i>
-                            <b>projects</b>
-                            <span>→</span>
-                            03 active
-                        </p>
-
-                        <p>
-                            <i>04</i>
-                            <b>threat_mode</b>
-                            <span>→</span>
-                            <strong>READY</strong>
-                        </p>
-
-                        <div class="cursor"></div>
-
-                    </div>
-
-                </div>
-
+            <div class="icon">
+                ${id === "jarvis" ? "◈" :
+                  id === "soc" ? "⌁" :
+                  id === "desktop" ? "◉" : "◎"}
             </div>
 
+            <h3>${project.t}</h3>
 
-            <div class="hero-stats">
+            <p>${project.d}</p>
 
-                <div>
-                    <strong>01</strong>
-                    <span>
-                        Cybersecurity<br>
-                        Focus
-                    </span>
-                </div>
-
-                <div>
-                    <strong>AI</strong>
-                    <span>
-                        Automation &<br>
-                        Intelligent Tools
-                    </span>
-                </div>
-
-                <div>
-                    <strong>SOC</strong>
-                    <span>
-                        Detection &<br>
-                        Incident Analysis
-                    </span>
-                </div>
-
-                <div>
-                    <strong>BUILD</strong>
-                    <span>
-                        Learn through<br>
-                        real projects
-                    </span>
-                </div>
-
+            <div class="tags">
+                ${project.s.map(tag => `<b>${tag}</b>`).join("")}
             </div>
-
-        </section>
-
-
-        <!-- =========================
-             ABOUT
-        ========================== -->
-
-        <section id="about" class="section">
-
-            <div class="section-label">
-                01 / ABOUT
-            </div>
-
-            <div class="about-grid">
-
-                <div>
-
-                    <h2>
-                        Cybersecurity<br>
-                        meets <span>AI.</span>
-                    </h2>
-
-                </div>
-
-
-                <div class="about-copy">
-
-                    <p>
-                        I'm <strong>Alex Jacob</strong>, a cybersecurity-focused
-                        developer building practical security tools, AI assistants
-                        and SOC-oriented systems.
-                    </p>
-
-                    <p>
-                        My approach is project-driven: I turn cybersecurity
-                        concepts into working systems for log analysis,
-                        threat detection, risk assessment, automation and
-                        AI-assisted security workflows.
-                    </p>
-
-                    <p>
-                        My current focus is SOC operations and cybersecurity,
-                        while exploring the intersection of artificial
-                        intelligence, automation and defensive security.
-                    </p>
-
-                    <div class="quote">
-                        “Understand the threat. Build the system. Improve the defense.”
-                    </div>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- =========================
-             PROJECTS
-        ========================== -->
-
-        <section id="projects" class="section">
-
-            <div class="section-label">
-                02 / SELECTED PROJECTS
-            </div>
-
-
-            <div class="projects">
-
-                <!--
-                    IMPORTANT:
-                    script.js dynamically creates GitHub project cards.
-                    This container must remain empty.
-                -->
-
-            </div>
-
-        </section>
-
-
-        <!-- =========================
-             SKILLS
-        ========================== -->
-
-        <section id="skills" class="section">
-
-            <div class="section-label">
-                03 / CAPABILITIES
-            </div>
-
-
-            <div class="skills-grid">
-
-
-                <div class="skill">
-
-                    <span>01</span>
-
-                    <h3>
-                        SOC Operations
-                    </h3>
-
-                    <p>
-                        Monitoring, log analysis, detection,
-                        alert triage and incident workflows.
-                    </p>
-
-                </div>
-
-
-                <div class="skill">
-
-                    <span>02</span>
-
-                    <h3>
-                        Security Tools
-                    </h3>
-
-                    <p>
-                        Nmap, Burp Suite, Nuclei, Gobuster,
-                        Wireshark and Linux tooling.
-                    </p>
-
-                </div>
-
-
-                <div class="skill">
-
-                    <span>03</span>
-
-                    <h3>
-                        Python & AI
-                    </h3>
-
-                    <p>
-                        Automation, Streamlit applications,
-                        AI assistants and security-focused tooling.
-                    </p>
-
-                </div>
-
-
-                <div class="skill">
-
-                    <span>04</span>
-
-                    <h3>
-                        Threat Analysis
-                    </h3>
-
-                    <p>
-                        Brute force, suspicious activity, malware
-                        concepts and incident investigation.
-                    </p>
-
-                </div>
-
-            </div>
-
-
-            <div class="tool-cloud">
-
-                <span>Python</span>
-                <span>Linux</span>
-                <span>Nmap</span>
-                <span>Burp Suite</span>
-                <span>Nuclei</span>
-                <span>Gobuster</span>
-                <span>Wireshark</span>
-                <span>Streamlit</span>
-                <span>Gemini</span>
-                <span>Git</span>
-
-            </div>
-
-        </section>
-
-
-        <!-- =========================
-             JOURNEY
-        ========================== -->
-
-        <section id="journey" class="section">
-
-            <div class="section-label">
-                04 / JOURNEY
-            </div>
-
-
-            <div class="timeline">
-
-
-                <div class="time-item">
-
-                    <span>01</span>
-
-                    <div>
-
-                        <small>
-                            CURRENT FOCUS
-                        </small>
-
-                        <h3>
-                            SOC & Cybersecurity
-                        </h3>
-
-                        <p>
-                            Building fundamentals around security
-                            operations, monitoring, detection and
-                            incident analysis.
-                        </p>
-
-                    </div>
-
-                </div>
-
-
-                <div class="time-item">
-
-                    <span>02</span>
-
-                    <div>
-
-                        <small>
-                            PROJECT PHASE
-                        </small>
-
-                        <h3>
-                            AI + Security Tools
-                        </h3>
-
-                        <p>
-                            Turning cybersecurity learning into practical
-                            Python and AI-powered projects.
-                        </p>
-
-                    </div>
-
-                </div>
-
-
-                <div class="time-item">
-
-                    <span>03</span>
-
-                    <div>
-
-                        <small>
-                            NEXT DIRECTION
-                        </small>
-
-                        <h3>
-                            AI for Cybersecurity
-                        </h3>
-
-                        <p>
-                            Exploring LLM security, automation and
-                            intelligent security workflows.
-                        </p>
-
-                    </div>
-
-                </div>
-
-
-                <div class="time-item">
-
-                    <span>04</span>
-
-                    <div>
-
-                        <small>
-                            LONG-TERM
-                        </small>
-
-                        <h3>
-                            Security Specialization
-                        </h3>
-
-                        <p>
-                            Deepening expertise in ransomware detection,
-                            investigation, containment and recovery.
-                        </p>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- =========================
-             SYSTEM PROFILE
-        ========================== -->
-
-        <section class="section terminal-section">
-
-            <div class="section-label">
-                05 / SYSTEM PROFILE
-            </div>
-
-
-            <div class="profile-terminal">
-
-                <div class="terminal-head">
-
-                    <span>
-                        alex@security-lab:~
-                    </span>
-
-                    <span>
-                        STATUS: ONLINE
-                    </span>
-
-                </div>
-
-
-                <div class="profile-code">
-
-                    <p>
-                        <span class="green">
-                            alex@security-lab
-                        </span>:~$ whoami
-                    </p>
-
-                    <p>
-                        Cybersecurity-focused developer
-                    </p>
-
-                    <p>
-                        <span class="green">
-                            alex@security-lab
-                        </span>:~$ cat focus.txt
-                    </p>
-
-                    <p>
-                        Security Operations • AI • Automation • Threat Analysis
-                    </p>
-
-                    <p>
-                        <span class="green">
-                            alex@security-lab
-                        </span>:~$ ./mission
-                    </p>
-
-                    <p class="accent">
-                        Build practical systems. Understand the threat.
-                        Improve the defense.
-                    </p>
-
-                    <span class="cursor"></span>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- =========================
-             CONTACT
-        ========================== -->
-
-        <section id="contact" class="section contact">
-
-            <div class="section-label">
-                06 / CONTACT
-            </div>
-
-
-            <h2>
-                Let's build something<br>
-                <span>useful.</span>
-            </h2>
-
-
-            <p>
-                Open to cybersecurity, SOC and security-focused
-                development opportunities.
-            </p>
-
-
-            <div class="contact-actions">
-
-                <a
-                    class="email"
-                    href="mailto:jalex00565@gmail.com">
-                    jalex00565@gmail.com ↗
-                </a>
-
-
-                <a
-                    class="social"
-                    href="https://github.com/jalex00565-rgb/"
-                    target="_blank"
-                    rel="noopener noreferrer">
-                    GitHub ↗
-                </a>
-
-
-                <a
-                    class="social"
-                    href="https://www.linkedin.com/in/alex-jacob-942a83312/"
-                    target="_blank"
-                    rel="noopener noreferrer">
-                    LinkedIn ↗
-                </a>
-
-            </div>
-
-
-            <p class="replace-note">
-                For professional enquiries, use the contact links above.
-            </p>
-
-        </section>
-
-    </main>
-
-
-    <!-- =========================
-         PROJECT MODAL
-    ========================== -->
-
-    <div id="modal" class="modal">
-
-        <div class="modal-box">
 
             <button
-                id="close"
-                class="close"
+                class="details"
                 type="button"
-                aria-label="Close project details">
-                ×
+                data-project="${id}">
+                VIEW PROJECT ↗
             </button>
 
+            ${
+                project.repo
+                ? `
+                <a
+                    class="details"
+                    href="${project.repo}"
+                    target="_blank"
+                    rel="noopener noreferrer">
+                    GITHUB REPOSITORY ↗
+                </a>
+                `
+                : ""
+            }
+        `;
 
-            <div
-                id="modalKicker"
-                class="modal-kicker">
-                PROJECT
-            </div>
-
-
-            <h2 id="modalTitle">
-                Project Title
-            </h2>
-
-
-            <p id="modalText">
-                Project description
-            </p>
-
-
-            <div
-                id="modalStack"
-                class="modal-stack">
-            </div>
-
-        </div>
-
-    </div>
+        return article;
+    }
 
 
-    <!-- =========================
-         FOOTER
-    ========================== -->
+    function renderProjects() {
 
-    <footer>
+        if (!projectsContainer) return;
 
-        <span>
-            © 2026 ALEX JACOB
-        </span>
+        projectsContainer.innerHTML = "";
 
-        <span>
-            CYBERSECURITY × AI
-        </span>
+        projectsContainer.appendChild(
+            createProjectCard("jarvis", projects.jarvis, true)
+        );
 
-        <span>
-            BUILT WITH HTML / CSS / JS
-        </span>
+        projectsContainer.appendChild(
+            createProjectCard("soc", projects.soc)
+        );
 
-    </footer>
+        projectsContainer.appendChild(
+            createProjectCard("desktop", projects.desktop)
+        );
+
+        projectsContainer.appendChild(
+            createProjectCard("localai", projects.localai)
+        );
+    }
 
 
-    <!-- JAVASCRIPT -->
-    <script src="script.js"></script>
+    renderProjects();
 
-</body>
 
-</html>
+    /* =========================================
+       MODAL
+    ========================================= */
+
+    function openModal(projectId) {
+
+        const project = projects[projectId];
+
+        if (!project || !modal) return;
+
+        if (modalKicker) {
+            modalKicker.textContent = project.k;
+        }
+
+        if (modalTitle) {
+            modalTitle.textContent = project.t;
+        }
+
+        if (modalText) {
+            modalText.textContent = project.d;
+        }
+
+        if (modalStack) {
+
+            modalStack.innerHTML = "";
+
+            project.s.forEach(tag => {
+
+                const span = document.createElement("span");
+
+                span.textContent = tag;
+
+                modalStack.appendChild(span);
+
+            });
+
+
+            if (project.repo) {
+
+                const repoLink = document.createElement("a");
+
+                repoLink.className = "repo-link";
+
+                repoLink.href = project.repo;
+
+                repoLink.target = "_blank";
+
+                repoLink.rel = "noopener noreferrer";
+
+                repoLink.textContent =
+                    "VIEW GITHUB REPOSITORY ↗";
+
+                modalStack.appendChild(repoLink);
+            }
+        }
+
+
+        modal.classList.add("open");
+
+        document.body.classList.add("modal-open");
+
+        document.body.style.overflow = "hidden";
+    }
+
+
+    function closeModal() {
+
+        if (!modal) return;
+
+        modal.classList.remove("open");
+
+        document.body.classList.remove("modal-open");
+
+        document.body.style.overflow = "";
+    }
+
+
+    /* =========================================
+       PROJECT BUTTON EVENTS
+    ========================================= */
+
+    document.addEventListener("click", event => {
+
+        const button = event.target.closest(".details");
+
+        if (!button) return;
+
+        const projectId = button.dataset.project;
+
+        if (!projectId) return;
+
+        event.preventDefault();
+
+        openModal(projectId);
+    });
+
+
+    /* =========================================
+       CLOSE BUTTON
+    ========================================= */
+
+    if (closeButton) {
+
+        closeButton.addEventListener(
+            "click",
+            closeModal
+        );
+    }
+
+
+    /* =========================================
+       CLICK OUTSIDE MODAL
+    ========================================= */
+
+    if (modal) {
+
+        modal.addEventListener("click", event => {
+
+            if (event.target === modal) {
+                closeModal();
+            }
+
+        });
+    }
+
+
+    /* =========================================
+       ESCAPE KEY
+    ========================================= */
+
+    document.addEventListener("keydown", event => {
+
+        if (event.key === "Escape") {
+            closeModal();
+        }
+
+    });
+
+
+    /* =========================================
+       ACTIVE NAVIGATION
+    ========================================= */
+
+    function updateActiveNavigation() {
+
+        const currentPosition =
+            window.scrollY + 150;
+
+        navLinks.forEach(link => {
+
+            const href =
+                link.getAttribute("href");
+
+            if (!href || !href.startsWith("#")) {
+                return;
+            }
+
+            const target =
+                document.querySelector(href);
+
+            if (!target) return;
+
+            const top = target.offsetTop;
+
+            const bottom =
+                top + target.offsetHeight;
+
+            if (
+                currentPosition >= top &&
+                currentPosition < bottom
+            ) {
+
+                link.classList.add("active");
+
+            } else {
+
+                link.classList.remove("active");
+
+            }
+
+        });
+    }
+
+
+    window.addEventListener(
+        "scroll",
+        updateActiveNavigation,
+        { passive: true }
+    );
+
+    updateActiveNavigation();
+
+
+    /* =========================================
+       SMOOTH NAVIGATION
+    ========================================= */
+
+    navLinks.forEach(link => {
+
+        link.addEventListener("click", event => {
+
+            const targetId =
+                link.getAttribute("href");
+
+            if (
+                !targetId ||
+                !targetId.startsWith("#")
+            ) {
+                return;
+            }
+
+            const target =
+                document.querySelector(targetId);
+
+            if (!target) return;
+
+            event.preventDefault();
+
+            target.scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
+
+        });
+
+    });
+
+
+    /* =========================================
+       HERO PROJECT BUTTON
+    ========================================= */
+
+    document.querySelectorAll(
+        'a[href="#projects"]'
+    ).forEach(link => {
+
+        link.addEventListener("click", event => {
+
+            const target =
+                document.querySelector("#projects");
+
+            if (!target) return;
+
+            event.preventDefault();
+
+            target.scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
+
+        });
+
+    });
+
+
+    /* =========================================
+       CONTACT BUTTON
+    ========================================= */
+
+    document.querySelectorAll(
+        'a[href="#contact"]'
+    ).forEach(link => {
+
+        link.addEventListener("click", event => {
+
+            const target =
+                document.querySelector("#contact");
+
+            if (!target) return;
+
+            event.preventDefault();
+
+            target.scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
+
+        });
+
+    });
+
+
+    /* =========================================
+       PAGE READY
+    ========================================= */
+
+    window.addEventListener("load", () => {
+
+        hideLoader();
+
+        updateActiveNavigation();
+
+    });
+
+});
