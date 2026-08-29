@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
 
     // =========================================
-    // PROJECTS
+    // PROJECT DATA
     // =========================================
 
     const projects = [
@@ -85,11 +85,15 @@ document.addEventListener("DOMContentLoaded", () => {
                 "Local AI",
                 "Cybersecurity"
             ],
+
+            // YOUR PROJECT GITHUB
             github:
                 "https://github.com/jalex00565-rgb/LOCAL-AI-SECURITY-ASSISTANT",
+
             project:
                 "https://github.com/jalex00565-rgb/LOCAL-AI-SECURITY-ASSISTANT",
 
+            // OLLAMA
             ollama: true
         }
 
@@ -100,7 +104,8 @@ document.addEventListener("DOMContentLoaded", () => {
     // PROJECT CONTAINER
     // =========================================
 
-    const container = document.querySelector(".projects");
+    const container =
+        document.querySelector(".projects");
 
     if (!container) {
         console.error("Projects container not found.");
@@ -114,14 +119,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
     container.innerHTML = "";
 
+
     projects.forEach((project, index) => {
 
-        const card = document.createElement("article");
+        const card =
+            document.createElement("article");
 
         card.className = "project-card";
 
 
-        // Project icon
         let icon = "◇";
 
         if (index === 1 || index === 3) {
@@ -192,7 +198,9 @@ document.addEventListener("DOMContentLoaded", () => {
                     href="${project.project}"
                     target="_blank"
                     rel="noopener noreferrer">
+
                     VIEW PROJECT ↗
+
                 </a>
 
 
@@ -201,7 +209,9 @@ document.addEventListener("DOMContentLoaded", () => {
                     href="${project.github}"
                     target="_blank"
                     rel="noopener noreferrer">
+
                     GITHUB REPOSITORY ↗
+
                 </a>
 
 
@@ -210,10 +220,23 @@ document.addEventListener("DOMContentLoaded", () => {
                     ? `
                         <a
                             class="project-github"
+                            href="https://github.com/ollama/ollama"
+                            target="_blank"
+                            rel="noopener noreferrer">
+
+                            OLLAMA GITHUB ↗
+
+                        </a>
+
+
+                        <a
+                            class="project-github"
                             href="https://github.com/ollama/ollama/releases/latest"
                             target="_blank"
                             rel="noopener noreferrer">
+
                             OLLAMA LATEST ↗
+
                         </a>
                     `
                     : ""
@@ -230,7 +253,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     // =========================================
-    // OLLAMA LATEST VERSION
+    // GET OLLAMA LATEST VERSION
     // =========================================
 
     async function loadOllamaVersion() {
@@ -285,7 +308,9 @@ document.addEventListener("DOMContentLoaded", () => {
                     href="https://github.com/ollama/ollama/releases/latest"
                     target="_blank"
                     rel="noopener noreferrer">
+
                     VIEW LATEST ↗
+
                 </a>
             `;
 
@@ -311,12 +336,11 @@ document.addEventListener("DOMContentLoaded", () => {
             "load",
             () => {
 
-                setTimeout(
-                    () => {
-                        loader.classList.add("hidden");
-                    },
-                    700
-                );
+                setTimeout(() => {
+
+                    loader.classList.add("hidden");
+
+                }, 700);
 
             }
         );
@@ -378,7 +402,9 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
+
         modal.classList.remove("active");
+
 
         document.body.classList.remove(
             "modal-open"
@@ -403,9 +429,7 @@ document.addEventListener("DOMContentLoaded", () => {
             "click",
             event => {
 
-                if (
-                    event.target === modal
-                ) {
+                if (event.target === modal) {
                     closeModal();
                 }
 
