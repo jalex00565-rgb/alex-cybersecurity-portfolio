@@ -5,27 +5,22 @@
 
 document.addEventListener("DOMContentLoaded", () => {
 
-    /* =========================================
-       GITHUB CONFIGURATION
-    ========================================= */
-
     const GITHUB_USERNAME = "jalex00565-rgb";
 
     const GITHUB_API =
         `https://api.github.com/users/${GITHUB_USERNAME}/repos?per_page=100&sort=updated`;
 
-
     /* =========================================
-       PROJECT OVERRIDES
-       Better titles/descriptions for important repos
+       PROJECT CONFIGURATION
     ========================================= */
 
     const PROJECT_OVERRIDES = {
 
         "JarvisAI": {
             title: "JARVIS AI",
+            category: "AI / PYTHON",
             description:
-                "A personal AI assistant built with Python, Streamlit and Gemini, with support for AI interaction, automation and future security-focused capabilities.",
+                "A personal AI assistant built with Python, Streamlit and Gemini, with support for AI interaction, automation and security-focused capabilities.",
             technologies: [
                 "Python",
                 "Streamlit",
@@ -36,6 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         "RAVEN-SOC": {
             title: "RAVEN SOC",
+            category: "CYBERSECURITY",
             description:
                 "A cybersecurity-focused SOC project for security monitoring, log analysis, detection and incident investigation.",
             technologies: [
@@ -48,6 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         "JARVIS-AI-Desktop": {
             title: "JARVIS AI DESKTOP",
+            category: "AI / PYTHON",
             description:
                 "AI-powered Windows desktop assistant with voice interaction, memory, system monitoring and automation.",
             technologies: [
@@ -56,8 +53,61 @@ document.addEventListener("DOMContentLoaded", () => {
                 "Voice AI",
                 "Automation"
             ]
+        },
+
+        "SOC-Incident-Analyzer": {
+            title: "SOC INCIDENT ANALYZER",
+            category: "CYBERSECURITY",
+            description:
+                "SOC incident analysis workflow for log analysis, incident detection, risk scoring and AI-assisted investigation.",
+            technologies: [
+                "Python",
+                "AI",
+                "Cybersecurity",
+                "Log Analysis"
+            ]
+        },
+
+        "LOCAL-AI-SECURITY-ASSISTANT": {
+            title: "LOCAL AI SECURITY ASSISTANT",
+            category: "AI / SECURITY",
+            description:
+                "An offline AI security assistant using Ollama for local document analysis, cybersecurity knowledge and AI-assisted security workflows.",
+            technologies: [
+                "Python",
+                "Ollama",
+                "Local AI",
+                "Cybersecurity"
+            ]
+        },
+
+        "Local-AI-Security-Assistant": {
+            title: "LOCAL AI SECURITY ASSISTANT",
+            category: "AI / SECURITY",
+            description:
+                "An offline AI security assistant using Ollama for local document analysis, cybersecurity knowledge and AI-assisted security workflows.",
+            technologies: [
+                "Python",
+                "Ollama",
+                "Local AI",
+                "Cybersecurity"
+            ]
         }
     };
+
+
+    /* =========================================
+       PROJECT ORDER
+    ========================================= */
+
+    const PROJECT_ORDER = [
+        "JarvisAI",
+        "RAVEN-SOC",
+        "JARVIS-AI-Desktop",
+        "LOCAL-AI-SECURITY-ASSISTANT",
+        "Local-AI-Security-Assistant",
+        "SOC-Incident-Analyzer"
+    ];
 
 
     /* =========================================
@@ -65,11 +115,15 @@ document.addEventListener("DOMContentLoaded", () => {
     ========================================= */
 
     const loader = document.getElementById("loader");
+
     const projectsContainer =
         document.querySelector(".projects");
 
-    const modal = document.getElementById("modal");
-    const closeButton = document.getElementById("close");
+    const modal =
+        document.getElementById("modal");
+
+    const closeButton =
+        document.getElementById("close");
 
     const modalKicker =
         document.getElementById("modalKicker");
@@ -85,6 +139,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =========================================
+       GLOBAL REPOSITORY STORAGE
+    ========================================= */
+
+    window.githubRepositories = [];
+
+
+    /* =========================================
        LOADER
     ========================================= */
 
@@ -97,11 +158,34 @@ document.addEventListener("DOMContentLoaded", () => {
 
         setTimeout(() => {
 
-            if (loader) {
-                loader.style.display = "none";
-            }
+            loader.style.display = "none";
 
         }, 600);
+    }
+
+
+    /* =========================================
+       ESCAPE HTML
+    ========================================= */
+
+    function escapeHTML(value) {
+
+        return String(value || "")
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
+
+    /* =========================================
+       GET OVERRIDE
+    ========================================= */
+
+    function getOverride(repo) {
+
+        return PROJECT_OVERRIDES[repo.name] || null;
     }
 
 
@@ -111,9 +195,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function detectTechnologies(repo) {
 
-        const text = (
-            `${repo.name} ${repo.description || ""}`
-        ).toLowerCase();
+        const text =
+            `${repo.name} ${repo.description || ""}`.toLowerCase();
 
         const technologies = [];
 
@@ -125,24 +208,9 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         if (
-            text.includes("javascript") ||
-            repo.language === "JavaScript"
+            text.includes("ollama")
         ) {
-            technologies.push("JavaScript");
-        }
-
-        if (
-            text.includes("html") ||
-            repo.language === "HTML"
-        ) {
-            technologies.push("HTML");
-        }
-
-        if (
-            text.includes("css") ||
-            repo.language === "CSS"
-        ) {
-            technologies.push("CSS");
+            technologies.push("Ollama");
         }
 
         if (
@@ -152,16 +220,17 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         if (
-            text.includes("ai") ||
+            text.includes("gemini") ||
             text.includes("llm") ||
-            text.includes("gemini")
+            text.includes(" ai")
         ) {
             technologies.push("AI");
         }
 
         if (
-            text.includes("soc") ||
-            text.includes("security")
+            text.includes("security") ||
+            text.includes("cyber") ||
+            text.includes("soc")
         ) {
             technologies.push("Cybersecurity");
         }
@@ -182,46 +251,7 @@ document.addEventListener("DOMContentLoaded", () => {
             technologies.push(repo.language);
         }
 
-        return technologies.slice(0, 4);
-    }
-
-
-    /* =========================================
-       CATEGORY
-    ========================================= */
-
-    function determineCategory(repo) {
-
-        const text = (
-            `${repo.name} ${repo.description || ""}`
-        ).toLowerCase();
-
-        if (
-            text.includes("jarvis") ||
-            text.includes("ai") ||
-            text.includes("llm")
-        ) {
-            return "AI / PYTHON";
-        }
-
-        if (
-            text.includes("soc") ||
-            text.includes("security") ||
-            text.includes("cyber")
-        ) {
-            return "CYBERSECURITY";
-        }
-
-        if (
-            text.includes("web") ||
-            text.includes("portfolio")
-        ) {
-            return "WEB";
-        }
-
-        return repo.language
-            ? repo.language.toUpperCase()
-            : "PROJECT";
+        return [...new Set(technologies)].slice(0, 4);
     }
 
 
@@ -231,8 +261,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function getProjectTitle(repo) {
 
-        if (PROJECT_OVERRIDES[repo.name]) {
-            return PROJECT_OVERRIDES[repo.name].title;
+        const override = getOverride(repo);
+
+        if (override) {
+            return override.title;
         }
 
         return repo.name
@@ -247,8 +279,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function getProjectDescription(repo) {
 
-        if (PROJECT_OVERRIDES[repo.name]) {
-            return PROJECT_OVERRIDES[repo.name].description;
+        const override = getOverride(repo);
+
+        if (override) {
+            return override.description;
         }
 
         if (repo.description) {
@@ -260,16 +294,73 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =========================================
+       PROJECT CATEGORY
+    ========================================= */
+
+    function getProjectCategory(repo) {
+
+        const override = getOverride(repo);
+
+        if (override) {
+            return override.category;
+        }
+
+        const text =
+            `${repo.name} ${repo.description || ""}`.toLowerCase();
+
+        if (
+            text.includes("security") ||
+            text.includes("cyber") ||
+            text.includes("soc")
+        ) {
+            return "CYBERSECURITY";
+        }
+
+        if (
+            text.includes("ai") ||
+            text.includes("ollama") ||
+            text.includes("llm")
+        ) {
+            return "AI / PYTHON";
+        }
+
+        return repo.language
+            ? repo.language.toUpperCase()
+            : "PROJECT";
+    }
+
+
+    /* =========================================
        PROJECT TECHNOLOGIES
     ========================================= */
 
     function getProjectTechnologies(repo) {
 
-        if (PROJECT_OVERRIDES[repo.name]) {
-            return PROJECT_OVERRIDES[repo.name].technologies;
+        const override = getOverride(repo);
+
+        if (override) {
+            return override.technologies;
         }
 
         return detectTechnologies(repo);
+    }
+
+
+    /* =========================================
+       PROJECT ICON
+    ========================================= */
+
+    function getProjectIcon(category) {
+
+        if (category.includes("AI")) {
+            return "◇";
+        }
+
+        if (category.includes("CYBER")) {
+            return "⌁";
+        }
+
+        return "◎";
     }
 
 
@@ -287,9 +378,6 @@ document.addEventListener("DOMContentLoaded", () => {
         article.dataset.project =
             repo.name;
 
-        const technologies =
-            getProjectTechnologies(repo);
-
         const title =
             getProjectTitle(repo);
 
@@ -297,8 +385,10 @@ document.addEventListener("DOMContentLoaded", () => {
             getProjectDescription(repo);
 
         const category =
-            determineCategory(repo);
+            getProjectCategory(repo);
 
+        const technologies =
+            getProjectTechnologies(repo);
 
         article.innerHTML = `
 
@@ -309,7 +399,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 </span>
 
                 <span class="project-category">
-                    ${category}
+                    ${escapeHTML(category)}
                 </span>
 
             </div>
@@ -317,13 +407,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             <div class="project-icon">
 
-                ${
-                    category.includes("AI")
-                        ? "◇"
-                        : category.includes("CYBER")
-                            ? "⌁"
-                            : "◎"
-                }
+                ${getProjectIcon(category)}
 
             </div>
 
@@ -340,12 +424,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
             <div class="project-tags">
 
-                ${
-                    technologies.map(
-                        tech =>
-                            `<span>${escapeHTML(tech)}</span>`
-                    ).join("")
-                }
+                ${technologies.map(tech => `
+                    <span>
+                        ${escapeHTML(tech)}
+                    </span>
+                `).join("")}
 
             </div>
 
@@ -364,7 +447,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 <a
                     class="github-project"
-                    href="${repo.html_url}"
+                    href="${escapeHTML(repo.html_url)}"
                     target="_blank"
                     rel="noopener noreferrer">
 
@@ -377,21 +460,6 @@ document.addEventListener("DOMContentLoaded", () => {
         `;
 
         return article;
-    }
-
-
-    /* =========================================
-       HTML ESCAPE
-    ========================================= */
-
-    function escapeHTML(value) {
-
-        return String(value || "")
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&#039;");
     }
 
 
@@ -420,6 +488,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const response =
                 await fetch(GITHUB_API, {
+                    method: "GET",
+                    cache: "no-store",
                     headers: {
                         "Accept":
                             "application/vnd.github+json"
@@ -428,9 +498,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
             if (!response.ok) {
+
                 throw new Error(
                     `GitHub API error: ${response.status}`
                 );
+
             }
 
 
@@ -438,41 +510,116 @@ document.addEventListener("DOMContentLoaded", () => {
                 await response.json();
 
 
-            /* Only public non-fork repositories */
+            /* =========================================
+               ONLY PUBLIC ACTIVE REPOSITORIES
+            ========================================= */
 
             const publicRepos =
-                repos.filter(repo =>
-                    !repo.fork &&
-                    !repo.archived
-                );
+                repos.filter(repo => {
+
+                    if (repo.fork) return false;
+                    if (repo.archived) return false;
+
+                    const name =
+                        repo.name.toLowerCase();
+
+                    /* Remove portfolio repo */
+
+                    if (
+                        name ===
+                        "alex-cybersecurity-portfolio"
+                    ) {
+                        return false;
+                    }
+
+                    /* Remove Music App Backend */
+
+                    if (
+                        name ===
+                        "music-app-backend"
+                    ) {
+                        return false;
+                    }
+
+                    return true;
+
+                });
 
 
-            if (publicRepos.length === 0) {
+            /* =========================================
+               ONLY SELECTED PROJECTS
+            ========================================= */
+
+            const selectedRepos =
+                publicRepos.filter(repo => {
+
+                    return PROJECT_ORDER.includes(
+                        repo.name
+                    );
+
+                });
+
+
+            /* =========================================
+               SORT USING PROJECT ORDER
+            ========================================= */
+
+            selectedRepos.sort(
+                (a, b) => {
+
+                    const aIndex =
+                        PROJECT_ORDER.indexOf(a.name);
+
+                    const bIndex =
+                        PROJECT_ORDER.indexOf(b.name);
+
+                    return aIndex - bIndex;
+
+                }
+            );
+
+
+            /* Save for modal */
+
+            window.githubRepositories =
+                selectedRepos;
+
+
+            projectsContainer.innerHTML = "";
+
+
+            if (selectedRepos.length === 0) {
 
                 projectsContainer.innerHTML = `
-                    <p class="github-error">
-                        No public GitHub projects found.
-                    </p>
+
+                    <div class="github-error">
+
+                        <strong>
+                            No selected projects found.
+                        </strong>
+
+                        <p>
+                            Check your GitHub repository names.
+                        </p>
+
+                        <a
+                            href="https://github.com/jalex00565-rgb?tab=repositories"
+                            target="_blank"
+                            rel="noopener noreferrer">
+
+                            OPEN GITHUB ↗
+
+                        </a>
+
+                    </div>
+
                 `;
 
                 return;
             }
 
 
-            /* GitHub already returns updated repos,
-               but sort again for safety */
-
-            publicRepos.sort(
-                (a, b) =>
-                    new Date(b.updated_at) -
-                    new Date(a.updated_at)
-            );
-
-
-            projectsContainer.innerHTML = "";
-
-
-            publicRepos.forEach(
+            selectedRepos.forEach(
                 (repo, index) => {
 
                     projectsContainer.appendChild(
@@ -503,7 +650,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     </strong>
 
                     <p>
-                        Please refresh the page and try again.
+                        Please refresh the page.
                     </p>
 
                     <a
@@ -523,12 +670,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =========================================
-       MODAL
+       OPEN PROJECT MODAL
     ========================================= */
 
     function openProjectModal(repo) {
 
-        if (!modal) return;
+        if (!modal || !repo) return;
+
 
         const title =
             getProjectTitle(repo);
@@ -539,22 +687,31 @@ document.addEventListener("DOMContentLoaded", () => {
         const technologies =
             getProjectTechnologies(repo);
 
+        const category =
+            getProjectCategory(repo);
+
 
         if (modalKicker) {
+
             modalKicker.textContent =
-                determineCategory(repo);
+                category;
+
         }
 
 
         if (modalTitle) {
+
             modalTitle.textContent =
                 title;
+
         }
 
 
         if (modalText) {
+
             modalText.textContent =
                 description;
+
         }
 
 
@@ -599,6 +756,7 @@ document.addEventListener("DOMContentLoaded", () => {
             modalStack.appendChild(
                 githubLink
             );
+
         }
 
 
@@ -610,7 +768,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =========================================
-       VIEW PROJECT
+       VIEW PROJECT BUTTON
     ========================================= */
 
     document.addEventListener(
@@ -624,18 +782,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (!button) return;
 
+
             const repoName =
                 button.dataset.repo;
 
+
             const repo =
-                window.githubRepositories
-                    ?.find(
-                        item =>
-                            item.name === repoName
-                    );
+                window.githubRepositories.find(
+                    item =>
+                        item.name === repoName
+                );
+
 
             if (repo) {
+
                 openProjectModal(repo);
+
             }
 
         }
@@ -652,8 +814,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         modal.classList.remove("open");
 
-        document.body.style.overflow =
-            "";
+        document.body.style.overflow = "";
+
     }
 
 
@@ -663,6 +825,7 @@ document.addEventListener("DOMContentLoaded", () => {
             "click",
             closeModal
         );
+
     }
 
 
@@ -675,11 +838,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (
                     event.target === modal
                 ) {
+
                     closeModal();
+
                 }
 
             }
         );
+
     }
 
 
@@ -690,7 +856,9 @@ document.addEventListener("DOMContentLoaded", () => {
             if (
                 event.key === "Escape"
             ) {
+
                 closeModal();
+
             }
 
         }
@@ -698,7 +866,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =========================================
-       NAVIGATION
+       SMOOTH NAVIGATION
     ========================================= */
 
     document.querySelectorAll(
@@ -712,6 +880,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 const targetId =
                     link.getAttribute("href");
 
+
                 if (
                     !targetId ||
                     targetId === "#"
@@ -719,14 +888,18 @@ document.addEventListener("DOMContentLoaded", () => {
                     return;
                 }
 
+
                 const target =
                     document.querySelector(
                         targetId
                     );
 
+
                 if (!target) return;
 
+
                 event.preventDefault();
+
 
                 target.scrollIntoView({
                     behavior: "smooth",
@@ -744,12 +917,7 @@ document.addEventListener("DOMContentLoaded", () => {
     ========================================= */
 
     loadGitHubProjects()
-        .then(() => {
-
-            hideLoader();
-
-        })
-        .catch(() => {
+        .finally(() => {
 
             hideLoader();
 
