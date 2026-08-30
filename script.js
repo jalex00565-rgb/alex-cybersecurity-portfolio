@@ -2,7 +2,7 @@
    ALEX JACOB PORTFOLIO - FINAL SCRIPT
 ========================================= */
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", function () {
 
     /* =========================================
        PROJECT DATA
@@ -17,7 +17,12 @@ document.addEventListener("DOMContentLoaded", () => {
             title: "JARVIS AI",
             description:
                 "Personal AI assistant built with Python, Streamlit and Gemini. Foundation for voice interaction, file analysis, memory and SOC assistance.",
-            tags: ["Python", "Streamlit", "Gemini AI", "AI Assistant"],
+            tags: [
+                "Python",
+                "Streamlit",
+                "Gemini AI",
+                "AI Assistant"
+            ],
             repo: "https://github.com/jalex00565-rgb/JarvisAI",
             icon: "◇"
         },
@@ -29,7 +34,12 @@ document.addEventListener("DOMContentLoaded", () => {
             title: "RAVEN SOC",
             description:
                 "A cybersecurity-focused SOC project for security monitoring, log analysis, detection and incident investigation.",
-            tags: ["Python", "SOC", "Log Analysis", "Detection"],
+            tags: [
+                "Python",
+                "SOC",
+                "Log Analysis",
+                "Detection"
+            ],
             repo: "https://github.com/jalex00565-rgb/RAVEN",
             icon: "⌁"
         },
@@ -41,7 +51,12 @@ document.addEventListener("DOMContentLoaded", () => {
             title: "JARVIS AI DESKTOP",
             description:
                 "AI-powered Windows desktop assistant with voice interaction, memory, system monitoring and automation.",
-            tags: ["Python", "Windows", "Voice AI", "Automation"],
+            tags: [
+                "Python",
+                "Windows",
+                "Voice AI",
+                "Automation"
+            ],
             repo: "https://github.com/jalex00565-rgb/JARVIS-AI-Desktop",
             icon: "◎"
         },
@@ -53,7 +68,12 @@ document.addEventListener("DOMContentLoaded", () => {
             title: "SOC INCIDENT ANALYZER",
             description:
                 "SOC Incident Analyzer for log analysis, incident detection, risk scoring and AI-assisted security analysis.",
-            tags: ["Python", "AI", "Cybersecurity", "Log Analysis"],
+            tags: [
+                "Python",
+                "AI",
+                "Cybersecurity",
+                "Log Analysis"
+            ],
             repo: "https://github.com/jalex00565-rgb/SOC-Incident-Analyzer",
             icon: "⌁"
         },
@@ -65,7 +85,12 @@ document.addEventListener("DOMContentLoaded", () => {
             title: "LOCAL AI SECURITY ASSISTANT",
             description:
                 "A local AI security assistant using Ollama for private document analysis, cybersecurity knowledge and AI-assisted security workflows.",
-            tags: ["Python", "Ollama", "Local AI", "Cybersecurity"],
+            tags: [
+                "Python",
+                "Ollama",
+                "Local AI",
+                "Cybersecurity"
+            ],
             repo: "https://github.com/jalex00565-rgb/Local-AI-Security-Assistant",
             icon: "◎"
         },
@@ -77,7 +102,12 @@ document.addEventListener("DOMContentLoaded", () => {
             title: "MINI SOC INCIDENT ANALYZER",
             description:
                 "Security workflow for converting raw logs into detections, risk assessment, investigation context and incident reporting.",
-            tags: ["Logs", "Detection", "Risk Analysis", "Incident Reporting"],
+            tags: [
+                "Logs",
+                "Detection",
+                "Risk Analysis",
+                "Incident Reporting"
+            ],
             repo: "https://github.com/jalex00565-rgb/Mini-SOC-Incident-Analyzer",
             icon: "◇"
         }
@@ -89,15 +119,29 @@ document.addEventListener("DOMContentLoaded", () => {
        ELEMENTS
     ========================================= */
 
-    const loader = document.getElementById("loader");
-    const container = document.querySelector(".projects");
+    const loader =
+        document.getElementById("loader");
 
-    const modal = document.getElementById("modal");
-    const modalKicker = document.getElementById("modalKicker");
-    const modalTitle = document.getElementById("modalTitle");
-    const modalText = document.getElementById("modalText");
-    const modalStack = document.getElementById("modalStack");
-    const closeButton = document.getElementById("close");
+    const projectsContainer =
+        document.querySelector(".projects");
+
+    const modal =
+        document.getElementById("modal");
+
+    const modalKicker =
+        document.getElementById("modalKicker");
+
+    const modalTitle =
+        document.getElementById("modalTitle");
+
+    const modalText =
+        document.getElementById("modalText");
+
+    const modalStack =
+        document.getElementById("modalStack");
+
+    const closeButton =
+        document.getElementById("close");
 
 
     /* =========================================
@@ -111,7 +155,7 @@ document.addEventListener("DOMContentLoaded", () => {
         loader.style.opacity = "0";
         loader.style.pointerEvents = "none";
 
-        setTimeout(() => {
+        setTimeout(function () {
 
             if (loader && loader.parentNode) {
                 loader.remove();
@@ -120,7 +164,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }, 600);
     }
 
-    /* Safety timeout */
+
     setTimeout(hideLoader, 1800);
 
 
@@ -130,7 +174,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function createProjectCard(project, index) {
 
-        const card = document.createElement("article");
+        const card =
+            document.createElement("article");
 
         card.className =
             index === 0
@@ -138,9 +183,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 : "card";
 
 
-        const tagsHTML = project.tags
-            .map(tag => `<span>${tag}</span>`)
-            .join("");
+        const tagsHTML =
+            project.tags.map(function (tag) {
+
+                return `
+                    <span>${tag}</span>
+                `;
+
+            }).join("");
 
 
         card.innerHTML = `
@@ -178,21 +228,44 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>
 
 
-            <div class="project-actions">
+            <div
+                class="project-actions"
+                style="
+                    display:flex;
+                    flex-wrap:wrap;
+                    align-items:center;
+                    gap:12px;
+                    margin-top:20px;
+                ">
 
                 <button
                     class="details project-details"
                     type="button"
-                    data-project="${project.id}">
+                    data-project="${project.id}"
+                    style="
+                        display:inline-flex;
+                        visibility:visible;
+                        opacity:1;
+                        cursor:pointer;
+                    ">
                     VIEW PROJECT ↗
                 </button>
 
 
                 <a
-                    class="details github-link"
                     href="${project.repo}"
                     target="_blank"
-                    rel="noopener noreferrer">
+                    rel="noopener noreferrer"
+                    style="
+                        display:inline-flex !important;
+                        visibility:visible !important;
+                        opacity:1 !important;
+                        color:#64ffb4 !important;
+                        text-decoration:none !important;
+                        cursor:pointer !important;
+                        font-family:inherit;
+                        font-size:inherit;
+                    ">
                     GITHUB REPOSITORY ↗
                 </a>
 
@@ -211,19 +284,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function renderProjects() {
 
-        if (!container) {
-            console.error("Projects container not found.");
+        if (!projectsContainer) {
+
+            console.error(
+                "Projects container not found."
+            );
+
             return;
         }
 
 
-        container.innerHTML = "";
+        projectsContainer.innerHTML = "";
 
 
-        projects.forEach((project, index) => {
+        projects.forEach(function (project, index) {
 
-            container.appendChild(
-                createProjectCard(project, index)
+            projectsContainer.appendChild(
+                createProjectCard(
+                    project,
+                    index
+                )
             );
 
         });
@@ -235,13 +315,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =========================================
-       OPEN MODAL
+       OPEN PROJECT MODAL
     ========================================= */
 
-    function openProject(id) {
+    function openProject(projectId) {
 
         const project =
-            projects.find(item => item.id === id);
+            projects.find(function (item) {
+                return item.id === projectId;
+            });
 
 
         if (!project || !modal) {
@@ -250,20 +332,28 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
         if (modalKicker) {
+
             modalKicker.textContent =
-                `${project.number} / ${project.category}`;
+                project.number +
+                " / " +
+                project.category;
+
         }
 
 
         if (modalTitle) {
+
             modalTitle.textContent =
                 project.title;
+
         }
 
 
         if (modalText) {
+
             modalText.textContent =
                 project.description;
+
         }
 
 
@@ -272,45 +362,78 @@ document.addEventListener("DOMContentLoaded", () => {
             modalStack.innerHTML = "";
 
 
-            project.tags.forEach(tag => {
+            project.tags.forEach(function (tag) {
 
-                const tagElement =
+                const span =
                     document.createElement("span");
 
-                tagElement.textContent = tag;
+                span.textContent = tag;
 
-                modalStack.appendChild(tagElement);
+                modalStack.appendChild(span);
 
             });
 
 
-            /* GitHub link inside modal */
-
             const github =
                 document.createElement("a");
 
-            github.className = "repo-link";
 
-            github.href = project.repo;
+            github.href =
+                project.repo;
 
-            github.target = "_blank";
+
+            github.target =
+                "_blank";
+
 
             github.rel =
                 "noopener noreferrer";
 
+
             github.textContent =
                 "VIEW GITHUB REPOSITORY ↗";
 
-            modalStack.appendChild(github);
+
+            github.style.display =
+                "inline-flex";
+
+
+            github.style.visibility =
+                "visible";
+
+
+            github.style.opacity =
+                "1";
+
+
+            github.style.color =
+                "#64ffb4";
+
+
+            github.style.textDecoration =
+                "none";
+
+
+            github.style.marginTop =
+                "15px";
+
+
+            modalStack.appendChild(
+                github
+            );
 
         }
 
 
         modal.classList.add("open");
 
-        document.body.classList.add("modal-open");
+        document.body.classList.add(
+            "modal-open"
+        );
 
-        document.body.style.overflow = "hidden";
+        document.body.style.overflow =
+            "hidden";
+
     }
 
 
@@ -324,7 +447,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
         modal.classList.remove("open");
 
-        document.body.classList.remove("modal-open");
+        document.body.classList.remove(
+            "modal-open"
+        );
 
         document.body.style.overflow = "";
 
@@ -332,34 +457,41 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =========================================
-       PROJECT BUTTON
+       PROJECT BUTTON CLICK
     ========================================= */
 
-    document.addEventListener("click", event => {
+    document.addEventListener(
+        "click",
+        function (event) {
 
-        const button =
-            event.target.closest(".project-details");
+            const button =
+                event.target.closest(
+                    ".project-details"
+                );
 
 
-        if (!button) {
-            return;
+            if (!button) {
+                return;
+            }
+
+
+            const projectId =
+                button.getAttribute(
+                    "data-project"
+                );
+
+
+            if (!projectId) {
+                return;
+            }
+
+
+            event.preventDefault();
+
+            openProject(projectId);
+
         }
-
-
-        const id =
-            button.dataset.project;
-
-
-        if (!id) {
-            return;
-        }
-
-
-        event.preventDefault();
-
-        openProject(id);
-
-    });
+    );
 
 
     /* =========================================
@@ -384,10 +516,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
         modal.addEventListener(
             "click",
-            event => {
+            function (event) {
 
-                if (event.target === modal) {
+                if (
+                    event.target === modal
+                ) {
+
                     closeProject();
+
                 }
 
             }
@@ -402,10 +538,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.addEventListener(
         "keydown",
-        event => {
+        function (event) {
 
-            if (event.key === "Escape") {
+            if (
+                event.key === "Escape"
+            ) {
+
                 closeProject();
+
             }
 
         }
@@ -417,86 +557,24 @@ document.addEventListener("DOMContentLoaded", () => {
     ========================================= */
 
     const navLinks =
-        document.querySelectorAll("header nav a");
+        document.querySelectorAll(
+            "header nav a"
+        );
 
 
     function updateNavigation() {
 
-        const position =
+        const currentPosition =
             window.scrollY + 160;
 
 
-        navLinks.forEach(link => {
-
-            const href =
-                link.getAttribute("href");
-
-
-            if (
-                !href ||
-                !href.startsWith("#")
-            ) {
-                return;
-            }
-
-
-            const section =
-                document.querySelector(href);
-
-
-            if (!section) {
-                return;
-            }
-
-
-            const top =
-                section.offsetTop;
-
-
-            const bottom =
-                top + section.offsetHeight;
-
-
-            if (
-                position >= top &&
-                position < bottom
-            ) {
-
-                link.classList.add("active");
-
-            } else {
-
-                link.classList.remove("active");
-
-            }
-
-        });
-
-    }
-
-
-    window.addEventListener(
-        "scroll",
-        updateNavigation,
-        { passive: true }
-    );
-
-
-    updateNavigation();
-
-
-    /* =========================================
-       SMOOTH SCROLL
-    ========================================= */
-
-    navLinks.forEach(link => {
-
-        link.addEventListener(
-            "click",
-            event => {
+        navLinks.forEach(
+            function (link) {
 
                 const href =
-                    link.getAttribute("href");
+                    link.getAttribute(
+                        "href"
+                    );
 
 
                 if (
@@ -507,27 +585,110 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
 
 
-                const target =
-                    document.querySelector(href);
+                const section =
+                    document.querySelector(
+                        href
+                    );
 
 
-                if (!target) {
+                if (!section) {
                     return;
                 }
 
 
-                event.preventDefault();
+                const top =
+                    section.offsetTop;
 
 
-                target.scrollIntoView({
-                    behavior: "smooth",
-                    block: "start"
-                });
+                const bottom =
+                    top +
+                    section.offsetHeight;
+
+
+                if (
+                    currentPosition >= top &&
+                    currentPosition < bottom
+                ) {
+
+                    link.classList.add(
+                        "active"
+                    );
+
+                } else {
+
+                    link.classList.remove(
+                        "active"
+                    );
+
+                }
 
             }
         );
 
-    });
+    }
+
+
+    window.addEventListener(
+        "scroll",
+        updateNavigation,
+        {
+            passive: true
+        }
+    );
+
+
+    updateNavigation();
+
+
+    /* =========================================
+       SMOOTH SCROLL
+    ========================================= */
+
+    navLinks.forEach(
+        function (link) {
+
+            link.addEventListener(
+                "click",
+                function (event) {
+
+                    const targetId =
+                        link.getAttribute(
+                            "href"
+                        );
+
+
+                    if (
+                        !targetId ||
+                        !targetId.startsWith("#")
+                    ) {
+                        return;
+                    }
+
+
+                    const target =
+                        document.querySelector(
+                            targetId
+                        );
+
+
+                    if (!target) {
+                        return;
+                    }
+
+
+                    event.preventDefault();
+
+
+                    target.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start"
+                    });
+
+                }
+            );
+
+        }
+    );
 
 
     /* =========================================
@@ -536,7 +697,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     window.addEventListener(
         "load",
-        () => {
+        function () {
 
             hideLoader();
 
