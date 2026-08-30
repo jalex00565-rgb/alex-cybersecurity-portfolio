@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
             description:
                 "Personal AI assistant built with Python, Streamlit and Gemini. Foundation for voice interaction, file analysis, memory and SOC assistance.",
             tags: ["Python", "Streamlit", "Gemini AI", "AI Assistant"],
-            github: "https://github.com/jalex00565-rgb/JarvisAI"
+          github: "https://github.com/jalex00565-rgb/JarvisAI"
         },
 
         {
