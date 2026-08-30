@@ -1,346 +1,424 @@
-document.addEventListener("DOMContentLoaded", () => {
+/* =========================================
+   PORTFOLIO SCRIPT
+========================================= */
 
-    // =========================================
-    // PROJECT DATA
-    // =========================================
+document.addEventListener("DOMContentLoaded", function () {
 
-    const projects = [
+    /* =========================================
+       PROJECT DATA
+    ========================================= */
 
-        {
-            category: "AI / PYTHON",
-            title: "JARVIS AI",
-            description:
-                "Personal AI assistant built with Python, Streamlit and Gemini. Foundation for voice interaction, file analysis, memory and SOC assistance.",
-            stack: [
+    const projects = {
+
+        jarvis: {
+            k: "01 / AI / PYTHON",
+            t: "JARVIS AI",
+            d: "A working personal AI assistant built with Python, Streamlit and Gemini. The system is being extended toward voice interaction, file analysis, memory and SOC assistance.",
+            s: [
                 "Python",
                 "Streamlit",
                 "Gemini AI",
                 "AI Assistant"
             ],
-            github:
-                "https://github.com/jalex00565-rgb/JarvisAI",
-            project:
-                "https://github.com/jalex00565-rgb/JarvisAI"
+            repo: "https://github.com/jalex00565-rgb/JarvisAI"
         },
 
-        {
-            category: "CYBERSECURITY",
-            title: "RAVEN SOC",
-            description:
-                "A cybersecurity-focused SOC project for security monitoring, log analysis, detection and incident investigation.",
-            stack: [
-                "Python",
-                "SOC",
+        soc: {
+            k: "02 / CYBERSECURITY",
+            t: "MINI SOC INCIDENT ANALYZER",
+            d: "A security-analysis workflow that converts raw logs into detections, risk assessment, investigation context and incident reporting — the core workflow of a practical SOC tool.",
+            s: [
                 "Log Analysis",
-                "Detection"
+                "Detection",
+                "Risk Scoring",
+                "Incident Reporting"
             ],
-            github:
-                "https://github.com/jalex00565-rgb/RAVEN-SOC",
-            project:
-                "https://github.com/jalex00565-rgb/RAVEN-SOC"
+            repo: "https://github.com/jalex00565-rgb/SOC-Incident-Analyzer"
         },
 
-        {
-            category: "AI / PYTHON",
-            title: "JARVIS AI DESKTOP",
-            description:
-                "AI-powered Windows desktop assistant with voice interaction, memory, system monitoring and automation.",
-            stack: [
+        desktop: {
+            k: "03 / AI / PYTHON",
+            t: "JARVIS AI DESKTOP",
+            d: "AI-powered Windows desktop assistant with voice interaction, memory, system monitoring and automation.",
+            s: [
                 "Python",
                 "Windows",
                 "Voice AI",
                 "Automation"
             ],
-            github:
-                "https://github.com/jalex00565-rgb/JARVIS-AI-Desktop",
-            project:
-                "https://github.com/jalex00565-rgb/JARVIS-AI-Desktop"
+            repo: "https://github.com/jalex00565-rgb/JARVIS-AI-Desktop"
         },
 
-        {
-            category: "CYBERSECURITY",
-            title: "SOC INCIDENT ANALYZER",
-            description:
-                "SOC Incident Analyzer for log analysis, incident detection, risk scoring and AI-assisted security analysis.",
-            stack: [
-                "Python",
-                "AI",
-                "Cybersecurity",
-                "Log Analysis"
-            ],
-            github:
-                "https://github.com/jalex00565-rgb/SOC-Incident-Analyzer",
-            project:
-                "https://github.com/jalex00565-rgb/SOC-Incident-Analyzer"
-        },
-
-        {
-            category: "AI / SECURITY",
-            title: "LOCAL AI SECURITY ASSISTANT",
-            description:
-                "A local AI security assistant using Ollama for private document analysis, cybersecurity knowledge and AI-assisted security workflows.",
-            stack: [
-                "Python",
+        localai: {
+            k: "04 / PLANNED",
+            t: "LOCAL AI SECURITY ASSISTANT",
+            d: "An offline AI layer planned for document analysis and a cybersecurity knowledge base, with the long-term goal of integrating it into the Jarvis ecosystem.",
+            s: [
                 "Ollama",
-                "Local AI",
-                "Cybersecurity"
-            ],
-
-            // YOUR PROJECT GITHUB
-            github:
-                "https://github.com/jalex00565-rgb/LOCAL-AI-SECURITY-ASSISTANT",
-
-            project:
-                "https://github.com/jalex00565-rgb/LOCAL-AI-SECURITY-ASSISTANT",
-
-            // OLLAMA
-            ollama: true
+                "LLM",
+                "Offline AI",
+                "Security Knowledge Base"
+            ]
         }
 
-    ];
+    };
 
 
-    // =========================================
-    // PROJECT CONTAINER
-    // =========================================
+    /* =========================================
+       ELEMENTS
+    ========================================= */
 
-    const container =
-        document.querySelector(".projects");
+    const loader = document.getElementById("loader");
+    const projectsContainer = document.querySelector(".projects");
 
-    if (!container) {
-        console.error("Projects container not found.");
-        return;
+    const modal = document.getElementById("modal");
+    const modalKicker = document.getElementById("modalKicker");
+    const modalTitle = document.getElementById("modalTitle");
+    const modalText = document.getElementById("modalText");
+    const modalStack = document.getElementById("modalStack");
+    const closeButton = document.getElementById("close");
+
+    const navLinks = document.querySelectorAll("header nav a");
+
+
+    /* =========================================
+       LOADER
+    ========================================= */
+
+    function hideLoader() {
+
+        if (!loader) return;
+
+        loader.style.opacity = "0";
+        loader.style.pointerEvents = "none";
+
+        setTimeout(function () {
+
+            if (loader && loader.parentNode) {
+                loader.parentNode.removeChild(loader);
+            }
+
+        }, 600);
     }
 
 
-    // =========================================
-    // RENDER PROJECTS
-    // =========================================
+    /* Failsafe: loader cannot stay forever */
 
-    container.innerHTML = "";
+    setTimeout(hideLoader, 2000);
 
 
-    projects.forEach((project, index) => {
+    /* =========================================
+       PROJECT ICON
+    ========================================= */
 
-        const card =
-            document.createElement("article");
+    function getProjectIcon(id) {
 
-        card.className = "project-card";
-
-
-        let icon = "◇";
-
-        if (index === 1 || index === 3) {
-            icon = "⌁";
+        if (id === "jarvis") {
+            return "◈";
         }
 
-        if (index === 2 || index === 4) {
-            icon = "◎";
+        if (id === "soc") {
+            return "⌁";
         }
 
+        if (id === "desktop") {
+            return "◉";
+        }
 
-        card.innerHTML = `
+        return "◎";
+    }
 
-            <div class="project-top">
 
-                <span class="project-number">
-                    ${String(index + 1).padStart(2, "0")}
-                </span>
+    /* =========================================
+       CREATE PROJECT CARD
+    ========================================= */
 
-                <span class="project-category">
-                    ${project.category}
-                </span>
+    function createProjectCard(id, project, featured) {
 
+        const article = document.createElement("article");
+
+        article.className = featured
+            ? "card featured"
+            : "card";
+
+
+        const parts = project.k.split(" / ");
+
+        const number = parts[0];
+
+        const category = parts.slice(1).join(" / ");
+
+
+        article.innerHTML = `
+
+            <div class="card-top">
+                <span>${number}</span>
+                <span>${category}</span>
             </div>
 
-
-            <div class="project-icon">
-                ${icon}
+            <div class="icon">
+                ${getProjectIcon(id)}
             </div>
-
 
             <h3>
-                ${project.title}
+                ${project.t}
             </h3>
 
-
             <p>
-                ${project.description}
+                ${project.d}
             </p>
 
+            <div class="tags">
 
-            <div class="project-stack">
-
-                ${project.stack.map(
-                    item => `<span>${item}</span>`
-                ).join("")}
+                ${project.s.map(function (tag) {
+                    return `<b>${tag}</b>`;
+                }).join("")}
 
             </div>
 
+            <button
+                class="details project-details"
+                type="button"
+                data-project="${id}">
+                VIEW PROJECT ↗
+            </button>
 
             ${
-                project.ollama
-                ? `
-                    <div
-                        class="ollama-version"
-                        id="ollama-version">
-                        OLLAMA LATEST: CHECKING...
-                    </div>
-                `
-                : ""
-            }
-
-
-            <div class="project-links">
-
-                <a
-                    class="project-view"
-                    href="${project.project}"
-                    target="_blank"
-                    rel="noopener noreferrer">
-
-                    VIEW PROJECT ↗
-
-                </a>
-
-
-                <a
-                    class="project-github"
-                    href="${project.github}"
-                    target="_blank"
-                    rel="noopener noreferrer">
-
-                    GITHUB REPOSITORY ↗
-
-                </a>
-
-
-                ${
-                    project.ollama
+                project.repo
                     ? `
                         <a
-                            class="project-github"
-                            href="https://github.com/ollama/ollama"
+                            class="details"
+                            href="${project.repo}"
                             target="_blank"
                             rel="noopener noreferrer">
-
-                            OLLAMA GITHUB ↗
-
-                        </a>
-
-
-                        <a
-                            class="project-github"
-                            href="https://github.com/ollama/ollama/releases/latest"
-                            target="_blank"
-                            rel="noopener noreferrer">
-
-                            OLLAMA LATEST ↗
-
+                            GITHUB REPOSITORY ↗
                         </a>
                     `
                     : ""
-                }
-
-            </div>
+            }
 
         `;
 
-
-        container.appendChild(card);
-
-    });
+        return article;
+    }
 
 
-    // =========================================
-    // GET OLLAMA LATEST VERSION
-    // =========================================
+    /* =========================================
+       RENDER PROJECTS
+    ========================================= */
 
-    async function loadOllamaVersion() {
+    function renderProjects() {
 
-        const versionElement =
-            document.getElementById("ollama-version");
+        if (!projectsContainer) {
+            console.error("Projects container not found.");
+            return;
+        }
 
-        if (!versionElement) {
+        projectsContainer.innerHTML = "";
+
+
+        projectsContainer.appendChild(
+            createProjectCard(
+                "jarvis",
+                projects.jarvis,
+                true
+            )
+        );
+
+
+        projectsContainer.appendChild(
+            createProjectCard(
+                "soc",
+                projects.soc,
+                false
+            )
+        );
+
+
+        projectsContainer.appendChild(
+            createProjectCard(
+                "desktop",
+                projects.desktop,
+                false
+            )
+        );
+
+
+        projectsContainer.appendChild(
+            createProjectCard(
+                "localai",
+                projects.localai,
+                false
+            )
+        );
+    }
+
+
+    renderProjects();
+
+
+    /* =========================================
+       OPEN PROJECT MODAL
+    ========================================= */
+
+    function openProject(projectId) {
+
+        const project = projects[projectId];
+
+        if (!project) {
+            console.error(
+                "Project not found:",
+                projectId
+            );
             return;
         }
 
 
-        try {
-
-            const response = await fetch(
-                "https://api.github.com/repos/ollama/ollama/releases/latest"
+        if (!modal) {
+            console.error(
+                "Modal element not found in index.html."
             );
+            return;
+        }
 
 
-            if (!response.ok) {
-                throw new Error(
-                    "GitHub API request failed"
-                );
+        if (modalKicker) {
+            modalKicker.textContent = project.k;
+        }
+
+
+        if (modalTitle) {
+            modalTitle.textContent = project.t;
+        }
+
+
+        if (modalText) {
+            modalText.textContent = project.d;
+        }
+
+
+        if (modalStack) {
+
+            modalStack.innerHTML = "";
+
+
+            project.s.forEach(function (tag) {
+
+                const span =
+                    document.createElement("span");
+
+                span.textContent = tag;
+
+                modalStack.appendChild(span);
+
+            });
+
+
+            if (project.repo) {
+
+                const repo =
+                    document.createElement("a");
+
+                repo.className = "repo-link";
+
+                repo.href = project.repo;
+
+                repo.target = "_blank";
+
+                repo.rel =
+                    "noopener noreferrer";
+
+                repo.textContent =
+                    "VIEW GITHUB REPOSITORY ↗";
+
+                modalStack.appendChild(repo);
             }
 
-
-            const data =
-                await response.json();
-
-
-            const version =
-                data.tag_name ||
-                data.name ||
-                "Unknown";
-
-
-            versionElement.textContent =
-                `OLLAMA LATEST: ${version}`;
-
-
-        } catch (error) {
-
-            console.error(
-                "Ollama version error:",
-                error
-            );
-
-
-            versionElement.innerHTML = `
-                OLLAMA LATEST:
-                <a
-                    href="https://github.com/ollama/ollama/releases/latest"
-                    target="_blank"
-                    rel="noopener noreferrer">
-
-                    VIEW LATEST ↗
-
-                </a>
-            `;
-
         }
+
+
+        modal.classList.add("open");
+
+        document.body.classList.add("modal-open");
+
+        document.body.style.overflow = "hidden";
+    }
+
+
+    /* =========================================
+       CLOSE PROJECT MODAL
+    ========================================= */
+
+    function closeProject() {
+
+        if (!modal) return;
+
+        modal.classList.remove("open");
+
+        document.body.classList.remove("modal-open");
+
+        document.body.style.overflow = "";
+    }
+
+
+    /* =========================================
+       PROJECT BUTTON CLICK
+    ========================================= */
+
+    document.addEventListener("click", function (event) {
+
+        const button =
+            event.target.closest(".project-details");
+
+
+        if (!button) {
+            return;
+        }
+
+
+        const projectId =
+            button.getAttribute("data-project");
+
+
+        if (!projectId) {
+            return;
+        }
+
+
+        event.preventDefault();
+
+        openProject(projectId);
+
+    });
+
+
+    /* =========================================
+       CLOSE BUTTON
+    ========================================= */
+
+    if (closeButton) {
+
+        closeButton.addEventListener(
+            "click",
+            closeProject
+        );
 
     }
 
 
-    loadOllamaVersion();
+    /* =========================================
+       CLICK OUTSIDE MODAL
+    ========================================= */
 
+    if (modal) {
 
-    // =========================================
-    // LOADER
-    // =========================================
+        modal.addEventListener(
+            "click",
+            function (event) {
 
-    const loader =
-        document.getElementById("loader");
-
-
-    if (loader) {
-
-        window.addEventListener(
-            "load",
-            () => {
-
-                setTimeout(() => {
-
-                    loader.classList.add("hidden");
-
-                }, 700);
+                if (event.target === modal) {
+                    closeProject();
+                }
 
             }
         );
@@ -348,22 +426,115 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    // =========================================
-    // SMOOTH SCROLL
-    // =========================================
+    /* =========================================
+       ESCAPE KEY
+    ========================================= */
 
-    document.querySelectorAll(
-        'a[href^="#"]'
-    ).forEach(anchor => {
+    document.addEventListener(
+        "keydown",
+        function (event) {
 
-        anchor.addEventListener(
+            if (event.key === "Escape") {
+                closeProject();
+            }
+
+        }
+    );
+
+
+    /* =========================================
+       ACTIVE NAVIGATION
+    ========================================= */
+
+    function updateActiveNavigation() {
+
+        const currentPosition =
+            window.scrollY + 150;
+
+
+        navLinks.forEach(function (link) {
+
+            const href =
+                link.getAttribute("href");
+
+
+            if (
+                !href ||
+                !href.startsWith("#")
+            ) {
+                return;
+            }
+
+
+            const target =
+                document.querySelector(href);
+
+
+            if (!target) {
+                return;
+            }
+
+
+            const top =
+                target.offsetTop;
+
+
+            const bottom =
+                top + target.offsetHeight;
+
+
+            if (
+                currentPosition >= top &&
+                currentPosition < bottom
+            ) {
+
+                link.classList.add("active");
+
+            } else {
+
+                link.classList.remove("active");
+
+            }
+
+        });
+
+    }
+
+
+    window.addEventListener(
+        "scroll",
+        updateActiveNavigation,
+        { passive: true }
+    );
+
+
+    updateActiveNavigation();
+
+
+    /* =========================================
+       SMOOTH NAVIGATION
+    ========================================= */
+
+    navLinks.forEach(function (link) {
+
+        link.addEventListener(
             "click",
             function (event) {
 
+                const targetId =
+                    link.getAttribute("href");
+
+
+                if (
+                    !targetId ||
+                    !targetId.startsWith("#")
+                ) {
+                    return;
+                }
+
+
                 const target =
-                    document.querySelector(
-                        this.getAttribute("href")
-                    );
+                    document.querySelector(targetId);
 
 
                 if (!target) {
@@ -385,67 +556,17 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
 
-    // =========================================
-    // MODAL
-    // =========================================
+    /* =========================================
+       PAGE LOAD
+    ========================================= */
 
-    const modal =
-        document.getElementById("modal");
+    window.addEventListener(
+        "load",
+        function () {
 
-    const closeButton =
-        document.getElementById("close");
+            hideLoader();
 
-
-    function closeModal() {
-
-        if (!modal) {
-            return;
-        }
-
-
-        modal.classList.remove("active");
-
-
-        document.body.classList.remove(
-            "modal-open"
-        );
-
-    }
-
-
-    if (closeButton) {
-
-        closeButton.addEventListener(
-            "click",
-            closeModal
-        );
-
-    }
-
-
-    if (modal) {
-
-        modal.addEventListener(
-            "click",
-            event => {
-
-                if (event.target === modal) {
-                    closeModal();
-                }
-
-            }
-        );
-
-    }
-
-
-    document.addEventListener(
-        "keydown",
-        event => {
-
-            if (event.key === "Escape") {
-                closeModal();
-            }
+            updateActiveNavigation();
 
         }
     );
