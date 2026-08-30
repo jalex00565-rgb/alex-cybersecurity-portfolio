@@ -1,67 +1,88 @@
 /* =========================================
-   PORTFOLIO SCRIPT
+   ALEX JACOB PORTFOLIO - FINAL SCRIPT
 ========================================= */
 
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", () => {
 
     /* =========================================
        PROJECT DATA
     ========================================= */
 
-    const projects = {
+    const projects = [
 
-        jarvis: {
-            k: "01 / AI / PYTHON",
-            t: "JARVIS AI",
-            d: "A working personal AI assistant built with Python, Streamlit and Gemini. The system is being extended toward voice interaction, file analysis, memory and SOC assistance.",
-            s: [
-                "Python",
-                "Streamlit",
-                "Gemini AI",
-                "AI Assistant"
-            ],
-            repo: "https://github.com/jalex00565-rgb/JarvisAI"
+        {
+            id: "jarvis",
+            number: "01",
+            category: "AI / PYTHON",
+            title: "JARVIS AI",
+            description:
+                "Personal AI assistant built with Python, Streamlit and Gemini. Foundation for voice interaction, file analysis, memory and SOC assistance.",
+            tags: ["Python", "Streamlit", "Gemini AI", "AI Assistant"],
+            repo: "https://github.com/jalex00565-rgb/JarvisAI",
+            icon: "◇"
         },
 
-        soc: {
-            k: "02 / CYBERSECURITY",
-            t: "MINI SOC INCIDENT ANALYZER",
-            d: "A security-analysis workflow that converts raw logs into detections, risk assessment, investigation context and incident reporting — the core workflow of a practical SOC tool.",
-            s: [
-                "Log Analysis",
-                "Detection",
-                "Risk Scoring",
-                "Incident Reporting"
-            ],
-            repo: "https://github.com/jalex00565-rgb/SOC-Incident-Analyzer"
+        {
+            id: "raven",
+            number: "02",
+            category: "CYBERSECURITY",
+            title: "RAVEN SOC",
+            description:
+                "A cybersecurity-focused SOC project for security monitoring, log analysis, detection and incident investigation.",
+            tags: ["Python", "SOC", "Log Analysis", "Detection"],
+            repo: "https://github.com/jalex00565-rgb/RAVEN",
+            icon: "⌁"
         },
 
-        desktop: {
-            k: "03 / AI / PYTHON",
-            t: "JARVIS AI DESKTOP",
-            d: "AI-powered Windows desktop assistant with voice interaction, memory, system monitoring and automation.",
-            s: [
-                "Python",
-                "Windows",
-                "Voice AI",
-                "Automation"
-            ],
-            repo: "https://github.com/jalex00565-rgb/JARVIS-AI-Desktop"
+        {
+            id: "desktop",
+            number: "03",
+            category: "AI / PYTHON",
+            title: "JARVIS AI DESKTOP",
+            description:
+                "AI-powered Windows desktop assistant with voice interaction, memory, system monitoring and automation.",
+            tags: ["Python", "Windows", "Voice AI", "Automation"],
+            repo: "https://github.com/jalex00565-rgb/JARVIS-AI-Desktop",
+            icon: "◎"
         },
 
-        localai: {
-            k: "04 / PLANNED",
-            t: "LOCAL AI SECURITY ASSISTANT",
-            d: "An offline AI layer planned for document analysis and a cybersecurity knowledge base, with the long-term goal of integrating it into the Jarvis ecosystem.",
-            s: [
-                "Ollama",
-                "LLM",
-                "Offline AI",
-                "Security Knowledge Base"
-            ]
+        {
+            id: "soc-analyzer",
+            number: "04",
+            category: "CYBERSECURITY",
+            title: "SOC INCIDENT ANALYZER",
+            description:
+                "SOC Incident Analyzer for log analysis, incident detection, risk scoring and AI-assisted security analysis.",
+            tags: ["Python", "AI", "Cybersecurity", "Log Analysis"],
+            repo: "https://github.com/jalex00565-rgb/SOC-Incident-Analyzer",
+            icon: "⌁"
+        },
+
+        {
+            id: "local-ai",
+            number: "05",
+            category: "AI / SECURITY",
+            title: "LOCAL AI SECURITY ASSISTANT",
+            description:
+                "A local AI security assistant using Ollama for private document analysis, cybersecurity knowledge and AI-assisted security workflows.",
+            tags: ["Python", "Ollama", "Local AI", "Cybersecurity"],
+            repo: "https://github.com/jalex00565-rgb/Local-AI-Security-Assistant",
+            icon: "◎"
+        },
+
+        {
+            id: "mini-soc",
+            number: "06",
+            category: "AI / SECURITY",
+            title: "MINI SOC INCIDENT ANALYZER",
+            description:
+                "Security workflow for converting raw logs into detections, risk assessment, investigation context and incident reporting.",
+            tags: ["Logs", "Detection", "Risk Analysis", "Incident Reporting"],
+            repo: "https://github.com/jalex00565-rgb/Mini-SOC-Incident-Analyzer",
+            icon: "◇"
         }
 
-    };
+    ];
 
 
     /* =========================================
@@ -69,7 +90,7 @@ document.addEventListener("DOMContentLoaded", function () {
     ========================================= */
 
     const loader = document.getElementById("loader");
-    const projectsContainer = document.querySelector(".projects");
+    const container = document.querySelector(".projects");
 
     const modal = document.getElementById("modal");
     const modalKicker = document.getElementById("modalKicker");
@@ -77,8 +98,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const modalText = document.getElementById("modalText");
     const modalStack = document.getElementById("modalStack");
     const closeButton = document.getElementById("close");
-
-    const navLinks = document.querySelectorAll("header nav a");
 
 
     /* =========================================
@@ -92,114 +111,97 @@ document.addEventListener("DOMContentLoaded", function () {
         loader.style.opacity = "0";
         loader.style.pointerEvents = "none";
 
-        setTimeout(function () {
+        setTimeout(() => {
 
             if (loader && loader.parentNode) {
-                loader.parentNode.removeChild(loader);
+                loader.remove();
             }
 
         }, 600);
     }
 
-
-    /* Failsafe: loader cannot stay forever */
-
-    setTimeout(hideLoader, 2000);
-
-
-    /* =========================================
-       PROJECT ICON
-    ========================================= */
-
-    function getProjectIcon(id) {
-
-        if (id === "jarvis") {
-            return "◈";
-        }
-
-        if (id === "soc") {
-            return "⌁";
-        }
-
-        if (id === "desktop") {
-            return "◉";
-        }
-
-        return "◎";
-    }
+    /* Safety timeout */
+    setTimeout(hideLoader, 1800);
 
 
     /* =========================================
        CREATE PROJECT CARD
     ========================================= */
 
-    function createProjectCard(id, project, featured) {
+    function createProjectCard(project, index) {
 
-        const article = document.createElement("article");
+        const card = document.createElement("article");
 
-        article.className = featured
-            ? "card featured"
-            : "card";
-
-
-        const parts = project.k.split(" / ");
-
-        const number = parts[0];
-
-        const category = parts.slice(1).join(" / ");
+        card.className =
+            index === 0
+                ? "card featured"
+                : "card";
 
 
-        article.innerHTML = `
+        const tagsHTML = project.tags
+            .map(tag => `<span>${tag}</span>`)
+            .join("");
+
+
+        card.innerHTML = `
 
             <div class="card-top">
-                <span>${number}</span>
-                <span>${category}</span>
+
+                <span>
+                    ${project.number}
+                </span>
+
+                <span>
+                    ${project.category}
+                </span>
+
             </div>
+
 
             <div class="icon">
-                ${getProjectIcon(id)}
+                ${project.icon}
             </div>
+
 
             <h3>
-                ${project.t}
+                ${project.title}
             </h3>
 
+
             <p>
-                ${project.d}
+                ${project.description}
             </p>
 
+
             <div class="tags">
-
-                ${project.s.map(function (tag) {
-                    return `<b>${tag}</b>`;
-                }).join("")}
-
+                ${tagsHTML}
             </div>
 
-            <button
-                class="details project-details"
-                type="button"
-                data-project="${id}">
-                VIEW PROJECT ↗
-            </button>
 
-            ${
-                project.repo
-                    ? `
-                        <a
-                            class="details"
-                            href="${project.repo}"
-                            target="_blank"
-                            rel="noopener noreferrer">
-                            GITHUB REPOSITORY ↗
-                        </a>
-                    `
-                    : ""
-            }
+            <div class="project-actions">
+
+                <button
+                    class="details project-details"
+                    type="button"
+                    data-project="${project.id}">
+                    VIEW PROJECT ↗
+                </button>
+
+
+                <a
+                    class="details github-link"
+                    href="${project.repo}"
+                    target="_blank"
+                    rel="noopener noreferrer">
+                    GITHUB REPOSITORY ↗
+                </a>
+
+            </div>
 
         `;
 
-        return article;
+
+        return card;
     }
 
 
@@ -209,48 +211,23 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function renderProjects() {
 
-        if (!projectsContainer) {
+        if (!container) {
             console.error("Projects container not found.");
             return;
         }
 
-        projectsContainer.innerHTML = "";
+
+        container.innerHTML = "";
 
 
-        projectsContainer.appendChild(
-            createProjectCard(
-                "jarvis",
-                projects.jarvis,
-                true
-            )
-        );
+        projects.forEach((project, index) => {
 
+            container.appendChild(
+                createProjectCard(project, index)
+            );
 
-        projectsContainer.appendChild(
-            createProjectCard(
-                "soc",
-                projects.soc,
-                false
-            )
-        );
+        });
 
-
-        projectsContainer.appendChild(
-            createProjectCard(
-                "desktop",
-                projects.desktop,
-                false
-            )
-        );
-
-
-        projectsContainer.appendChild(
-            createProjectCard(
-                "localai",
-                projects.localai,
-                false
-            )
-        );
     }
 
 
@@ -258,42 +235,35 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     /* =========================================
-       OPEN PROJECT MODAL
+       OPEN MODAL
     ========================================= */
 
-    function openProject(projectId) {
+    function openProject(id) {
 
-        const project = projects[projectId];
-
-        if (!project) {
-            console.error(
-                "Project not found:",
-                projectId
-            );
-            return;
-        }
+        const project =
+            projects.find(item => item.id === id);
 
 
-        if (!modal) {
-            console.error(
-                "Modal element not found in index.html."
-            );
+        if (!project || !modal) {
             return;
         }
 
 
         if (modalKicker) {
-            modalKicker.textContent = project.k;
+            modalKicker.textContent =
+                `${project.number} / ${project.category}`;
         }
 
 
         if (modalTitle) {
-            modalTitle.textContent = project.t;
+            modalTitle.textContent =
+                project.title;
         }
 
 
         if (modalText) {
-            modalText.textContent = project.d;
+            modalText.textContent =
+                project.description;
         }
 
 
@@ -302,37 +272,36 @@ document.addEventListener("DOMContentLoaded", function () {
             modalStack.innerHTML = "";
 
 
-            project.s.forEach(function (tag) {
+            project.tags.forEach(tag => {
 
-                const span =
+                const tagElement =
                     document.createElement("span");
 
-                span.textContent = tag;
+                tagElement.textContent = tag;
 
-                modalStack.appendChild(span);
+                modalStack.appendChild(tagElement);
 
             });
 
 
-            if (project.repo) {
+            /* GitHub link inside modal */
 
-                const repo =
-                    document.createElement("a");
+            const github =
+                document.createElement("a");
 
-                repo.className = "repo-link";
+            github.className = "repo-link";
 
-                repo.href = project.repo;
+            github.href = project.repo;
 
-                repo.target = "_blank";
+            github.target = "_blank";
 
-                repo.rel =
-                    "noopener noreferrer";
+            github.rel =
+                "noopener noreferrer";
 
-                repo.textContent =
-                    "VIEW GITHUB REPOSITORY ↗";
+            github.textContent =
+                "VIEW GITHUB REPOSITORY ↗";
 
-                modalStack.appendChild(repo);
-            }
+            modalStack.appendChild(github);
 
         }
 
@@ -346,7 +315,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     /* =========================================
-       CLOSE PROJECT MODAL
+       CLOSE MODAL
     ========================================= */
 
     function closeProject() {
@@ -358,14 +327,15 @@ document.addEventListener("DOMContentLoaded", function () {
         document.body.classList.remove("modal-open");
 
         document.body.style.overflow = "";
+
     }
 
 
     /* =========================================
-       PROJECT BUTTON CLICK
+       PROJECT BUTTON
     ========================================= */
 
-    document.addEventListener("click", function (event) {
+    document.addEventListener("click", event => {
 
         const button =
             event.target.closest(".project-details");
@@ -376,18 +346,18 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
 
-        const projectId =
-            button.getAttribute("data-project");
+        const id =
+            button.dataset.project;
 
 
-        if (!projectId) {
+        if (!id) {
             return;
         }
 
 
         event.preventDefault();
 
-        openProject(projectId);
+        openProject(id);
 
     });
 
@@ -414,7 +384,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         modal.addEventListener(
             "click",
-            function (event) {
+            event => {
 
                 if (event.target === modal) {
                     closeProject();
@@ -427,12 +397,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     /* =========================================
-       ESCAPE KEY
+       ESC KEY
     ========================================= */
 
     document.addEventListener(
         "keydown",
-        function (event) {
+        event => {
 
             if (event.key === "Escape") {
                 closeProject();
@@ -443,16 +413,20 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     /* =========================================
-       ACTIVE NAVIGATION
+       NAVIGATION
     ========================================= */
 
-    function updateActiveNavigation() {
-
-        const currentPosition =
-            window.scrollY + 150;
+    const navLinks =
+        document.querySelectorAll("header nav a");
 
 
-        navLinks.forEach(function (link) {
+    function updateNavigation() {
+
+        const position =
+            window.scrollY + 160;
+
+
+        navLinks.forEach(link => {
 
             const href =
                 link.getAttribute("href");
@@ -466,26 +440,26 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
 
-            const target =
+            const section =
                 document.querySelector(href);
 
 
-            if (!target) {
+            if (!section) {
                 return;
             }
 
 
             const top =
-                target.offsetTop;
+                section.offsetTop;
 
 
             const bottom =
-                top + target.offsetHeight;
+                top + section.offsetHeight;
 
 
             if (
-                currentPosition >= top &&
-                currentPosition < bottom
+                position >= top &&
+                position < bottom
             ) {
 
                 link.classList.add("active");
@@ -503,38 +477,38 @@ document.addEventListener("DOMContentLoaded", function () {
 
     window.addEventListener(
         "scroll",
-        updateActiveNavigation,
+        updateNavigation,
         { passive: true }
     );
 
 
-    updateActiveNavigation();
+    updateNavigation();
 
 
     /* =========================================
-       SMOOTH NAVIGATION
+       SMOOTH SCROLL
     ========================================= */
 
-    navLinks.forEach(function (link) {
+    navLinks.forEach(link => {
 
         link.addEventListener(
             "click",
-            function (event) {
+            event => {
 
-                const targetId =
+                const href =
                     link.getAttribute("href");
 
 
                 if (
-                    !targetId ||
-                    !targetId.startsWith("#")
+                    !href ||
+                    !href.startsWith("#")
                 ) {
                     return;
                 }
 
 
                 const target =
-                    document.querySelector(targetId);
+                    document.querySelector(href);
 
 
                 if (!target) {
@@ -562,11 +536,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
     window.addEventListener(
         "load",
-        function () {
+        () => {
 
             hideLoader();
 
-            updateActiveNavigation();
+            updateNavigation();
 
         }
     );
