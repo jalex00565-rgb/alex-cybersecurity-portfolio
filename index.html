@@ -1,632 +1,992 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <meta name="description"
-        content="Alex Jacob — Cybersecurity, SOC and AI Portfolio">
+<meta name="description" content="Alex Jacob — Cybersecurity, SOC and AI Portfolio">
 
-    <meta name="google-site-verification"
-        content="nY5uFZCzUEtDmaDXPu7-_-PIgedPr-BSKfU720kxheo">
+<meta name="google-site-verification"
+content="nY5uFZCzUEtDmaDXPu7-_-PIgedPr-BSKfU720kxheo">
 
-    <title>Alex Jacob | Cybersecurity × AI</title>
+<title>Alex Jacob | Cybersecurity × AI</title>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-    <link
-        href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap"
-        rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="style.css">
+<style>
+
+/* =====================================================
+   RESET
+===================================================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background: #07090d;
+    color: #f1f5f9;
+    font-family: "Space Grotesk", sans-serif;
+    overflow-x: hidden;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+
+/* =====================================================
+   VARIABLES
+===================================================== */
+
+:root {
+    --bg: #07090d;
+    --panel: #0d1219;
+    --border: #1c2631;
+    --text: #f1f5f9;
+    --muted: #8994a4;
+    --green: #75f5b4;
+    --mono: "DM Mono", monospace;
+}
+
+
+/* =====================================================
+   BACKGROUND
+===================================================== */
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+
+    background-image:
+        linear-gradient(
+            rgba(117,245,180,.035) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(117,245,180,.035) 1px,
+            transparent 1px
+        );
+
+    background-size: 74px 74px;
+}
+
+
+/* =====================================================
+   NAV
+===================================================== */
+
+.nav {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+
+    height: 80px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 7vw;
+
+    background: rgba(7,9,13,.9);
+    border-bottom: 1px solid rgba(255,255,255,.05);
+
+    backdrop-filter: blur(15px);
+}
+
+.logo {
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.logo span {
+    color: var(--green);
+}
+
+.nav nav {
+    display: flex;
+    gap: 30px;
+}
+
+.nav nav a {
+    color: #7f8998;
+    font-family: var(--mono);
+    font-size: 10px;
+    transition: .2s;
+}
+
+.nav nav a:hover {
+    color: var(--green);
+}
+
+.nav-cta {
+    padding: 12px 18px;
+    border: 1px solid var(--border);
+
+    font-family: var(--mono);
+    font-size: 10px;
+}
+
+.nav-cta:hover {
+    border-color: var(--green);
+    color: var(--green);
+}
+
+
+/* =====================================================
+   HERO
+===================================================== */
+
+.hero {
+    max-width: 1400px;
+    min-height: 850px;
+
+    margin: auto;
+
+    padding: 100px 7vw 150px;
+
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+
+    align-items: center;
+}
+
+.status {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    margin-bottom: 25px;
+
+    color: var(--green);
+    font-family: var(--mono);
+    font-size: 10px;
+}
+
+.status span {
+    width: 8px;
+    height: 8px;
+
+    border-radius: 50%;
+    background: var(--green);
+
+    box-shadow: 0 0 15px var(--green);
+}
+
+.eyebrow {
+    margin-bottom: 20px;
+
+    color: #7f8998;
+
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 2px;
+}
+
+.hero h1 {
+    font-size: clamp(60px, 7vw, 105px);
+    line-height: .92;
+    letter-spacing: -5px;
+}
+
+.hero h1 em {
+    color: var(--green);
+    font-style: normal;
+}
+
+.lead {
+    max-width: 620px;
+
+    margin-top: 30px;
+
+    color: var(--muted);
+
+    font-size: 16px;
+    line-height: 1.7;
+}
+
+.lead strong {
+    color: white;
+}
+
+.actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 35px;
+}
+
+.btn {
+    padding: 16px 23px;
+
+    border: 1px solid var(--border);
+
+    font-size: 12px;
+    font-weight: 600;
+
+    transition: .2s;
+}
+
+.btn.primary {
+    background: var(--green);
+    color: #06100b;
+    border-color: var(--green);
+}
+
+.btn.ghost:hover {
+    border-color: var(--green);
+    color: var(--green);
+}
+
+
+/* =====================================================
+   HERO VISUAL
+===================================================== */
+
+.hero-visual {
+    position: relative;
+    min-height: 500px;
+}
+
+.orb {
+    position: absolute;
+
+    top: 20px;
+    right: 100px;
+
+    width: 210px;
+    height: 210px;
+}
+
+.orb-core {
+    position: absolute;
+    inset: 55px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid var(--green);
+    border-radius: 50%;
+
+    color: var(--green);
+    background: #07090d;
+
+    font-weight: 600;
+}
+
+.ring {
+    position: absolute;
+    inset: 0;
+
+    border: 1px solid rgba(117,245,180,.2);
+    border-radius: 50%;
+}
+
+.r2 {
+    transform: scale(1.3);
+}
+
+.r3 {
+    transform: scale(1.6);
+}
+
+
+/* =====================================================
+   TERMINAL
+===================================================== */
+
+.terminal {
+    position: absolute;
+
+    right: 0;
+    bottom: 0;
+
+    width: 100%;
+    max-width: 540px;
+
+    background: #0d1219;
+    border: 1px solid var(--border);
+}
+
+.terminal-head {
+    height: 42px;
+
+    padding: 0 18px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    border-bottom: 1px solid var(--border);
+
+    color: #687487;
+
+    font-family: var(--mono);
+    font-size: 9px;
+}
+
+.terminal-body {
+    padding: 30px 20px;
+}
+
+.terminal-body p {
+    margin-bottom: 14px;
+
+    color: #909aaa;
+
+    font-family: var(--mono);
+    font-size: 12px;
+}
+
+.terminal-body i {
+    color: #566273;
+}
+
+.terminal-body b {
+    color: white;
+}
+
+.terminal-body strong {
+    color: var(--green);
+}
+
+
+/* =====================================================
+   STATS
+===================================================== */
+
+.hero-stats {
+    position: absolute;
+
+    left: 7vw;
+    right: 7vw;
+    bottom: 35px;
+
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+
+    border-top: 1px solid var(--border);
+
+    padding-top: 25px;
+}
+
+.hero-stats div {
+    display: flex;
+    gap: 12px;
+}
+
+.hero-stats strong {
+    color: var(--green);
+    font-family: var(--mono);
+}
+
+.hero-stats span {
+    color: #758091;
+    font-size: 10px;
+}
+
+
+/* =====================================================
+   SECTIONS
+===================================================== */
+
+.section {
+    max-width: 1400px;
+
+    margin: auto;
+
+    padding: 110px 7vw;
+}
+
+.section-label {
+    margin-bottom: 55px;
+
+    color: #788394;
+
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 2px;
+}
+
+
+/* =====================================================
+   ABOUT
+===================================================== */
+
+.about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+}
+
+.about-grid h2 {
+    font-size: clamp(50px,5vw,75px);
+    line-height: .95;
+    letter-spacing: -3px;
+}
+
+.about-grid h2 span {
+    color: var(--green);
+}
+
+.about-copy {
+    color: var(--muted);
+    line-height: 1.8;
+    font-size: 15px;
+}
+
+.about-copy p {
+    margin-bottom: 22px;
+}
+
+.about-copy strong {
+    color: white;
+}
+
+.quote {
+    margin-top: 35px;
+    padding-left: 18px;
+
+    border-left: 2px solid var(--green);
+
+    color: var(--green);
+
+    font-family: var(--mono);
+    font-size: 11px;
+}
+
+
+/* =====================================================
+   PROJECTS
+===================================================== */
+
+.projects {
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    gap: 16px;
+}
+
+.card {
+    min-height: 440px;
+
+    padding: 30px;
+
+    display: flex;
+    flex-direction: column;
+
+    background: #0d1219;
+    border: 1px solid var(--border);
+
+    transition: .25s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(117,245,180,.4);
+}
+
+.card-top {
+    display: flex;
+    justify-content: space-between;
+
+    color: #667181;
+
+    font-family: var(--mono);
+    font-size: 10px;
+}
+
+.card-icon {
+    margin-top: 55px;
+    margin-bottom: 20px;
+
+    color: var(--green);
+    font-size: 34px;
+}
+
+.card h3 {
+    margin-bottom: 15px;
+
+    font-size: 21px;
+}
+
+.card p {
+    margin-bottom: 25px;
+
+    color: var(--muted);
+
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+.tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+
+    margin-top: auto;
+}
+
+.tags span {
+    padding: 7px 9px;
+
+    border: 1px solid var(--border);
+
+    color: #9ca6b5;
+
+    font-family: var(--mono);
+    font-size: 9px;
+}
+
+.project-link {
+    display: inline-block;
+
+    width: max-content;
+
+    margin-top: 20px;
+    padding-bottom: 5px;
+
+    border-bottom: 1px solid var(--green);
+
+    color: var(--green);
+
+    font-family: var(--mono);
+    font-size: 10px;
+}
+
+
+/* =====================================================
+   SKILLS
+===================================================== */
+
+.skills-grid {
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+
+    border-top: 1px solid var(--border);
+    border-left: 1px solid var(--border);
+}
+
+.skill {
+    min-height: 230px;
+    padding: 35px;
+
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+}
+
+.skill > span {
+    color: var(--green);
+    font-family: var(--mono);
+    font-size: 10px;
+}
+
+.skill h3 {
+    margin: 35px 0 12px;
+    font-size: 22px;
+}
+
+.skill p {
+    color: var(--muted);
+    line-height: 1.7;
+    font-size: 13px;
+}
+
+.tool-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 40px;
+}
+
+.tool-cloud span {
+    padding: 9px 12px;
+
+    border: 1px solid var(--border);
+
+    color: #8994a4;
+
+    font-family: var(--mono);
+    font-size: 9px;
+}
+
+
+/* =====================================================
+   JOURNEY
+===================================================== */
+
+.timeline {
+    max-width: 900px;
+
+    border-left: 1px solid var(--border);
+}
+
+.time-item {
+    position: relative;
+
+    padding: 0 0 55px 35px;
+}
+
+.time-item > span {
+    position: absolute;
+
+    left: -10px;
+
+    width: 19px;
+    height: 19px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid var(--green);
+    border-radius: 50%;
+
+    background: var(--bg);
+
+    color: var(--green);
+
+    font-family: var(--mono);
+    font-size: 7px;
+}
+
+.time-item small {
+    color: var(--green);
+    font-family: var(--mono);
+    font-size: 9px;
+}
+
+.time-item h3 {
+    margin: 10px 0;
+    font-size: 24px;
+}
+
+.time-item p {
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+
+/* =====================================================
+   PROFILE
+===================================================== */
+
+.profile-terminal {
+    background: #0d1219;
+    border: 1px solid var(--border);
+}
+
+.profile-code {
+    padding: 35px;
+
+    font-family: var(--mono);
+    font-size: 12px;
+    line-height: 2;
+    color: #9aa5b5;
+}
+
+.green,
+.accent {
+    color: var(--green);
+}
+
+
+/* =====================================================
+   CONTACT
+===================================================== */
+
+.contact {
+    text-align: center;
+}
+
+.contact .section-label {
+    text-align: left;
+}
+
+.contact h2 {
+    font-size: clamp(55px,7vw,100px);
+    line-height: .95;
+    letter-spacing: -4px;
+}
+
+.contact h2 span {
+    color: var(--green);
+}
+
+.contact > p {
+    max-width: 600px;
+
+    margin: 30px auto;
+
+    color: var(--muted);
+
+    line-height: 1.7;
+}
+
+.contact-actions {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.contact-actions a {
+    padding: 14px 20px;
+
+    border: 1px solid var(--border);
+
+    font-family: var(--mono);
+    font-size: 10px;
+}
+
+.contact-actions a:hover {
+    border-color: var(--green);
+    color: var(--green);
+}
+
+.contact-actions .email {
+    color: var(--green);
+    border-color: var(--green);
+}
+
+
+/* =====================================================
+   FOOTER
+===================================================== */
+
+footer {
+    max-width: 1400px;
+
+    margin: auto;
+
+    padding: 30px 7vw;
+
+    display: flex;
+    justify-content: space-between;
+
+    border-top: 1px solid var(--border);
+
+    color: #596575;
+
+    font-family: var(--mono);
+    font-size: 9px;
+}
+
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media(max-width:900px) {
+
+    .nav nav {
+        display: none;
+    }
+
+    .hero {
+        grid-template-columns: 1fr;
+        padding-bottom: 170px;
+    }
+
+    .projects {
+        grid-template-columns: repeat(2,1fr);
+    }
+
+    .about-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .hero-stats {
+        grid-template-columns: repeat(2,1fr);
+        gap: 20px;
+    }
+}
+
+
+@media(max-width:600px) {
+
+    .nav {
+        padding: 0 20px;
+    }
+
+    .hero,
+    .section {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+
+    .hero h1 {
+        font-size: 55px;
+        letter-spacing: -3px;
+    }
+
+    .hero-visual {
+        min-height: 400px;
+    }
+
+    .orb {
+        right: 50%;
+        transform: translateX(50%);
+    }
+
+    .projects {
+        grid-template-columns: 1fr;
+    }
+
+    .skills-grid {
+        grid-template-columns: 1fr;
+    }
+
+    footer {
+        flex-direction: column;
+        gap: 12px;
+        text-align: center;
+    }
+}
+
+</style>
 </head>
+
 
 <body>
 
-    <div class="noise"></div>
-    <div class="grid-bg"></div>
+
+<!-- =====================================================
+     NAVIGATION
+===================================================== -->
+
+<header class="nav">
+
+    <a class="logo" href="#home">
+        AJ<span>.</span>
+    </a>
+
+    <nav>
+        <a href="#home">HOME</a>
+        <a href="#about">ABOUT</a>
+        <a href="#projects">PROJECTS</a>
+        <a href="#skills">SKILLS</a>
+        <a href="#journey">JOURNEY</a>
+        <a href="#contact">CONTACT</a>
+    </nav>
+
+    <a class="nav-cta" href="#contact">
+        LET'S TALK ↗
+    </a>
+
+</header>
 
 
-    <!-- NAVIGATION -->
-    <header class="nav">
+<!-- =====================================================
+     HOME
+===================================================== -->
 
-        <a class="logo" href="#home">
-            AJ<span>.</span>
-        </a>
+<section id="home" class="hero">
 
-        <nav>
-            <a href="#home">HOME</a>
-            <a href="#about">ABOUT</a>
-            <a href="#projects">PROJECTS</a>
-            <a href="#skills">SKILLS</a>
-            <a href="#journey">JOURNEY</a>
-            <a href="#contact">CONTACT</a>
-        </nav>
+    <div>
 
-        <a class="nav-cta" href="#contact">
-            LET'S TALK ↗
-        </a>
+        <div class="status">
+            <span></span>
+            AVAILABLE FOR OPPORTUNITIES
+        </div>
 
-    </header>
+        <p class="eyebrow">
+            CYBERSECURITY × ARTIFICIAL INTELLIGENCE
+        </p>
+
+        <h1>
+            Building systems<br>
+            that <em>defend.</em>
+        </h1>
+
+        <p class="lead">
+            I'm <strong>Alex Jacob</strong> — a cybersecurity-focused
+            developer building practical security tools, AI assistants
+            and SOC-oriented systems.
+        </p>
+
+        <div class="actions">
+
+            <a class="btn primary" href="#projects">
+                Explore Projects ↗
+            </a>
+
+            <a class="btn ghost" href="#contact">
+                Contact Me
+            </a>
+
+        </div>
+
+    </div>
 
 
-    <main>
+    <div class="hero-visual">
 
-        <!-- HOME -->
-        <section id="home" class="hero">
+        <div class="orb">
 
-            <div class="hero-copy">
+            <div class="orb-core">
+                AJ
+            </div>
 
-                <div class="status">
-                    <span></span>
-                    AVAILABLE FOR OPPORTUNITIES
-                </div>
+            <span class="ring"></span>
+            <span class="ring r2"></span>
+            <span class="ring r3"></span>
 
-                <p class="eyebrow">
-                    CYBERSECURITY × ARTIFICIAL INTELLIGENCE
+        </div>
+
+
+        <div class="terminal">
+
+            <div class="terminal-head">
+                <span>SECURITY_WORKSPACE</span>
+                <span>● ● ●</span>
+            </div>
+
+            <div class="terminal-body">
+
+                <p>
+                    <i>01</i>
+                    <b>system</b>
+                    →
+                    online
                 </p>
 
-                <h1>
-                    Building systems<br>
-                    that <em>defend.</em>
-                </h1>
-
-                <p class="lead">
-                    I'm <strong>Alex Jacob</strong> — a cybersecurity-focused
-                    developer building practical security tools, AI assistants
-                    and SOC-oriented systems.
+                <p>
+                    <i>02</i>
+                    <b>focus</b>
+                    →
+                    SOC / AI Security
                 </p>
 
-                <div class="actions">
+                <p>
+                    <i>03</i>
+                    <b>projects</b>
+                    →
+                    06 active
+                </p>
+
+                <p>
+                    <i>04</i>
+                    <b>threat_mode</b>
+                    →
+                    <strong>READY</strong>
+                </p>
 
-                    <a class="btn primary" href="#projects">
-                        Explore Projects ↗
-                    </a>
-
-                    <a class="btn ghost" href="#contact">
-                        Contact Me
-                    </a>
-
-                </div>
-
-            </div>
-
-
-            <div class="hero-visual">
-
-                <div class="orb">
-
-                    <div class="orb-core">
-                        AJ
-                    </div>
-
-                    <span class="ring r1"></span>
-                    <span class="ring r2"></span>
-                    <span class="ring r3"></span>
-
-                </div>
-
-
-                <div class="terminal">
-
-                    <div class="terminal-head">
-
-                        <span>
-                            SECURITY_WORKSPACE
-                        </span>
-
-                        <span>
-                            ● ● ●
-                        </span>
-
-                    </div>
-
-
-                    <div class="terminal-body">
-
-                        <p>
-                            <i>01</i>
-                            <b>system</b>
-                            <span>→</span>
-                            online
-                        </p>
-
-                        <p>
-                            <i>02</i>
-                            <b>focus</b>
-                            <span>→</span>
-                            SOC / AI Security
-                        </p>
-
-                        <p>
-                            <i>03</i>
-                            <b>projects</b>
-                            <span>→</span>
-                            06 active
-                        </p>
-
-                        <p>
-                            <i>04</i>
-                            <b>threat_mode</b>
-                            <span>→</span>
-                            <strong>READY</strong>
-                        </p>
-
-                        <div class="cursor"></div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <div class="hero-stats">
-
-                <div>
-                    <strong>01</strong>
-                    <span>
-                        Cybersecurity<br>
-                        Focus
-                    </span>
-                </div>
-
-                <div>
-                    <strong>AI</strong>
-                    <span>
-                        Automation &<br>
-                        Intelligent Tools
-                    </span>
-                </div>
-
-                <div>
-                    <strong>SOC</strong>
-                    <span>
-                        Detection &<br>
-                        Incident Analysis
-                    </span>
-                </div>
-
-                <div>
-                    <strong>BUILD</strong>
-                    <span>
-                        Learn through<br>
-                        real projects
-                    </span>
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- ABOUT -->
-        <section id="about" class="section">
-
-            <div class="section-label">
-                01 / ABOUT
-            </div>
-
-            <div class="about-grid">
-
-                <div>
-
-                    <h2>
-                        Cybersecurity<br>
-                        meets <span>AI.</span>
-                    </h2>
-
-                </div>
-
-
-                <div class="about-copy">
-
-                    <p>
-                        I'm <strong>Alex Jacob</strong>, a cybersecurity-focused
-                        developer building practical security tools, AI assistants
-                        and SOC-oriented systems.
-                    </p>
-
-                    <p>
-                        My approach is project-driven: I turn cybersecurity
-                        concepts into working systems for log analysis,
-                        threat detection, risk assessment, automation and
-                        AI-assisted security workflows.
-                    </p>
-
-                    <p>
-                        My current focus is SOC operations and cybersecurity,
-                        while exploring the intersection of artificial
-                        intelligence, automation and defensive security.
-                    </p>
-
-                    <div class="quote">
-                        “Understand the threat. Build the system. Improve the defense.”
-                    </div>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- PROJECTS -->
-        <section id="projects" class="section">
-
-            <div class="section-label">
-                02 / SELECTED PROJECTS
-            </div>
-
-            <div class="projects"></div>
-
-        </section>
-
-
-        <!-- SKILLS -->
-        <section id="skills" class="section">
-
-            <div class="section-label">
-                03 / CAPABILITIES
-            </div>
-
-
-            <div class="skills-grid">
-
-                <div class="skill">
-
-                    <span>01</span>
-
-                    <h3>
-                        SOC Operations
-                    </h3>
-
-                    <p>
-                        Monitoring, log analysis, detection,
-                        alert triage and incident workflows.
-                    </p>
-
-                </div>
-
-
-                <div class="skill">
-
-                    <span>02</span>
-
-                    <h3>
-                        Security Tools
-                    </h3>
-
-                    <p>
-                        Nmap, Burp Suite, Nuclei, Gobuster,
-                        Wireshark and Linux tooling.
-                    </p>
-
-                </div>
-
-
-                <div class="skill">
-
-                    <span>03</span>
-
-                    <h3>
-                        Python & AI
-                    </h3>
-
-                    <p>
-                        Automation, Streamlit applications,
-                        AI assistants and security-focused tooling.
-                    </p>
-
-                </div>
-
-
-                <div class="skill">
-
-                    <span>04</span>
-
-                    <h3>
-                        Threat Analysis
-                    </h3>
-
-                    <p>
-                        Brute force, suspicious activity, malware
-                        concepts and incident investigation.
-                    </p>
-
-                </div>
-
-            </div>
-
-
-            <div class="tool-cloud">
-
-                <span>Python</span>
-                <span>Linux</span>
-                <span>Nmap</span>
-                <span>Burp Suite</span>
-                <span>Nuclei</span>
-                <span>Gobuster</span>
-                <span>Wireshark</span>
-                <span>Streamlit</span>
-                <span>Gemini</span>
-                <span>Git</span>
-
-            </div>
-
-        </section>
-
-
-        <!-- JOURNEY -->
-        <section id="journey" class="section">
-
-            <div class="section-label">
-                04 / JOURNEY
-            </div>
-
-
-            <div class="timeline">
-
-                <div class="time-item">
-
-                    <span>01</span>
-
-                    <div>
-
-                        <small>
-                            CURRENT FOCUS
-                        </small>
-
-                        <h3>
-                            SOC & Cybersecurity
-                        </h3>
-
-                        <p>
-                            Building fundamentals around security
-                            operations, monitoring, detection and
-                            incident analysis.
-                        </p>
-
-                    </div>
-
-                </div>
-
-
-                <div class="time-item">
-
-                    <span>02</span>
-
-                    <div>
-
-                        <small>
-                            PROJECT PHASE
-                        </small>
-
-                        <h3>
-                            AI + Security Tools
-                        </h3>
-
-                        <p>
-                            Turning cybersecurity learning into practical
-                            Python and AI-powered projects.
-                        </p>
-
-                    </div>
-
-                </div>
-
-
-                <div class="time-item">
-
-                    <span>03</span>
-
-                    <div>
-
-                        <small>
-                            NEXT DIRECTION
-                        </small>
-
-                        <h3>
-                            AI for Cybersecurity
-                        </h3>
-
-                        <p>
-                            Exploring LLM security, automation and
-                            intelligent security workflows.
-                        </p>
-
-                    </div>
-
-                </div>
-
-
-                <div class="time-item">
-
-                    <span>04</span>
-
-                    <div>
-
-                        <small>
-                            LONG-TERM
-                        </small>
-
-                        <h3>
-                            Security Specialization
-                        </h3>
-
-                        <p>
-                            Deepening expertise in ransomware detection,
-                            investigation, containment and recovery.
-                        </p>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- SYSTEM PROFILE -->
-        <section class="section terminal-section">
-
-            <div class="section-label">
-                05 / SYSTEM PROFILE
-            </div>
-
-
-            <div class="profile-terminal">
-
-                <div class="terminal-head">
-
-                    <span>
-                        alex@security-lab:~
-                    </span>
-
-                    <span>
-                        STATUS: ONLINE
-                    </span>
-
-                </div>
-
-
-                <div class="profile-code">
-
-                    <p>
-                        <span class="green">
-                            alex@security-lab
-                        </span>:~$ whoami
-                    </p>
-
-                    <p>
-                        Cybersecurity-focused developer
-                    </p>
-
-                    <p>
-                        <span class="green">
-                            alex@security-lab
-                        </span>:~$ cat focus.txt
-                    </p>
-
-                    <p>
-                        Security Operations • AI • Automation • Threat Analysis
-                    </p>
-
-                    <p>
-                        <span class="green">
-                            alex@security-lab
-                        </span>:~$ ./mission
-                    </p>
-
-                    <p class="accent">
-                        Build practical systems. Understand the threat.
-                        Improve the defense.
-                    </p>
-
-                    <span class="cursor"></span>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- CONTACT -->
-        <section id="contact" class="section contact">
-
-            <div class="section-label">
-                06 / CONTACT
-            </div>
-
-
-            <h2>
-                Let's build something<br>
-                <span>useful.</span>
-            </h2>
-
-
-            <p>
-                Open to cybersecurity, SOC and security-focused
-                development opportunities.
-            </p>
-
-
-            <div class="contact-actions">
-
-                <a
-                    class="email"
-                    href="mailto:jalex00565@gmail.com">
-                    jalex00565@gmail.com ↗
-                </a>
-
-
-                <a
-                    class="social"
-                    href="https://github.com/jalex00565-rgb/"
-                    target="_blank"
-                    rel="noopener noreferrer">
-                    GitHub ↗
-                </a>
-
-
-                <a
-                    class="social"
-                    href="https://www.linkedin.com/in/alex-jacob-942a83312/"
-                    target="_blank"
-                    rel="noopener noreferrer">
-                    LinkedIn ↗
-                </a>
-
-            </div>
-
-
-            <p class="replace-note">
-                For professional enquiries, use the contact links above.
-            </p>
-
-        </section>
-
-    </main>
-
-
-    <!-- PROJECT DETAILS MODAL -->
-    <div id="modal" class="modal">
-
-        <div class="modal-box">
-
-            <button
-                id="close"
-                class="close"
-                type="button"
-                aria-label="Close project details">
-                ×
-            </button>
-
-
-            <div
-                id="modalKicker"
-                class="modal-kicker">
-                PROJECT
-            </div>
-
-
-            <h2 id="modalTitle">
-                Project Title
-            </h2>
-
-
-            <p id="modalText">
-                Project description
-            </p>
-
-
-            <div
-                id="modalStack"
-                class="modal-stack">
             </div>
 
         </div>
@@ -634,27 +994,599 @@
     </div>
 
 
-    <!-- FOOTER -->
-    <footer>
+    <div class="hero-stats">
 
-        <span>
-            © 2026 ALEX JACOB
-        </span>
+        <div>
+            <strong>01</strong>
+            <span>Cybersecurity<br>Focus</span>
+        </div>
 
-        <span>
-            CYBERSECURITY × AI
-        </span>
+        <div>
+            <strong>AI</strong>
+            <span>Automation &<br>Intelligent Tools</span>
+        </div>
 
-        <span>
-            BUILT WITH HTML / CSS / JS
-        </span>
+        <div>
+            <strong>SOC</strong>
+            <span>Detection &<br>Incident Analysis</span>
+        </div>
 
-    </footer>
+        <div>
+            <strong>BUILD</strong>
+            <span>Learn through<br>real projects</span>
+        </div>
+
+    </div>
+
+</section>
 
 
-    <!-- JAVASCRIPT -->
-    <script src="script.js"></script>
+<!-- =====================================================
+     ABOUT
+===================================================== -->
+
+<section id="about" class="section">
+
+    <div class="section-label">
+        01 / ABOUT
+    </div>
+
+    <div class="about-grid">
+
+        <div>
+            <h2>
+                Cybersecurity<br>
+                meets <span>AI.</span>
+            </h2>
+        </div>
+
+        <div class="about-copy">
+
+            <p>
+                I'm <strong>Alex Jacob</strong>, a cybersecurity-focused
+                developer building practical security tools, AI assistants
+                and SOC-oriented systems.
+            </p>
+
+            <p>
+                My approach is project-driven: I turn cybersecurity
+                concepts into working systems for log analysis,
+                threat detection, risk assessment, automation and
+                AI-assisted security workflows.
+            </p>
+
+            <p>
+                My current focus is SOC operations and cybersecurity,
+                while exploring the intersection of artificial
+                intelligence, automation and defensive security.
+            </p>
+
+            <div class="quote">
+                “Understand the threat. Build the system. Improve the defense.”
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     PROJECTS
+===================================================== -->
+
+<section id="projects" class="section">
+
+    <div class="section-label">
+        02 / SELECTED PROJECTS
+    </div>
+
+
+    <div class="projects">
+
+
+        <!-- PROJECT 01 -->
+
+        <article class="card">
+
+            <div class="card-top">
+                <span>01</span>
+                <span>AI / PYTHON</span>
+            </div>
+
+            <div class="card-icon">◇</div>
+
+            <h3>JARVIS AI</h3>
+
+            <p>
+                Personal AI assistant built with Python,
+                Streamlit and Gemini. Foundation for voice
+                interaction, file analysis, memory and
+                SOC assistance.
+            </p>
+
+            <div class="tags">
+                <span>Python</span>
+                <span>Streamlit</span>
+                <span>Gemini AI</span>
+                <span>AI Assistant</span>
+            </div>
+
+            <a class="project-link"
+               href="https://github.com/jalex00565-rgb"
+               target="_blank">
+                VIEW PROJECT ↗
+            </a>
+
+        </article>
+
+
+        <!-- PROJECT 02 -->
+
+        <article class="card">
+
+            <div class="card-top">
+                <span>02</span>
+                <span>CYBERSECURITY</span>
+            </div>
+
+            <div class="card-icon">⌁</div>
+
+            <h3>RAVEN SOC</h3>
+
+            <p>
+                A cybersecurity-focused SOC project for
+                security monitoring, log analysis, detection
+                and incident investigation.
+            </p>
+
+            <div class="tags">
+                <span>Python</span>
+                <span>SOC</span>
+                <span>Log Analysis</span>
+                <span>Detection</span>
+            </div>
+
+            <a class="project-link"
+               href="https://github.com/jalex00565-rgb"
+               target="_blank">
+                VIEW PROJECT ↗
+            </a>
+
+        </article>
+
+
+        <!-- PROJECT 03 -->
+
+        <article class="card">
+
+            <div class="card-top">
+                <span>03</span>
+                <span>AI / PYTHON</span>
+            </div>
+
+            <div class="card-icon">◎</div>
+
+            <h3>JARVIS AI DESKTOP</h3>
+
+            <p>
+                AI-powered Windows desktop assistant with
+                voice interaction, memory, system monitoring
+                and automation.
+            </p>
+
+            <div class="tags">
+                <span>Python</span>
+                <span>Windows</span>
+                <span>Voice AI</span>
+                <span>Automation</span>
+            </div>
+
+            <a class="project-link"
+               href="https://github.com/jalex00565-rgb"
+               target="_blank">
+                VIEW PROJECT ↗
+            </a>
+
+        </article>
+
+
+        <!-- PROJECT 04 -->
+
+        <article class="card">
+
+            <div class="card-top">
+                <span>04</span>
+                <span>CYBERSECURITY</span>
+            </div>
+
+            <div class="card-icon">⌁</div>
+
+            <h3>SOC INCIDENT ANALYZER</h3>
+
+            <p>
+                SOC Incident Analyzer for log analysis,
+                incident detection, risk scoring and
+                AI-assisted security analysis.
+            </p>
+
+            <div class="tags">
+                <span>Python</span>
+                <span>AI</span>
+                <span>Cybersecurity</span>
+                <span>Log Analysis</span>
+            </div>
+
+            <a class="project-link"
+               href="https://github.com/jalex00565-rgb"
+               target="_blank">
+                VIEW PROJECT ↗
+            </a>
+
+        </article>
+
+
+        <!-- PROJECT 05 -->
+
+        <article class="card">
+
+            <div class="card-top">
+                <span>05</span>
+                <span>AI / SECURITY</span>
+            </div>
+
+            <div class="card-icon">◎</div>
+
+            <h3>LOCAL AI SECURITY ASSISTANT</h3>
+
+            <p>
+                A local AI security assistant using Ollama
+                for private document analysis, cybersecurity
+                knowledge and AI-assisted security workflows.
+            </p>
+
+            <div class="tags">
+                <span>Python</span>
+                <span>Ollama</span>
+                <span>Local AI</span>
+                <span>Cybersecurity</span>
+            </div>
+
+            <a class="project-link"
+               href="https://github.com/jalex00565-rgb"
+               target="_blank">
+                VIEW PROJECT ↗
+            </a>
+
+        </article>
+
+
+        <!-- PROJECT 06 -->
+
+        <article class="card">
+
+            <div class="card-top">
+                <span>06</span>
+                <span>AI / SECURITY</span>
+            </div>
+
+            <div class="card-icon">◇</div>
+
+            <h3>MINI SOC INCIDENT ANALYZER</h3>
+
+            <p>
+                Security workflow for converting raw logs
+                into detections, risk assessment,
+                investigation context and incident reporting.
+            </p>
+
+            <div class="tags">
+                <span>Logs</span>
+                <span>Detection</span>
+                <span>Risk Analysis</span>
+                <span>Incident Reporting</span>
+            </div>
+
+            <a class="project-link"
+               href="https://github.com/jalex00565-rgb"
+               target="_blank">
+                VIEW PROJECT ↗
+            </a>
+
+        </article>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     SKILLS
+===================================================== -->
+
+<section id="skills" class="section">
+
+    <div class="section-label">
+        03 / CAPABILITIES
+    </div>
+
+    <div class="skills-grid">
+
+        <div class="skill">
+            <span>01</span>
+
+            <h3>SOC Operations</h3>
+
+            <p>
+                Monitoring, log analysis, detection,
+                alert triage and incident workflows.
+            </p>
+        </div>
+
+        <div class="skill">
+            <span>02</span>
+
+            <h3>Security Tools</h3>
+
+            <p>
+                Nmap, Burp Suite, Nuclei, Gobuster,
+                Wireshark and Linux tooling.
+            </p>
+        </div>
+
+        <div class="skill">
+            <span>03</span>
+
+            <h3>Python & AI</h3>
+
+            <p>
+                Automation, Streamlit applications,
+                AI assistants and security-focused tooling.
+            </p>
+        </div>
+
+        <div class="skill">
+            <span>04</span>
+
+            <h3>Threat Analysis</h3>
+
+            <p>
+                Brute force, suspicious activity,
+                malware concepts and incident investigation.
+            </p>
+        </div>
+
+    </div>
+
+
+    <div class="tool-cloud">
+
+        <span>Python</span>
+        <span>Linux</span>
+        <span>Nmap</span>
+        <span>Burp Suite</span>
+        <span>Nuclei</span>
+        <span>Gobuster</span>
+        <span>Wireshark</span>
+        <span>Streamlit</span>
+        <span>Gemini</span>
+        <span>Git</span>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     JOURNEY
+===================================================== -->
+
+<section id="journey" class="section">
+
+    <div class="section-label">
+        04 / JOURNEY
+    </div>
+
+    <div class="timeline">
+
+        <div class="time-item">
+
+            <span>01</span>
+
+            <div>
+                <small>CURRENT FOCUS</small>
+
+                <h3>SOC & Cybersecurity</h3>
+
+                <p>
+                    Building fundamentals around security
+                    operations, monitoring, detection and
+                    incident analysis.
+                </p>
+            </div>
+
+        </div>
+
+
+        <div class="time-item">
+
+            <span>02</span>
+
+            <div>
+                <small>PROJECT PHASE</small>
+
+                <h3>AI + Security Tools</h3>
+
+                <p>
+                    Turning cybersecurity learning into
+                    practical Python and AI-powered projects.
+                </p>
+            </div>
+
+        </div>
+
+
+        <div class="time-item">
+
+            <span>03</span>
+
+            <div>
+                <small>NEXT DIRECTION</small>
+
+                <h3>AI for Cybersecurity</h3>
+
+                <p>
+                    Exploring LLM security, automation
+                    and intelligent security workflows.
+                </p>
+            </div>
+
+        </div>
+
+
+        <div class="time-item">
+
+            <span>04</span>
+
+            <div>
+                <small>LONG-TERM</small>
+
+                <h3>Security Specialization</h3>
+
+                <p>
+                    Deepening expertise in ransomware detection,
+                    investigation, containment and recovery.
+                </p>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     SYSTEM PROFILE
+===================================================== -->
+
+<section class="section">
+
+    <div class="section-label">
+        05 / SYSTEM PROFILE
+    </div>
+
+    <div class="profile-terminal">
+
+        <div class="terminal-head">
+
+            <span>
+                alex@security-lab:~
+            </span>
+
+            <span>
+                STATUS: ONLINE
+            </span>
+
+        </div>
+
+        <div class="profile-code">
+
+            <p>
+                <span class="green">
+                    alex@security-lab
+                </span>:~$ whoami
+            </p>
+
+            <p>
+                Cybersecurity-focused developer
+            </p>
+
+            <p>
+                <span class="green">
+                    alex@security-lab
+                </span>:~$ cat focus.txt
+            </p>
+
+            <p>
+                Security Operations • AI • Automation • Threat Analysis
+            </p>
+
+            <p>
+                <span class="green">
+                    alex@security-lab
+                </span>:~$ ./mission
+            </p>
+
+            <p class="accent">
+                Build practical systems. Understand the threat.
+                Improve the defense.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     CONTACT
+===================================================== -->
+
+<section id="contact" class="section contact">
+
+    <div class="section-label">
+        06 / CONTACT
+    </div>
+
+    <h2>
+        Let's build something<br>
+        <span>useful.</span>
+    </h2>
+
+    <p>
+        Open to cybersecurity, SOC and security-focused
+        development opportunities.
+    </p>
+
+    <div class="contact-actions">
+
+        <a class="email"
+           href="mailto:jalex00565@gmail.com">
+            jalex00565@gmail.com ↗
+        </a>
+
+        <a href="https://github.com/jalex00565-rgb/"
+           target="_blank">
+            GitHub ↗
+        </a>
+
+        <a href="https://www.linkedin.com/in/alex-jacob-942a83312/"
+           target="_blank">
+            LinkedIn ↗
+        </a>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     FOOTER
+===================================================== -->
+
+<footer>
+
+    <span>© 2026 ALEX JACOB</span>
+
+    <span>CYBERSECURITY × AI</span>
+
+    <span>BUILT WITH HTML / CSS / JS</span>
+
+</footer>
+
 
 </body>
-
 </html>
