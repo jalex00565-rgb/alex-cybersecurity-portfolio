@@ -1,714 +1,315 @@
-/* =========================================================
-   ALEX JACOB — CYBERSECURITY × AI PORTFOLIO
-   LIVE GITHUB PROJECT SYNC
-========================================================= */
-
 document.addEventListener("DOMContentLoaded", () => {
 
-    const GITHUB_USERNAME = "jalex00565-rgb";
+    const USERNAME = "jalex00565-rgb";
 
-    const GITHUB_API =
-        `https://api.github.com/users/${GITHUB_USERNAME}/repos?per_page=100&sort=updated`;
+    const API =
+        `https://api.github.com/users/${USERNAME}/repos?per_page=100&sort=updated`;
 
-    const projectContainer =
-        document.querySelector(".projects");
+    const grid = document.getElementById("projectsGrid");
+    const count = document.getElementById("projectCount");
+    const loader = document.getElementById("loader");
 
-    const loader =
-        document.getElementById("loader");
+    /*
+     * These are the 8 portfolio projects.
+     * The GitHub links are kept explicit so the website
+     * does not lose projects if a repository description changes.
+     */
 
-
-    /* =====================================================
-       IMPORTANT PROJECT DETAILS
-    ===================================================== */
-
-    const PROJECT_CONFIG = {
-
-        "JarvisAI": {
-            title: "JARVIS AI",
+    const PROJECTS = [
+        {
+            name: "JARVIS AI",
+            repo: "JarvisAI",
             category: "AI / PYTHON",
+            icon: "◇",
             description:
                 "Personal AI assistant built with Python, Streamlit and AI technologies.",
-            tags: [
-                "Python",
-                "Streamlit",
-                "AI Assistant"
-            ]
+            tags: ["Python", "Streamlit", "AI Assistant"],
+            url: "https://github.com/jalex00565-rgb/JarvisAI"
         },
 
-        "RAVEN-SOC": {
-            title: "RAVEN SOC",
+        {
+            name: "RAVEN SOC",
+            repo: "RAVEN-SOC",
             category: "CYBERSECURITY",
+            icon: "⌁",
             description:
-                "Cybersecurity SOC project focused on security monitoring, log analysis and incident investigation.",
-            tags: [
-                "Python",
-                "SOC",
-                "Log Analysis",
-                "Detection"
-            ]
+                "Cybersecurity SOC project focused on monitoring, log analysis, detection and incident investigation.",
+            tags: ["Python", "SOC", "Log Analysis", "Detection"],
+            url: "https://github.com/jalex00565-rgb/RAVEN-SOC"
         },
 
-        "JARVIS-AI-Desktop": {
-            title: "JARVIS AI DESKTOP",
+        {
+            name: "JARVIS AI DESKTOP",
+            repo: "JARVIS-AI-Desktop",
             category: "AI / PYTHON",
+            icon: "◇",
             description:
                 "AI-powered Windows desktop assistant with automation and intelligent assistance.",
-            tags: [
-                "Python",
-                "Windows",
-                "AI",
-                "Automation"
-            ]
+            tags: ["Python", "Windows", "AI", "Automation"],
+            url: "https://github.com/jalex00565-rgb/JARVIS-AI-Desktop"
         },
 
-        "SOC-Incident-Analyzer": {
-            title: "SOC INCIDENT ANALYZER",
+        {
+            name: "SOC INCIDENT ANALYZER",
+            repo: "SOC-Incident-Analyzer",
             category: "CYBERSECURITY",
+            icon: "⌁",
             description:
-                "SOC incident analysis project for log analysis, detection and security investigation.",
-            tags: [
-                "Python",
-                "SOC",
-                "Detection",
-                "Log Analysis"
-            ]
+                "SOC incident analysis project for log analysis, detection, risk scoring and security investigation.",
+            tags: ["Python", "SOC", "Detection", "Log Analysis"],
+            url: "https://github.com/jalex00565-rgb/SOC-Incident-Analyzer"
         },
 
-        "friday_assistant": {
-            title: "FRIDAY AI ASSISTANT",
+        {
+            name: "LOCAL AI SECURITY ASSISTANT",
+            repo: "JarvisAI",
+            category: "AI / SECURITY",
+            icon: "◇",
+            description:
+                "Local AI security assistant for private document analysis, cybersecurity knowledge and AI-assisted security workflows.",
+            tags: ["Python", "Ollama", "Local AI", "Cybersecurity"],
+            url: "https://github.com/jalex00565-rgb/JarvisAI"
+        },
+
+        {
+            name: "MINI SOC INCIDENT ANALYZER",
+            repo: "SOC-Incident-Analyzer",
+            category: "CYBERSECURITY",
+            icon: "⌁",
+            description:
+                "Mini SOC incident analyzer for log parsing, detection, risk scoring and AI-assisted security analysis.",
+            tags: ["Python", "SOC", "AI", "Log Analysis"],
+            url: "https://github.com/jalex00565-rgb/SOC-Incident-Analyzer"
+        },
+
+        {
+            name: "FRIDAY AI ASSISTANT",
+            repo: "friday_assistant",
             category: "AI / PYTHON",
+            icon: "◇",
             description:
                 "Local AI desktop assistant built with Python for intelligent assistance and automation.",
-            tags: [
-                "Python",
-                "AI",
-                "Automation",
-                "Assistant"
-            ]
+            tags: ["Python", "AI", "Automation", "Assistant"],
+            url: "https://github.com/jalex00565-rgb/friday_assistant"
         },
 
-        "Astra-local-AI": {
-            title: "ASTRA LOCAL AI",
+        {
+            name: "ASTRA LOCAL AI",
+            repo: "Astra-local-AI",
             category: "AI / PYTHON",
+            icon: "◇",
             description:
                 "Local AI project focused on private and locally controlled intelligent AI workflows.",
-            tags: [
-                "Python",
-                "Local AI",
-                "AI Assistant",
-                "Automation"
-            ]
+            tags: ["Python", "Local AI", "AI Assistant", "Automation"],
+            url: "https://github.com/jalex00565-rgb/Astra-local-AI"
         }
-
-    };
-
-
-    /* =====================================================
-       HIDE UNWANTED REPOSITORIES
-    ===================================================== */
-
-    function shouldHide(repo) {
-
-        const name =
-            repo.name.toLowerCase();
-
-        /* Hide portfolio itself */
-
-        if (
-            name ===
-            "alex-cybersecurity-portfolio"
-        ) {
-            return true;
-        }
-
-        /* Hide forks */
-
-        if (repo.fork) {
-            return true;
-        }
-
-        /* Hide archived repositories */
-
-        if (repo.archived) {
-            return true;
-        }
-
-        /* Hide music backend */
-
-        if (
-            name.includes("music-backend") ||
-            name.includes("music-app-backend")
-        ) {
-            return true;
-        }
-
-        return false;
-    }
-
-
-    /* =====================================================
-       FORMAT TITLE
-    ===================================================== */
-
-    function formatTitle(name) {
-
-        return name
-            .replace(/[-_]+/g, " ")
-            .replace(/\bai\b/gi, "AI")
-            .replace(/\bsoc\b/gi, "SOC")
-            .replace(/\bapi\b/gi, "API")
-            .replace(/\bllm\b/gi, "LLM")
-            .replace(/\bpython\b/gi, "Python")
-            .replace(/\bwindows\b/gi, "Windows")
-            .replace(/\bdesktop\b/gi, "Desktop")
-            .replace(/\bsecurity\b/gi, "Security")
-            .replace(/\bcybersecurity\b/gi, "Cybersecurity")
-            .replace(/\b\w/g, c =>
-                c.toUpperCase()
-            );
-    }
-
-
-    /* =====================================================
-       DETECT CATEGORY
-    ===================================================== */
-
-    function detectCategory(repo) {
-
-        const text =
-            `${repo.name} ${repo.description || ""} ${repo.language || ""}`
-                .toLowerCase();
-
-        if (
-            text.includes("security") ||
-            text.includes("cyber") ||
-            text.includes("soc") ||
-            text.includes("malware") ||
-            text.includes("threat") ||
-            text.includes("incident")
-        ) {
-            return "CYBERSECURITY";
-        }
-
-        if (
-            text.includes("ai") ||
-            text.includes("assistant") ||
-            text.includes("ollama") ||
-            text.includes("llm")
-        ) {
-            return "AI / PYTHON";
-        }
-
-        return "PROJECT";
-    }
-
-
-    /* =====================================================
-       DETECT TAGS
-    ===================================================== */
-
-    function detectTags(repo) {
-
-        const text =
-            `${repo.name} ${repo.description || ""} ${repo.language || ""}`
-                .toLowerCase();
-
-        const tags = [];
-
-
-        if (repo.language) {
-
-            tags.push(repo.language);
-
-        }
-
-
-        if (text.includes("python")) {
-
-            tags.push("Python");
-
-        }
-
-
-        if (text.includes("javascript")) {
-
-            tags.push("JavaScript");
-
-        }
-
-
-        if (text.includes("streamlit")) {
-
-            tags.push("Streamlit");
-
-        }
-
-
-        if (text.includes("ollama")) {
-
-            tags.push("Ollama");
-
-        }
-
-
-        if (
-            text.includes("ai") ||
-            text.includes("assistant") ||
-            text.includes("llm")
-        ) {
-
-            tags.push("AI");
-
-        }
-
-
-        if (
-            text.includes("security") ||
-            text.includes("cyber") ||
-            text.includes("soc")
-        ) {
-
-            tags.push("Cybersecurity");
-
-        }
-
-
-        if (text.includes("automation")) {
-
-            tags.push("Automation");
-
-        }
-
-
-        if (tags.length === 0) {
-
-            tags.push("GitHub Project");
-
-        }
-
-
-        return [
-            ...new Set(tags)
-        ].slice(0, 4);
-
-    }
-
-
-    /* =====================================================
-       GET PROJECT INFORMATION
-    ===================================================== */
-
-    function getProjectInfo(repo) {
-
-        if (
-            PROJECT_CONFIG[repo.name]
-        ) {
-
-            return PROJECT_CONFIG[
-                repo.name
-            ];
-
-        }
-
-
-        return {
-
-            title:
-                formatTitle(repo.name),
-
-            category:
-                detectCategory(repo),
-
-            description:
-                repo.description ||
-                "A project developed by Alex Jacob.",
-
-            tags:
-                detectTags(repo)
-
-        };
-
-    }
-
-
-    /* =====================================================
-       ESCAPE HTML
-    ===================================================== */
+    ];
 
     function escapeHTML(value) {
-
-        return String(value || "")
+        return String(value ?? "")
             .replace(/&/g, "&amp;")
             .replace(/</g, "&lt;")
             .replace(/>/g, "&gt;")
             .replace(/"/g, "&quot;")
             .replace(/'/g, "&#039;");
-
     }
 
+    function createCard(project, index) {
 
-    /* =====================================================
-       PROJECT ICON
-    ===================================================== */
+        const tags = project.tags
+            .map(tag => `<span>${escapeHTML(tag)}</span>`)
+            .join("");
 
-    function getIcon(category) {
+        return `
+            <article class="project-card">
 
-        if (
-            category.includes("CYBER") ||
-            category.includes("SECURITY")
-        ) {
+                <div class="project-top">
+                    <span>${String(index + 1).padStart(2, "0")}</span>
+                    <span>${escapeHTML(project.category)}</span>
+                </div>
 
-            return "⌁";
+                <div class="project-icon">
+                    ${project.icon}
+                </div>
 
-        }
+                <h3>
+                    ${escapeHTML(project.name)}
+                </h3>
 
+                <p>
+                    ${escapeHTML(project.description)}
+                </p>
 
-        if (
-            category.includes("AI")
-        ) {
+                <div class="project-tags">
+                    ${tags}
+                </div>
 
-            return "◇";
+                <div class="project-actions">
+                    <a
+                        class="project-link"
+                        href="${escapeHTML(project.url)}"
+                        target="_blank"
+                        rel="noopener noreferrer">
+                        VIEW PROJECT ↗
+                    </a>
+                </div>
 
-        }
-
-
-        return "◎";
-
+            </article>
+        `;
     }
 
+    function renderProjects() {
 
-    /* =====================================================
-       CREATE PROJECT CARD
-    ===================================================== */
-
-    function createProjectCard(
-        repo,
-        info,
-        index
-    ) {
-
-        const card =
-            document.createElement("article");
-
-        card.className =
-            "project-card";
-
-        card.dataset.repo =
-            repo.name;
-
-
-        const tags =
-            info.tags
-                .map(tag => `
-                    <span>
-                        ${escapeHTML(tag)}
-                    </span>
-                `)
+        grid.innerHTML =
+            PROJECTS
+                .map(createCard)
                 .join("");
 
+        count.textContent =
+            `${PROJECTS.length} ACTIVE`;
 
-        card.innerHTML = `
-
-            <div class="project-top">
-
-                <span class="project-number">
-                    ${String(index + 1).padStart(2, "0")}
-                </span>
-
-                <span class="project-category">
-                    ${escapeHTML(info.category)}
-                </span>
-
-            </div>
-
-
-            <div class="project-icon">
-
-                ${getIcon(info.category)}
-
-            </div>
-
-
-            <h3>
-
-                ${escapeHTML(info.title)}
-
-            </h3>
-
-
-            <p>
-
-                ${escapeHTML(info.description)}
-
-            </p>
-
-
-            <div class="project-tags">
-
-                ${tags}
-
-            </div>
-
-
-            <div class="project-actions">
-
-                <a
-                    class="project-link"
-                    href="${escapeHTML(repo.html_url)}"
-                    target="_blank"
-                    rel="noopener noreferrer">
-
-                    VIEW PROJECT ↗
-
-                </a>
-
-            </div>
-
-        `;
-
-
-        return card;
-
+        console.log(
+            `Portfolio projects loaded: ${PROJECTS.length}`
+        );
     }
 
+    /*
+     * GitHub check:
+     * This does NOT control the cards.
+     * It only verifies that the repositories still exist.
+     * Therefore the 8 portfolio projects never disappear
+     * because of a GitHub API/cache problem.
+     */
 
-    /* =====================================================
-       LOAD GITHUB PROJECTS
-    ===================================================== */
-
-    async function loadProjects() {
-
-        if (!projectContainer) {
-
-            console.error(
-                "Projects container not found."
-            );
-
-            return;
-
-        }
-
+    async function verifyGitHub() {
 
         try {
 
-            console.log(
-                "Connecting to GitHub..."
-            );
-
-
             const response =
-                await fetch(
-                    GITHUB_API,
-                    {
-                        cache: "no-store",
-                        headers: {
-                            "Accept":
-                                "application/vnd.github+json"
-                        }
+                await fetch(API, {
+                    cache: "no-store",
+                    headers: {
+                        "Accept":
+                            "application/vnd.github+json"
                     }
-                );
-
+                });
 
             if (!response.ok) {
-
                 throw new Error(
-                    `GitHub API Error: ${response.status}`
+                    `GitHub API ${response.status}`
                 );
-
             }
 
-
-            const repositories =
+            const repos =
                 await response.json();
 
+            const names =
+                new Set(
+                    repos.map(repo => repo.name)
+                );
+
+            const found =
+                PROJECTS.filter(
+                    project =>
+                        names.has(project.repo)
+                ).length;
 
             console.log(
-                "GitHub repositories:",
-                repositories
+                `GitHub verification: ${found}/${PROJECTS.length} mapped repositories found.`
             );
-
-
-            const projects =
-                repositories
-                    .filter(
-                        repo =>
-                            !shouldHide(repo)
-                    )
-                    .sort(
-                        (a, b) =>
-                            new Date(
-                                b.updated_at
-                            ) -
-                            new Date(
-                                a.updated_at
-                            )
-                    );
-
-
-            /* Clear existing static cards */
-
-            projectContainer.innerHTML =
-                "";
-
-
-            /* Add GitHub projects */
-
-            projects.forEach(
-                (repo, index) => {
-
-                    const info =
-                        getProjectInfo(repo);
-
-
-                    const card =
-                        createProjectCard(
-                            repo,
-                            info,
-                            index
-                        );
-
-
-                    projectContainer.appendChild(
-                        card
-                    );
-
-                }
-            );
-
 
             console.log(
-                `GitHub projects synced: ${projects.length}`
+                "Astra Local AI:",
+                names.has("Astra-local-AI")
+                    ? "FOUND"
+                    : "NOT FOUND"
             );
 
+        } catch (error) {
 
-            /* Check Astra */
-
-            const astra =
-                projects.find(
-                    repo =>
-                        repo.name ===
-                        "Astra-local-AI"
-                );
-
-
-            if (astra) {
-
-                console.log(
-                    "✅ ASTRA LOCAL AI FOUND"
-                );
-
-            } else {
-
-                console.warn(
-                    "⚠️ ASTRA LOCAL AI NOT FOUND"
-                );
-
-            }
-
-        }
-        catch (error) {
-
-            console.error(
-                "❌ GitHub sync failed:",
-                error
+            console.warn(
+                "GitHub verification skipped:",
+                error.message
             );
 
-
-            projectContainer.innerHTML = `
-
-                <div class="github-error">
-
-                    <h3>
-                        GitHub connection failed
-                    </h3>
-
-                    <p>
-                        Please refresh the website.
-                    </p>
-
-                </div>
-
-            `;
-
         }
-
     }
-
-
-    /* =====================================================
-       LOADER
-    ===================================================== */
 
     function hideLoader() {
 
         if (!loader) {
-
             return;
-
         }
 
+        loader.classList.add("hidden");
 
-        loader.classList.add(
-            "hidden"
-        );
-
-
-        setTimeout(
-            () => {
-
-                loader.style.display =
-                    "none";
-
-            },
-            700
-        );
-
+        setTimeout(() => {
+            loader.style.display = "none";
+        }, 600);
     }
 
+    /* Start */
 
-    /* =====================================================
-       START
-    ===================================================== */
-
-    loadProjects()
-        .finally(() => {
-
-            hideLoader();
-
-        });
-
-
-    /* =====================================================
-       AUTO SYNC EVERY 5 MINUTES
-    ===================================================== */
+    renderProjects();
+    verifyGitHub();
 
     setInterval(
-        loadProjects,
+        verifyGitHub,
         5 * 60 * 1000
     );
 
-
-    /* =====================================================
-       SAFETY LOADER
-    ===================================================== */
+    setTimeout(
+        hideLoader,
+        700
+    );
 
     setTimeout(
         hideLoader,
         4000
     );
 
+    /* Smooth navigation */
 
-    /* =====================================================
-       CONSOLE MESSAGE
-    ===================================================== */
+    document.querySelectorAll(
+        'a[href^="#"]'
+    ).forEach(link => {
+
+        link.addEventListener(
+            "click",
+            event => {
+
+                const targetID =
+                    link.getAttribute("href");
+
+                if (
+                    !targetID ||
+                    targetID === "#"
+                ) {
+                    return;
+                }
+
+                const target =
+                    document.querySelector(
+                        targetID
+                    );
+
+                if (target) {
+
+                    event.preventDefault();
+
+                    target.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start"
+                    });
+
+                }
+            }
+        );
+    });
 
     console.log(
-        "%c ALEX JACOB — GITHUB PROJECT SYSTEM ",
+        "%c ALEX JACOB — CYBERSECURITY × AI ",
         "color:#69f0ae;font-weight:bold;"
-    );
-
-    console.log(
-        "Automatic GitHub project sync enabled."
     );
 
 });
