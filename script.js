@@ -16,49 +16,30 @@ document.addEventListener("DOMContentLoaded", () => {
     const loader =
         document.getElementById("loader");
 
-    const modal =
-        document.getElementById("modal");
-
-    const modalTitle =
-        document.getElementById("modalTitle");
-
-    const modalText =
-        document.getElementById("modalText");
-
-    const modalKicker =
-        document.getElementById("modalKicker");
-
-    const modalStack =
-        document.getElementById("modalStack");
-
-    const closeButton =
-        document.getElementById("close");
-
 
     /* =====================================================
-       IMPORTANT PROJECT CONFIG
+       IMPORTANT PROJECT DETAILS
     ===================================================== */
 
     const PROJECT_CONFIG = {
 
-        "jarvisai": {
+        "JarvisAI": {
             title: "JARVIS AI",
             category: "AI / PYTHON",
             description:
-                "Personal AI assistant built with Python, Streamlit and Gemini. Foundation for voice interaction, file analysis, memory and SOC assistance.",
+                "Personal AI assistant built with Python, Streamlit and AI technologies.",
             tags: [
                 "Python",
                 "Streamlit",
-                "Gemini AI",
                 "AI Assistant"
             ]
         },
 
-        "raven-soc": {
+        "RAVEN-SOC": {
             title: "RAVEN SOC",
             category: "CYBERSECURITY",
             description:
-                "A cybersecurity-focused SOC project for security monitoring, log analysis, detection and incident investigation.",
+                "Cybersecurity SOC project focused on security monitoring, log analysis and incident investigation.",
             tags: [
                 "Python",
                 "SOC",
@@ -67,63 +48,50 @@ document.addEventListener("DOMContentLoaded", () => {
             ]
         },
 
-        "jarvis-ai-desktop": {
+        "JARVIS-AI-Desktop": {
             title: "JARVIS AI DESKTOP",
             category: "AI / PYTHON",
             description:
-                "AI-powered Windows desktop assistant with voice interaction, memory, system monitoring and automation.",
+                "AI-powered Windows desktop assistant with automation and intelligent assistance.",
             tags: [
                 "Python",
                 "Windows",
-                "Voice AI",
+                "AI",
                 "Automation"
             ]
         },
 
-        "soc-incident-analyzer": {
+        "SOC-Incident-Analyzer": {
             title: "SOC INCIDENT ANALYZER",
             category: "CYBERSECURITY",
             description:
-                "SOC Incident Analyzer for log analysis, incident detection, risk scoring and AI-assisted security analysis.",
+                "SOC incident analysis project for log analysis, detection and security investigation.",
             tags: [
                 "Python",
-                "AI",
-                "Cybersecurity",
+                "SOC",
+                "Detection",
                 "Log Analysis"
             ]
         },
 
-        "local-ai-security-assistant": {
-            title: "LOCAL AI SECURITY ASSISTANT",
-            category: "AI / SECURITY",
-            description:
-                "A local AI security assistant using Ollama for private document analysis, cybersecurity knowledge and AI-assisted security workflows.",
-            tags: [
-                "Python",
-                "Ollama",
-                "Local AI",
-                "Cybersecurity"
-            ]
-        },
-
-        "friday-assistant": {
+        "friday_assistant": {
             title: "FRIDAY AI ASSISTANT",
             category: "AI / PYTHON",
             description:
-                "Local desktop AI assistant built with Python, featuring voice interaction, AI capabilities, system automation and intelligent assistance.",
+                "Local AI desktop assistant built with Python for intelligent assistance and automation.",
             tags: [
                 "Python",
                 "AI",
-                "Voice Assistant",
-                "Automation"
+                "Automation",
+                "Assistant"
             ]
         },
 
-        "astra-local-ai": {
+        "Astra-local-AI": {
             title: "ASTRA LOCAL AI",
             category: "AI / PYTHON",
             description:
-                "A local AI project focused on private, intelligent and locally controlled AI workflows.",
+                "Local AI project focused on private and locally controlled intelligent AI workflows.",
             tags: [
                 "Python",
                 "Local AI",
@@ -136,35 +104,55 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =====================================================
-       GITHUB REPOSITORIES
+       HIDE UNWANTED REPOSITORIES
     ===================================================== */
 
-    let githubRepositories = [];
+    function shouldHide(repo) {
 
+        const name =
+            repo.name.toLowerCase();
 
-    /* =====================================================
-       NORMALIZE REPOSITORY NAME
-    ===================================================== */
+        /* Hide portfolio itself */
 
-    function normalize(value) {
+        if (
+            name ===
+            "alex-cybersecurity-portfolio"
+        ) {
+            return true;
+        }
 
-        return String(value || "")
-            .toLowerCase()
-            .trim()
-            .replace(/[_\s]+/g, "-")
-            .replace(/[^a-z0-9-]/g, "")
-            .replace(/-+/g, "-");
+        /* Hide forks */
 
+        if (repo.fork) {
+            return true;
+        }
+
+        /* Hide archived repositories */
+
+        if (repo.archived) {
+            return true;
+        }
+
+        /* Hide music backend */
+
+        if (
+            name.includes("music-backend") ||
+            name.includes("music-app-backend")
+        ) {
+            return true;
+        }
+
+        return false;
     }
 
 
     /* =====================================================
-       FORMAT NEW PROJECT TITLE
+       FORMAT TITLE
     ===================================================== */
 
     function formatTitle(name) {
 
-        return String(name || "")
+        return name
             .replace(/[-_]+/g, " ")
             .replace(/\bai\b/gi, "AI")
             .replace(/\bsoc\b/gi, "SOC")
@@ -175,15 +163,14 @@ document.addEventListener("DOMContentLoaded", () => {
             .replace(/\bdesktop\b/gi, "Desktop")
             .replace(/\bsecurity\b/gi, "Security")
             .replace(/\bcybersecurity\b/gi, "Cybersecurity")
-            .replace(/\b\w/g, char =>
-                char.toUpperCase()
+            .replace(/\b\w/g, c =>
+                c.toUpperCase()
             );
-
     }
 
 
     /* =====================================================
-       AUTO CATEGORY
+       DETECT CATEGORY
     ===================================================== */
 
     function detectCategory(repo) {
@@ -196,34 +183,28 @@ document.addEventListener("DOMContentLoaded", () => {
             text.includes("security") ||
             text.includes("cyber") ||
             text.includes("soc") ||
-            text.includes("threat") ||
             text.includes("malware") ||
+            text.includes("threat") ||
             text.includes("incident")
         ) {
-
             return "CYBERSECURITY";
-
         }
 
         if (
             text.includes("ai") ||
-            text.includes("llm") ||
             text.includes("assistant") ||
             text.includes("ollama") ||
-            text.includes("gemini")
+            text.includes("llm")
         ) {
-
             return "AI / PYTHON";
-
         }
 
         return "PROJECT";
-
     }
 
 
     /* =====================================================
-       AUTO TECHNOLOGY TAGS
+       DETECT TAGS
     ===================================================== */
 
     function detectTags(repo) {
@@ -242,20 +223,14 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
 
-        if (
-            text.includes("python") &&
-            !tags.includes("Python")
-        ) {
+        if (text.includes("python")) {
 
             tags.push("Python");
 
         }
 
 
-        if (
-            text.includes("javascript") &&
-            !tags.includes("JavaScript")
-        ) {
+        if (text.includes("javascript")) {
 
             tags.push("JavaScript");
 
@@ -278,8 +253,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (
             text.includes("ai") ||
-            text.includes("llm") ||
-            text.includes("assistant")
+            text.includes("assistant") ||
+            text.includes("llm")
         ) {
 
             tags.push("AI");
@@ -320,27 +295,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =====================================================
-       GET PROJECT CONFIG
+       GET PROJECT INFORMATION
     ===================================================== */
 
-    function getProjectConfig(repo) {
-
-        const name =
-            normalize(repo.name);
-
-
-        /* Known project */
+    function getProjectInfo(repo) {
 
         if (
-            PROJECT_CONFIG[name]
+            PROJECT_CONFIG[repo.name]
         ) {
 
-            return PROJECT_CONFIG[name];
+            return PROJECT_CONFIG[
+                repo.name
+            ];
 
         }
 
-
-        /* New GitHub project */
 
         return {
 
@@ -358,67 +327,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 detectTags(repo)
 
         };
-
-    }
-
-
-    /* =====================================================
-       HIDE UNWANTED REPOSITORIES
-    ===================================================== */
-
-    function shouldHide(repo) {
-
-        const name =
-            normalize(repo.name);
-
-
-        /* Hide portfolio itself */
-
-        if (
-            name ===
-            "alex-cybersecurity-portfolio"
-        ) {
-
-            return true;
-
-        }
-
-
-        /* Hide music backend */
-
-        if (
-            name.includes("music-app-backend") ||
-            name.includes("music-backend") ||
-            (
-                name.includes("music") &&
-                name.includes("backend")
-            )
-        ) {
-
-            return true;
-
-        }
-
-
-        /* Hide forks */
-
-        if (repo.fork) {
-
-            return true;
-
-        }
-
-
-        /* Hide archived projects */
-
-        if (repo.archived) {
-
-            return true;
-
-        }
-
-
-        return false;
 
     }
 
@@ -475,7 +383,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function createProjectCard(
         repo,
-        config,
+        info,
         index
     ) {
 
@@ -485,13 +393,12 @@ document.addEventListener("DOMContentLoaded", () => {
         card.className =
             "project-card";
 
-
         card.dataset.repo =
             repo.name;
 
 
         const tags =
-            config.tags
+            info.tags
                 .map(tag => `
                     <span>
                         ${escapeHTML(tag)}
@@ -509,7 +416,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 </span>
 
                 <span class="project-category">
-                    ${escapeHTML(config.category)}
+                    ${escapeHTML(info.category)}
                 </span>
 
             </div>
@@ -517,21 +424,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
             <div class="project-icon">
 
-                ${getIcon(config.category)}
+                ${getIcon(info.category)}
 
             </div>
 
 
             <h3>
 
-                ${escapeHTML(config.title)}
+                ${escapeHTML(info.title)}
 
             </h3>
 
 
             <p>
 
-                ${escapeHTML(config.description)}
+                ${escapeHTML(info.description)}
 
             </p>
 
@@ -566,12 +473,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =====================================================
-       LOAD PROJECTS FROM GITHUB
+       LOAD GITHUB PROJECTS
     ===================================================== */
 
     async function loadProjects() {
 
         if (!projectContainer) {
+
+            console.error(
+                "Projects container not found."
+            );
 
             return;
 
@@ -579,6 +490,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
         try {
+
+            console.log(
+                "Connecting to GitHub..."
+            );
+
 
             const response =
                 await fetch(
@@ -606,9 +522,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 await response.json();
 
 
-            /* Filter */
+            console.log(
+                "GitHub repositories:",
+                repositories
+            );
 
-            const filteredRepositories =
+
+            const projects =
                 repositories
                     .filter(
                         repo =>
@@ -625,33 +545,25 @@ document.addEventListener("DOMContentLoaded", () => {
                     );
 
 
-            githubRepositories =
-                filteredRepositories;
-
-
-            window.githubRepositories =
-                githubRepositories;
-
-
-            /* Clear old projects */
+            /* Clear existing static cards */
 
             projectContainer.innerHTML =
                 "";
 
 
-            /* Create project cards */
+            /* Add GitHub projects */
 
-            filteredRepositories.forEach(
+            projects.forEach(
                 (repo, index) => {
 
-                    const config =
-                        getProjectConfig(repo);
+                    const info =
+                        getProjectInfo(repo);
 
 
                     const card =
                         createProjectCard(
                             repo,
-                            config,
+                            info,
                             index
                         );
 
@@ -665,15 +577,39 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
             console.log(
-                "GitHub projects synced:",
-                filteredRepositories.length
+                `GitHub projects synced: ${projects.length}`
             );
+
+
+            /* Check Astra */
+
+            const astra =
+                projects.find(
+                    repo =>
+                        repo.name ===
+                        "Astra-local-AI"
+                );
+
+
+            if (astra) {
+
+                console.log(
+                    "✅ ASTRA LOCAL AI FOUND"
+                );
+
+            } else {
+
+                console.warn(
+                    "⚠️ ASTRA LOCAL AI NOT FOUND"
+                );
+
+            }
 
         }
         catch (error) {
 
             console.error(
-                "GitHub sync failed:",
+                "❌ GitHub sync failed:",
                 error
             );
 
@@ -695,460 +631,6 @@ document.addEventListener("DOMContentLoaded", () => {
             `;
 
         }
-
-    }
-
-
-    /* =====================================================
-       OPEN PROJECT MODAL
-    ===================================================== */
-
-    function openModal(repo) {
-
-        if (
-            !repo ||
-            !modal
-        ) {
-
-            return;
-
-        }
-
-
-        const config =
-            getProjectConfig(repo);
-
-
-        if (modalKicker) {
-
-            modalKicker.textContent =
-                `${config.category}`;
-
-        }
-
-
-        if (modalTitle) {
-
-            modalTitle.textContent =
-                config.title;
-
-        }
-
-
-        if (modalText) {
-
-            modalText.textContent =
-                config.description;
-
-        }
-
-
-        if (modalStack) {
-
-            modalStack.innerHTML = "";
-
-
-            config.tags.forEach(
-                tag => {
-
-                    const element =
-                        document.createElement("span");
-
-                    element.textContent =
-                        tag;
-
-                    modalStack.appendChild(
-                        element
-                    );
-
-                }
-            );
-
-
-            const githubLink =
-                document.createElement("a");
-
-
-            githubLink.className =
-                "modal-github";
-
-
-            githubLink.href =
-                repo.html_url;
-
-
-            githubLink.target =
-                "_blank";
-
-
-            githubLink.rel =
-                "noopener noreferrer";
-
-
-            githubLink.textContent =
-                "GITHUB REPOSITORY ↗";
-
-
-            modalStack.appendChild(
-                githubLink
-            );
-
-        }
-
-
-        modal.classList.add(
-            "active"
-        );
-
-
-        document.body.classList.add(
-            "modal-open"
-        );
-
-    }
-
-
-    /* =====================================================
-       PROJECT CARD CLICK
-    ===================================================== */
-
-    document.addEventListener(
-        "click",
-        event => {
-
-            const card =
-                event.target.closest(
-                    ".project-card"
-                );
-
-
-            if (!card) {
-
-                return;
-
-            }
-
-
-            /* Don't intercept GitHub button */
-
-            if (
-                event.target.closest("a") ||
-                event.target.closest("button")
-            ) {
-
-                return;
-
-            }
-
-
-            const repoName =
-                card.dataset.repo;
-
-
-            const repo =
-                githubRepositories.find(
-                    item =>
-                        item.name === repoName
-                );
-
-
-            if (repo) {
-
-                openModal(repo);
-
-            }
-
-        }
-    );
-
-
-    /* =====================================================
-       CLOSE MODAL
-    ===================================================== */
-
-    function closeModal() {
-
-        if (!modal) {
-
-            return;
-
-        }
-
-
-        modal.classList.remove(
-            "active"
-        );
-
-
-        document.body.classList.remove(
-            "modal-open"
-        );
-
-    }
-
-
-    if (closeButton) {
-
-        closeButton.addEventListener(
-            "click",
-            closeModal
-        );
-
-    }
-
-
-    if (modal) {
-
-        modal.addEventListener(
-            "click",
-            event => {
-
-                if (
-                    event.target === modal
-                ) {
-
-                    closeModal();
-
-                }
-
-            }
-        );
-
-    }
-
-
-    document.addEventListener(
-        "keydown",
-        event => {
-
-            if (
-                event.key === "Escape"
-            ) {
-
-                closeModal();
-
-            }
-
-        }
-    );
-
-
-    /* =====================================================
-       SMOOTH NAVIGATION
-    ===================================================== */
-
-    document.querySelectorAll(
-        'a[href^="#"]'
-    ).forEach(
-        link => {
-
-            link.addEventListener(
-                "click",
-                event => {
-
-                    const targetId =
-                        link.getAttribute(
-                            "href"
-                        );
-
-
-                    if (
-                        !targetId ||
-                        targetId === "#"
-                    ) {
-
-                        return;
-
-                    }
-
-
-                    const target =
-                        document.querySelector(
-                            targetId
-                        );
-
-
-                    if (target) {
-
-                        event.preventDefault();
-
-
-                        target.scrollIntoView({
-                            behavior: "smooth",
-                            block: "start"
-                        });
-
-                    }
-
-                }
-            );
-
-        }
-    );
-
-
-    /* =====================================================
-       ACTIVE NAVIGATION
-    ===================================================== */
-
-    const sections =
-        document.querySelectorAll(
-            "section[id]"
-        );
-
-
-    const navLinks =
-        document.querySelectorAll(
-            '.nav nav a[href^="#"]'
-        );
-
-
-    if (
-        sections.length &&
-        navLinks.length
-    ) {
-
-        const observer =
-            new IntersectionObserver(
-                entries => {
-
-                    entries.forEach(
-                        entry => {
-
-                            if (
-                                entry.isIntersecting
-                            ) {
-
-                                navLinks.forEach(
-                                    link =>
-                                        link.classList.remove(
-                                            "active"
-                                        )
-                                );
-
-
-                                const activeLink =
-                                    document.querySelector(
-                                        `.nav nav a[href="#${entry.target.id}"]`
-                                    );
-
-
-                                if (activeLink) {
-
-                                    activeLink.classList.add(
-                                        "active"
-                                    );
-
-                                }
-
-                            }
-
-                        }
-                    );
-
-                },
-                {
-                    threshold: 0.25
-                }
-            );
-
-
-        sections.forEach(
-            section =>
-                observer.observe(section)
-        );
-
-    }
-
-
-    /* =====================================================
-       TERMINAL CURSOR
-    ===================================================== */
-
-    const cursors =
-        document.querySelectorAll(
-            ".cursor"
-        );
-
-
-    cursors.forEach(
-        cursor => {
-
-            let visible = true;
-
-
-            setInterval(
-                () => {
-
-                    visible =
-                        !visible;
-
-
-                    cursor.style.opacity =
-                        visible
-                            ? "1"
-                            : "0";
-
-                },
-                500
-            );
-
-        }
-    );
-
-
-    /* =====================================================
-       SCROLL REVEAL
-    ===================================================== */
-
-    const revealElements =
-        document.querySelectorAll(
-            ".section, .skill, .time-item, .profile-terminal"
-        );
-
-
-    if (
-        revealElements.length
-    ) {
-
-        const revealObserver =
-            new IntersectionObserver(
-                (entries, observer) => {
-
-                    entries.forEach(
-                        entry => {
-
-                            if (
-                                entry.isIntersecting
-                            ) {
-
-                                entry.target.classList.add(
-                                    "visible"
-                                );
-
-
-                                observer.unobserve(
-                                    entry.target
-                                );
-
-                            }
-
-                        }
-                    );
-
-                },
-                {
-                    threshold: 0.08
-                }
-            );
-
-
-        revealElements.forEach(
-            element =>
-                revealObserver.observe(
-                    element
-                )
-        );
 
     }
 
@@ -1189,18 +671,15 @@ document.addEventListener("DOMContentLoaded", () => {
     ===================================================== */
 
     loadProjects()
-        .finally(
-            () => {
+        .finally(() => {
 
-                hideLoader();
+            hideLoader();
 
-            }
-        );
+        });
 
 
     /* =====================================================
-       AUTO SYNC
-       Every 5 minutes while website is open.
+       AUTO SYNC EVERY 5 MINUTES
     ===================================================== */
 
     setInterval(
@@ -1209,7 +688,9 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
 
-    /* Safety fallback */
+    /* =====================================================
+       SAFETY LOADER
+    ===================================================== */
 
     setTimeout(
         hideLoader,
@@ -1217,7 +698,9 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
 
-    /* Console */
+    /* =====================================================
+       CONSOLE MESSAGE
+    ===================================================== */
 
     console.log(
         "%c ALEX JACOB — GITHUB PROJECT SYSTEM ",
